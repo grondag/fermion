@@ -104,6 +104,10 @@ public class ColorHelper {
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
+    public static int swapRedBlue(int color) {
+        return (color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16);
+    }
+
     /** arguments are assumed to be ARGB */
     public static int multiplyColor(int color1, int color2) {
         int red = ((color1 >> 16) & 0xFF) * ((color2 >> 16) & 0xFF) / 0xFF;
