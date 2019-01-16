@@ -122,7 +122,7 @@ public class Useful {
             return b < c ? b : c;
         }
     }
-
+    
     public static int max(int... input) {
         int result = Integer.MIN_VALUE;
         for (int i : input) {
@@ -140,6 +140,14 @@ public class Useful {
         }
     }
 
+    public static float min(float a, float b, float c, float d) {
+        return Math.min(Math.min(a, b), Math.min(d, c));
+    }
+
+    public static float max(float a, float b, float c, float d) {
+        return Math.max(Math.max(a, b), Math.max(d, c));
+    }
+    
     /**
      * Returns the maximum absolute magnitude of the three orthogonalAxis for the
      * given vector. Mainly useful when you know that only one of the orthogonalAxis

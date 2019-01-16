@@ -118,6 +118,16 @@ public class ColorHelper {
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
 
+    /** arguments are assumed to be ARGB - does not modify alpha */
+    public static int multiplyRGB(int color, float shade) {
+        int red = (int) (((color >> 16) & 0xFF) * shade);
+        int green = (int) (((color >> 8) & 0xFF) * shade);
+        int blue = (int) ((color & 0xFF) * shade);
+        int alpha = ((color >> 24) & 0xFF);
+
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
+    }
+    
     public static int lampColor(int baseColor) {
         final int alpha = baseColor & 0xFF000000;
         return Color.fromRGB(baseColor).lumify().RGB_int | alpha;

@@ -17,11 +17,27 @@
 package grondag.fermion.varia;
 
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Direction.Axis;
 
 public class DirectionHelper {
     private static final Direction[] ALL_DIRECTIONS = Direction.values();
 
     public static Direction fromOrdinal(int ordinal) {
         return ALL_DIRECTIONS[ordinal];
+    }
+    
+    public static Axis longestAxis(float normalX, float normalY, float normalZ) {
+        Axis result = Axis.Y;
+        float longest = Math.abs(normalY);
+
+        float a = Math.abs(normalX);
+        if(a > longest)
+        {
+            result = Axis.X;
+            longest = a;
+        }
+
+        return Math.abs(normalZ) > longest
+                ? Axis.Z : result;
     }
 }
