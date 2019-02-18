@@ -27,12 +27,12 @@ public class SingleBlockRegion implements IBlockRegion {
     }
 
     @Override
-    public Iterable<BlockPos.Mutable> surfacePositions() {
-        return BlockPos.method_10068(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
+    public Iterable<BlockPos> surfacePositions() {
+        return BlockPos.iterateBoxPositions(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override
-    public Iterable<BlockPos.Mutable> adjacentPositions() {
+    public Iterable<BlockPos> adjacentPositions() {
         return CubicBlockRegion.getAllOnBoxSurfaceMutable(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1,
                 pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
     }

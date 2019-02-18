@@ -32,14 +32,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  * Safe for concurrent use.
  */
-public class ObjectHandle<T> {
+public class IndexedInterner<T> {
     private final AtomicInteger nextHandle = new AtomicInteger(1);
 
     private volatile T[] instances;
 
     private final ConcurrentHashMap<T, Integer> map = new ConcurrentHashMap<>();
 
-    public ObjectHandle(Class<T> clazz) {
+    public IndexedInterner(Class<T> clazz) {
         @SuppressWarnings("unchecked")
         final T[] a = (T[]) Array.newInstance(clazz, 64);
         instances = a;

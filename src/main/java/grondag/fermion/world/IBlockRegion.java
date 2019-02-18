@@ -23,8 +23,8 @@ import net.minecraft.util.math.BlockPos;
  */
 public interface IBlockRegion {
     /** All positions on the surface of the region. */
-    public Iterable<BlockPos.Mutable> surfacePositions();
+    public Iterable<BlockPos> surfacePositions();
 
     /** All positions adjacent to the surface of the region. */
-    public Iterable<BlockPos.Mutable> adjacentPositions();
+    public Iterable<BlockPos> adjacentPositions();
 }

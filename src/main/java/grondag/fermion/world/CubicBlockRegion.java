@@ -76,8 +76,8 @@ public class CubicBlockRegion extends IntegerAABB implements IBlockRegion {
      * All positions contained in the region, including interior positions if it is
      * hollow
      */
-    public Iterable<BlockPos.Mutable> allPositions() {
-        return BlockPos.method_10068(this.minX, this.minY, this.minZ, this.maxX - 1, this.maxY - 1, this.maxZ - 1);
+    public Iterable<BlockPos> allPositions() {
+        return BlockPos.iterateBoxPositions(this.minX, this.minY, this.minZ, this.maxX - 1, this.maxY - 1, this.maxZ - 1);
     }
 
     /**
@@ -85,7 +85,7 @@ public class CubicBlockRegion extends IntegerAABB implements IBlockRegion {
      * {@link #allPositions()} if region is not at least 3x3x3
      */
     @Override
-    public Iterable<BlockPos.Mutable> surfacePositions() {
+    public Iterable<BlockPos> surfacePositions() {
         return getAllOnBoxSurfaceMutable(this.minX, this.minY, this.minZ, this.maxX - 1, this.maxY - 1, this.maxZ - 1);
     }
 
@@ -93,7 +93,7 @@ public class CubicBlockRegion extends IntegerAABB implements IBlockRegion {
      * Positions that belong the region, excluding interior positions if hollow, but
      * not excluding any excluded positions.
      */
-    public Iterable<BlockPos.Mutable> positions() {
+    public Iterable<BlockPos> positions() {
         return isHollow ? surfacePositions() : allPositions();
     }
 
@@ -102,7 +102,7 @@ public class CubicBlockRegion extends IntegerAABB implements IBlockRegion {
      * {@link #allPositions()} if region is not at least 3x3x3
      */
     @Override
-    public Iterable<BlockPos.Mutable> adjacentPositions() {
+    public Iterable<BlockPos> adjacentPositions() {
         return getAllOnBoxSurfaceMutable(this.minX - 1, this.minY - 1, this.minZ - 1, this.maxX, this.maxY, this.maxZ);
     }
 
@@ -110,21 +110,21 @@ public class CubicBlockRegion extends IntegerAABB implements IBlockRegion {
      * All positions included in the region. Excludes interior positions if hollow,
      * and excludes any excluded positions.
      */
-    public Iterable<BlockPos.Mutable> includedPositions() {
-        return new Iterable<BlockPos.Mutable>() {
+    public Iterable<BlockPos> includedPositions() {
+        return new Iterable<BlockPos>() {
             @Override
-            public Iterator<BlockPos.Mutable> iterator() {
-                return new AbstractIterator<BlockPos.Mutable>() {
-                    Iterator<BlockPos.Mutable> wrapped = positions().iterator();
+            public Iterator<BlockPos> iterator() {
+                return new AbstractIterator<BlockPos>() {
+                    Iterator<BlockPos> wrapped = positions().iterator();
 
                     @Override
-                    protected BlockPos.Mutable computeNext() {
+                    protected BlockPos computeNext() {
                         while (wrapped.hasNext()) {
-                            BlockPos.Mutable result = wrapped.next();
+                            BlockPos result = wrapped.next();
                             if (result != null && !exclusions.contains(result))
                                 return result;
                         }
-                        return (BlockPos.Mutable) this.endOfData();
+                        return (BlockPos) this.endOfData();
                     }
                 };
             }
@@ -140,7 +140,7 @@ public class CubicBlockRegion extends IntegerAABB implements IBlockRegion {
         CubicBlockRegion temp = new CubicBlockRegion(from, to, false);
         ImmutableSet.Builder<BlockPos> builder = ImmutableSet.builder();
 
-        for (BlockPos.Mutable pos : temp.allPositions()) {
+        for (BlockPos pos : temp.allPositions()) {
             builder.add(pos.toImmutable());
         }
         return builder.build();
@@ -150,16 +150,16 @@ public class CubicBlockRegion extends IntegerAABB implements IBlockRegion {
      * Like the BlockPos method, but only returns Block positions on the surface of
      * the AABB
      */
-    public static Iterable<BlockPos.Mutable> getAllOnBoxSurfaceMutable(final int x1, final int y1, final int z1,
+    public static Iterable<BlockPos> getAllOnBoxSurfaceMutable(final int x1, final int y1, final int z1,
             final int x2, final int y2, final int z2) {
         // has to be at least 3x3x3 or logic will get stuck and is also inefficient
         if (x2 - x1 < 2 || y2 - y1 < 2 || z2 - z1 < 2)
-            return BlockPos.method_10068(x1, y1, z1, x2, y2, z2);
+            return BlockPos.iterateBoxPositions(x1, y1, z1, x2, y2, z2);
 
-        return new Iterable<BlockPos.Mutable>() {
+        return new Iterable<BlockPos>() {
             @Override
-            public Iterator<BlockPos.Mutable> iterator() {
-                return new AbstractIterator<BlockPos.Mutable>() {
+            public Iterator<BlockPos> iterator() {
+                return new AbstractIterator<BlockPos>() {
                     private boolean atStart = true;
                     private int x = x1, y = y1, z = z1;
                     private BlockPos.Mutable pos = new BlockPos.Mutable(x1, y1, z1);
