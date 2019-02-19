@@ -1,6 +1,6 @@
 package grondag.fermion.color;
 
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resource.language.I18n;
 
 public enum Luminance
 {
@@ -24,9 +24,8 @@ public enum Luminance
         this.value = luminanceValue;
     }
 
-    @SuppressWarnings("deprecation")
     public String localizedName()
     {
-        return I18n.translateToLocal("color.luminance." + this.name().toLowerCase());
+        return I18n.translate("color.luminance." + this.name().toLowerCase());
     }
 }

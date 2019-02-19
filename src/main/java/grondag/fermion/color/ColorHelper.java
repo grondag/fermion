@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package grondag.fermion.varia;
+package grondag.fermion.color;
 
 public class ColorHelper {
     public static float red(int colorARGB) {

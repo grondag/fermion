@@ -1,8 +1,7 @@
 package grondag.fermion.color;
 
-import grondag.exotic_matter.varia.Color;
-import grondag.exotic_matter.varia.Color.EnumHCLFailureMode;
-import net.minecraft.util.text.translation.I18n;
+import grondag.fermion.color.Color.EnumHCLFailureMode;
+import net.minecraft.client.resource.language.I18n;
 
 public class ColorMap
 {
@@ -35,7 +34,7 @@ public class ColorMap
     public String localizedName()
     {
         @SuppressWarnings("deprecation")
-        String format = I18n.translateToLocal(this.chroma == Chroma.PURE_NETURAL ? "color.format.pure_neutral" : "color.format.color");
+        String format = I18n.translate(this.chroma == Chroma.PURE_NETURAL ? "color.format.pure_neutral" : "color.format.color");
         return String.format(format, this.hue.localizedName(), this.chroma.localizedName(), this.luminance.localizedName());
     
     }

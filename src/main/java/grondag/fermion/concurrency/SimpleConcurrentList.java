@@ -8,9 +8,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javax.annotation.Nullable;
-
-import grondag.exotic_matter.varia.structures.AbstractUnorderedArrayList;
 import net.minecraft.util.math.MathHelper;
 
 
@@ -44,7 +41,7 @@ public class SimpleConcurrentList<T> implements Iterable<T>
         return enablePerformanceCounting ? new Instrumented<V>(clazz, listName, perfCollector) : new SimpleConcurrentList<V>(clazz);
     }
     
-    public static <V> SimpleConcurrentList<V> create(Class<V> clazz, @Nullable PerformanceCounter perfCounter)
+    public static <V> SimpleConcurrentList<V> create(Class<V> clazz, PerformanceCounter perfCounter)
     {
         return perfCounter == null ? new SimpleConcurrentList<V>(clazz) : new Instrumented<V>(clazz, perfCounter);
     }
@@ -62,7 +59,7 @@ public class SimpleConcurrentList<T> implements Iterable<T>
         this.items = a;
     }
    
-    public @Nullable PerformanceCounter removalPerfCounter() { return null; }
+    public PerformanceCounter removalPerfCounter() { return null; }
     
     /**
      * Current number of items in the list.  Note
@@ -111,7 +108,7 @@ public class SimpleConcurrentList<T> implements Iterable<T>
      * Safe for concurrent use with other adds.
      * Not safe for concurrent use with other operations.
      */
-    public void addAll(AbstractUnorderedArrayList<T> items)
+    public void addAll(grondag.fermion.structures.AbstractUnorderedArrayList<T> items)
     {
         int endExclusive = this.size.addAndGet(items.size());
         if(endExclusive > this.items.length)
@@ -297,7 +294,7 @@ public class SimpleConcurrentList<T> implements Iterable<T>
         }
         
         @Override
-        public @Nullable PerformanceCounter removalPerfCounter() { return this.removalPerfCounter; }
+        public PerformanceCounter removalPerfCounter() { return this.removalPerfCounter; }
         
         @Override 
         public void removeSomeDeletedItems(Predicate<T> trueIfDeleted)

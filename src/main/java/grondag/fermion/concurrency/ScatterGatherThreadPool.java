@@ -8,8 +8,8 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableList;
 
-import grondag.exotic_matter.ExoticMatter;
-import grondag.exotic_matter.varia.structures.AbstractUnorderedArrayList;
+import grondag.fermion.Fermion;
+import grondag.fermion.structures.AbstractUnorderedArrayList;
 import sun.misc.Unsafe;
 
 /**
@@ -133,7 +133,6 @@ public class ScatterGatherThreadPool
     /**
      * Used here to avoid a pointer chase for the atomic batch counter at the core of the implementation.
      */
-    @SuppressWarnings("null")
     private static final Unsafe UNSAFE = Danger.UNSAFE;
     
     /**
@@ -250,7 +249,7 @@ public class ScatterGatherThreadPool
                     }
                     catch (Exception e) 
                     { 
-                        ExoticMatter.INSTANCE.error("Unhandled error during concurrent processing. Impact unknown.", e);
+                        Fermion.INSTANCE.error("Unhandled error during concurrent processing. Impact unknown.", e);
                     }
                     completionLock.unlock();
                 }
@@ -422,7 +421,7 @@ public class ScatterGatherThreadPool
         }
         catch (Exception e) 
         { 
-            ExoticMatter.INSTANCE.error("Unhandled error during concurrent processing. Impact unknown.", e);
+            Fermion.INSTANCE.error("Unhandled error during concurrent processing. Impact unknown.", e);
         }
        
         // don't hold reference & prevent restart of worker threads
@@ -540,7 +539,7 @@ public class ScatterGatherThreadPool
         private class WorkerState extends AbstractUnorderedArrayList<V> implements Consumer<T>
         {
             @Override
-            public final void accept(@SuppressWarnings("null") T t)
+            public final void accept(T t)
             {
                 operation.accept(t, v -> this.add(v));
             }

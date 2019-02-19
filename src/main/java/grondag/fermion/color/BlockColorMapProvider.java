@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-import grondag.exotic_matter.ExoticMatter;
-import grondag.exotic_matter.model.color.ColorMap.EnumColorMap;
-import grondag.exotic_matter.varia.Color;
-import grondag.exotic_matter.varia.Color.EnumHCLFailureMode;
+import grondag.fermion.Fermion;
+import grondag.fermion.color.Color.EnumHCLFailureMode;
+import grondag.fermion.color.ColorMap.EnumColorMap;
+
 
 public class BlockColorMapProvider
 {
@@ -167,7 +167,7 @@ public class BlockColorMapProvider
         }
         catch (IOException e)
         {
-            ExoticMatter.INSTANCE.warn("Unable to output color atlas due to file error:" + e.getMessage());
+            Fermion.INSTANCE.warn("Unable to output color atlas due to file error:" + e.getMessage());
         }
     }
 }

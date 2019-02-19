@@ -2,8 +2,6 @@ package grondag.fermion.concurrency;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.collect.ForwardingList;
 
 /**
@@ -25,7 +23,7 @@ public class ConcurrentForwardingList<T> extends ForwardingList<T>
     }
     
     @Override
-    protected @Nonnull List<T> delegate()
+    protected List<T> delegate()
     {
         return this.delegate;
     }

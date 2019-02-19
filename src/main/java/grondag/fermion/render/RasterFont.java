@@ -1,4 +1,4 @@
-package grondag.fermion.font;
+package grondag.fermion.render;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -8,35 +8,24 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.imageio.stream.FileImageOutputStream;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.sun.imageio.plugins.png.PNGImageWriter;
 import com.sun.imageio.plugins.png.PNGImageWriterSpi;
 
-import grondag.exotic_matter.ConfigXM;
-import grondag.exotic_matter.ExoticMatter;
-import grondag.exotic_matter.model.primitives.FaceVertex;
-import grondag.exotic_matter.model.primitives.PolyFactory;
-import grondag.exotic_matter.model.primitives.polygon.IMutablePolygon;
-import grondag.exotic_matter.model.primitives.polygon.IPolygon;
-import grondag.exotic_matter.model.texture.TextureHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import grondag.fermion.Fermion;
+import grondag.fermion.config.FermionConfig;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.resource.Resource;
+import net.minecraft.util.Identifier;
 
 /**
  * Static version of TrueTypeFont that uses the block texture map.
@@ -44,7 +33,7 @@ import net.minecraft.util.ResourceLocation;
  */
 
 @SuppressWarnings("restriction")
-public class RasterFont extends TextureAtlasSprite
+public class RasterFont extends Sprite
 {
     
     /**
@@ -59,11 +48,10 @@ public class RasterFont extends TextureAtlasSprite
     private static int GLYPH_MARGIN = 2;
     private static int GLYPH_MARGIN_X2 = GLYPH_MARGIN * 2;
     
-    public static String getSpriteResourceName(String fontName, int fontSize)
+    public static Identifier getSpriteId(String fontName, int fontSize)
     {
-        return "hard_science:blocks/" + fontName + "-" + fontSize;
+        return new Identifier("fermion", "blocks/" + fontName + "-" + fontSize);
     }
-    
     
     /**
      * Array that holds necessary information about the font characters
@@ -87,7 +75,8 @@ public class RasterFont extends TextureAtlasSprite
     /**
      * Created during init, loaded to texture map during load, null after that.
      */
-    private @Nullable BufferedImage fontMap;
+    @SuppressWarnings("unused")
+    private BufferedImage fontMap;
 
 
     /**
@@ -95,9 +84,7 @@ public class RasterFont extends TextureAtlasSprite
      */
     public RasterFont(String fontName, final int textureSize, int horizontalSpacing)
     {
-        super(getSpriteResourceName(fontName, textureSize));
-        this.height = textureSize;
-        this.width = textureSize;
+        super(getSpriteId(fontName, textureSize), textureSize, textureSize);
         this.horizontalSpacing = horizontalSpacing;
         
         // initial guess - shoot for too big
@@ -108,7 +95,7 @@ public class RasterFont extends TextureAtlasSprite
         sizeloop:
         while(!isSizeRight)
         {
-            Font font = getFont(new ResourceLocation(ExoticMatter.INSTANCE.prefixResource("fonts/" + fontName)), fontSize);
+            Font font = getFont(new Identifier(Fermion.INSTANCE.prefixResource("fonts/" + fontName)), fontSize);
             
             // Create a temporary image to extract the character's size
             
@@ -207,7 +194,7 @@ public class RasterFont extends TextureAtlasSprite
                 this.fontMap = glyphMapImage;
                 
                 //output font textures for troubleshooting - quick hack, not pretty
-                if(ConfigXM.RENDER.outputFontTexturesForDebugging)
+                if(FermionConfig.RENDER.outputFontTexturesForDebugging)
                 {
                     File file = new File(fontName + "-" + fontHeight + ".png");
                     if(file.exists()) file.delete();
@@ -222,7 +209,7 @@ public class RasterFont extends TextureAtlasSprite
             }
             catch (Exception e)
             {
-                ExoticMatter.INSTANCE.error("Failed to create font. Stuff won't render correctly if it renders at all.", e);
+                Fermion.INSTANCE.error("Failed to create font. Stuff won't render correctly if it renders at all.", e);
             }
         }
         this.fontHeight = fontHeight;
@@ -245,12 +232,12 @@ public class RasterFont extends TextureAtlasSprite
         return fontImage;
     }
 
-    private @Nullable Font getFont(ResourceLocation res, float size)
+    private Font getFont(Identifier res, float size)
     {
         Font font;
         try
         {
-            font = Font.createFont(Font.TRUETYPE_FONT, Minecraft.getMinecraft().getResourceManager().getResource(res).getInputStream());
+            font = Font.createFont(Font.TRUETYPE_FONT, MinecraftClient.getInstance().getResourceManager().getResource(res).getInputStream());
             return font.deriveFont(size);
         }
         catch (Exception e)
@@ -269,13 +256,13 @@ public class RasterFont extends TextureAtlasSprite
         }
     }
     
-    public @Nullable GlyphInfo getGlyphInfo(char c)
+    public GlyphInfo getGlyphInfo(char c)
     {
         if(c < 0 || c > 255) return null;
         return this.glyphArray[c];
     }
     
-    public @Nullable GlyphInfo getNumericSubscript(int i)
+    public GlyphInfo getNumericSubscript(int i)
     {
         if(i < 0 || i > 9) return null;
         return this.glyphArray[256 + i];
@@ -325,14 +312,14 @@ public class RasterFont extends TextureAtlasSprite
     public void drawLine(double xLeft, double yTop, String text, double lineHeight, double zDepth, int red, int green, int blue, int alpha)
     {
         // moved this to machine rendering setup
-        GlStateManager.bindTexture(TextureHelper.blockGlTextureId());
+        GlStateManager.bindTexture(MinecraftClient.getInstance().getSpriteAtlas().getGlId());
         
         // moved this to machine rendering setup
 //        TextureHelper.setTextureBlurMipmap(true, true);
         
 //        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+        BufferBuilder buffer = Tessellator.getInstance().getBufferBuilder();
+        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_LMAP);
 
         double x = xLeft;
         double scaleFactor = lineHeight / this.fontHeight;
@@ -356,11 +343,11 @@ public class RasterFont extends TextureAtlasSprite
      */
     public void drawFormula(double xLeft, double yTop, String text, double lineHeight, double zDepth, int red, int green, int blue, int alpha)
     {
-        GlStateManager.bindTexture(TextureHelper.blockGlTextureId());
+        GlStateManager.bindTexture(MinecraftClient.getInstance().getSpriteAtlas().getGlId());
         TextureHelper.setTextureBlurMipmap(true, true);
 //        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+        BufferBuilder buffer = Tessellator.getInstance().getBufferBuilder();
+        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_LMAP);
 
         double x = xLeft;
         double scaleFactor = lineHeight / this.fontHeight;
@@ -383,11 +370,11 @@ public class RasterFont extends TextureAtlasSprite
      */
     public void drawLineMonospaced(double xLeft, double yTop, String text, double lineHeight, double zDepth, int red, int green, int blue, int alpha)
     {
-        GlStateManager.bindTexture(TextureHelper.blockGlTextureId());
+        GlStateManager.bindTexture(MinecraftClient.getInstance().getSpriteAtlas().getGlId());
         TextureHelper.setTextureBlurMipmap(true, true);
 //        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+        BufferBuilder buffer = Tessellator.getInstance().getBufferBuilder();
+        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_LMAP);
 
         double x = xLeft;
         double scaleFactor = lineHeight / this.fontHeight;
@@ -408,14 +395,19 @@ public class RasterFont extends TextureAtlasSprite
     private void bufferQuad(BufferBuilder buffer, double xLeft, double yTop, double scaleFactor, GlyphInfo glyph, int red, int green, int blue, int alpha)
     {
         double xRight = xLeft + glyph.pixelWidth * scaleFactor;
-        double yBottom = yTop + glyph.height * scaleFactor;
+        double yBottom = yTop + glyph.glyphHeight * scaleFactor;
 
-        buffer.pos(xLeft, yTop, 0).color(red, green, blue, alpha).tex(glyph.interpolatedMinU, glyph.interpolatedMinV).lightmap(0x00f0, 0x00f0).endVertex();
-        buffer.pos(xLeft, yBottom, 0).color(red, green, blue, alpha).tex(glyph.interpolatedMinU, glyph.interpolatedMaxV).lightmap(0x00f0, 0x00f0).endVertex();
-        buffer.pos(xRight, yBottom, 0).color(red, green, blue, alpha).tex(glyph.interpolatedMaxU, glyph.interpolatedMaxV).lightmap(0x00f0, 0x00f0).endVertex();
-        buffer.pos(xRight, yTop, 0).color(red, green, blue, alpha).tex(glyph.interpolatedMaxU, glyph.interpolatedMinV).lightmap(0x00f0, 0x00f0).endVertex();
+        buffer.vertex(xLeft, yTop, 0).color(red, green, blue, alpha).texture(glyph.interpolatedMinU, glyph.interpolatedMinV);
+        buffer.vertex(xLeft, yBottom, 0).color(red, green, blue, alpha).texture(glyph.interpolatedMinU, glyph.interpolatedMaxV);
+        buffer.vertex(xRight, yBottom, 0).color(red, green, blue, alpha).texture(glyph.interpolatedMaxU, glyph.interpolatedMaxV);
+        buffer.vertex(xRight, yTop, 0).color(red, green, blue, alpha).texture(glyph.interpolatedMaxU, glyph.interpolatedMinV);
+        // FIX?
+        // not sure if this will really work - no longer have a per-vertex lightmap method
+        // if not, may need to pre-pack and use purVertexData
+        buffer.brightness(0x00f000f0, 0x00f000f0, 0x00f000f0, 0x00f000f0);
     }
     
+    //TODO: refactor to produce Fabric Render API meshes
     /**
      * Generates quads to render the given text on all faces of a block.  
      * The quads are oriented to be readable and are positioned in the top half of the block.
@@ -429,101 +421,95 @@ public class RasterFont extends TextureAtlasSprite
      * @param leftSide If false will be centered.
      * @param list
      */
-    public void formulaBlockQuadsToList(String text, boolean formatAsForumla, int color, float bumpFactor, boolean leftSide, List<IPolygon> list)
-    {
-        IMutablePolygon template = PolyFactory.COMMON_POOL.newPaintable(4);
-        template.setTextureName(0, FontHolder.FONT_RESOURCE_STRING_SMALL);
-        template.setLockUV(0, false);
-        template.setShouldContractUVs(0, false);
-        
-        int pixelWidth = formatAsForumla ? this.getWidthFormula(text) : this.getWidth(text);
-        
-        // try fitting to height start
-        float height =  0.5f;
-        float width = height * pixelWidth / this.fontHeight;
-        
-        if(width > 0.98f)
-        {
-            // too wide, so justify to width instead
-            width = 0.98f;
-            height = width * this.fontHeight / pixelWidth;
-        }
-                
-        float scaleFactor = height / this.fontHeight;
-        float left = (1 - width) / (leftSide ? 4 : 2);
-
-        for(char c : text.toCharArray())
-        {
-            boolean isSubscript = formatAsForumla && Character.isDigit(c);
-            GlyphInfo g = isSubscript ? this.getNumericSubscript(Character.getNumericValue(c)) : this.getGlyphInfo(c);
-            if(g != null)
-            {
-                float glyphWidth = g.pixelWidth * scaleFactor;
-                FaceVertex[] fv;
-                fv = makeFaceVertices(g, left, 1.05f, glyphWidth, height, color);
-                left += glyphWidth;
-                
-                for(EnumFacing face : EnumFacing.VALUES)
-                {
-                    template.setupFaceQuad(face, fv[0], fv[1], fv[2], fv[3], null);
-                    template.scaleFromBlockCenter(bumpFactor);
-                    list.add(template.toPainted());
-                }
-                
-            }
-        }
-        template.release();
-    }
-    
-    private FaceVertex[] makeFaceVertices(GlyphInfo glyph, float left, float top, float width, float height, int color)
-    {
-        float bottom = top - height;
-        float right = left + width;
-        
-        FaceVertex[] result = new FaceVertex[4];
-        
-        result[0] = new FaceVertex.UVColored(left, bottom, 0, glyph.uMinNormal, glyph.vMaxNormal, color, 0);
-        result[1] = new FaceVertex.UVColored(right, bottom, 0, glyph.uMaxNormal, glyph.vMaxNormal, color, 0);
-        result[2] = new FaceVertex.UVColored(right, top, 0, glyph.uMaxNormal, glyph.vMinNormal, color, 0);
-        result[3] = new FaceVertex.UVColored(left, top, 0, glyph.uMinNormal, glyph.vMinNormal, color, 0);
-        
-        return result;
-    }
+//    public void formulaBlockQuadsToList(String text, boolean formatAsForumla, int color, float bumpFactor, boolean leftSide, List<IPolygon> list)
+//    {
+//        IMutablePolygon template = PolyFactory.COMMON_POOL.newPaintable(4);
+//        template.setTextureName(0, FontHolder.FONT_RESOURCE_SMALL);
+//        template.setLockUV(0, false);
+//        template.setShouldContractUVs(0, false);
+//        
+//        int pixelWidth = formatAsForumla ? this.getWidthFormula(text) : this.getWidth(text);
+//        
+//        // try fitting to height start
+//        float height =  0.5f;
+//        float width = height * pixelWidth / this.fontHeight;
+//        
+//        if(width > 0.98f)
+//        {
+//            // too wide, so justify to width instead
+//            width = 0.98f;
+//            height = width * this.fontHeight / pixelWidth;
+//        }
+//                
+//        float scaleFactor = height / this.fontHeight;
+//        float left = (1 - width) / (leftSide ? 4 : 2);
+//
+//        for(char c : text.toCharArray())
+//        {
+//            boolean isSubscript = formatAsForumla && Character.isDigit(c);
+//            GlyphInfo g = isSubscript ? this.getNumericSubscript(Character.getNumericValue(c)) : this.getGlyphInfo(c);
+//            if(g != null)
+//            {
+//                float glyphWidth = g.pixelWidth * scaleFactor;
+//                FaceVertex[] fv;
+//                fv = makeFaceVertices(g, left, 1.05f, glyphWidth, height, color);
+//                left += glyphWidth;
+//                
+//                for(EnumFacing face : EnumFacing.VALUES)
+//                {
+//                    template.setupFaceQuad(face, fv[0], fv[1], fv[2], fv[3], null);
+//                    template.scaleFromBlockCenter(bumpFactor);
+//                    list.add(template.toPainted());
+//                }
+//                
+//            }
+//        }
+//        template.release();
+//    }
+//    
+//    private FaceVertex[] makeFaceVertices(GlyphInfo glyph, float left, float top, float width, float height, int color)
+//    {
+//        float bottom = top - height;
+//        float right = left + width;
+//        
+//        FaceVertex[] result = new FaceVertex[4];
+//        
+//        result[0] = new FaceVertex.UVColored(left, bottom, 0, glyph.uMinNormal, glyph.vMaxNormal, color, 0);
+//        result[1] = new FaceVertex.UVColored(right, bottom, 0, glyph.uMaxNormal, glyph.vMaxNormal, color, 0);
+//        result[2] = new FaceVertex.UVColored(right, top, 0, glyph.uMaxNormal, glyph.vMinNormal, color, 0);
+//        result[3] = new FaceVertex.UVColored(left, top, 0, glyph.uMinNormal, glyph.vMinNormal, color, 0);
+//        
+//        return result;
+//    }
  
-    @Override
-    public boolean hasCustomLoader(@Nonnull IResourceManager manager, @Nonnull ResourceLocation location)
-    {
-        return true;
-    }
+    //FIX: figure out how/where this happens now
+//    @Override
+//    public boolean load(ResourceManager manager, ResourceLocation location, Function<ResourceLocation, Sprite> textureGetter)
+//    {
+//        BufferedImage bufferedimage = this.fontMap;
+//        this.fontMap = null;
+//        int mipmapLevels = Minecraft.getMinecraft().gameSettings.mipmapLevels;
+//        
+//        int[][] aint = new int[mipmapLevels + 1][];
+//        aint[0] = new int[bufferedimage.getWidth() * bufferedimage.getHeight()];
+//        bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), aint[0], 0, bufferedimage.getWidth());
+//        this.framesTextureData.add(aint);
+//        this.generateMipmaps(mipmapLevels);
+//        
+//        // Comments on super appear to be incorrect.
+//        // False causes us to be included in map,
+//        // which is what we want.
+//        return false;
+//    }
 
     @Override
-    public boolean load(@Nonnull IResourceManager manager, @Nonnull ResourceLocation location, @Nonnull Function<ResourceLocation, TextureAtlasSprite> textureGetter)
+    public void load(Resource resource, int mipmaplevels) throws IOException
     {
-        BufferedImage bufferedimage = this.fontMap;
-        this.fontMap = null;
-        int mipmapLevels = Minecraft.getMinecraft().gameSettings.mipmapLevels;
-        
-        int[][] aint = new int[mipmapLevels + 1][];
-        aint[0] = new int[bufferedimage.getWidth() * bufferedimage.getHeight()];
-        bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), aint[0], 0, bufferedimage.getWidth());
-        this.framesTextureData.add(aint);
-        this.generateMipmaps(mipmapLevels);
-        
-        // Comments on super appear to be incorrect.
-        // False causes us to be included in map,
-        // which is what we want.
-        return false;
-    }
-
-    @Override
-    public void loadSpriteFrames(@Nonnull IResource resource, int mipmaplevels) throws IOException
-    {
-        //noop - all done in load
+        //noop - all done in other
     }
     
     public class GlyphInfo
     {
-
         /**
          * Character's pixelWidth
          */
@@ -537,7 +523,7 @@ public class RasterFont extends TextureAtlasSprite
         /**
          * Character's height
          */
-        public final int height;
+        public final int glyphHeight;
 
         
         /**
@@ -589,8 +575,8 @@ public class RasterFont extends TextureAtlasSprite
             this.positionY = positionY;
             this.pixelWidth = width;
             this.renderWidth = width + horizontalSpacing;
-            this.height = height;
-            int size = RasterFont.this.getIconWidth();
+            this.glyphHeight = height;
+            int size = RasterFont.this.getWidth();
             
             
             this.uMinNormal = (float) positionX / size;
@@ -609,10 +595,10 @@ public class RasterFont extends TextureAtlasSprite
         /** must be called after texture map creation */
         private void updateInterpolated()
         {
-            this.interpolatedMinU = RasterFont.this.getInterpolatedU(this.uMinMinecraft);
-            this.interpolatedMaxU = RasterFont.this.getInterpolatedU(this.uMaxMinecraft);
-            this.interpolatedMinV = RasterFont.this.getInterpolatedV(this.vMinMinecraft);
-            this.interpolatedMaxV = RasterFont.this.getInterpolatedV(this.vMaxMinecraft);
+            this.interpolatedMinU = RasterFont.this.getU(this.uMinMinecraft);
+            this.interpolatedMaxU = RasterFont.this.getU(this.uMaxMinecraft);
+            this.interpolatedMinV = RasterFont.this.getV(this.vMinMinecraft);
+            this.interpolatedMaxV = RasterFont.this.getV(this.vMaxMinecraft);
         }
     }
 }

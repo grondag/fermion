@@ -3,7 +3,7 @@ package grondag.fermion.concurrency;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import grondag.exotic_matter.ExoticMatter;
+import grondag.fermion.Fermion;
 
 public class SimpleConcurrentCounter
 {
@@ -45,7 +45,7 @@ public class SimpleConcurrentCounter
         {
             runCount.addAndGet(-samples);
             runTime.addAndGet(-nanos);
-            ExoticMatter.INSTANCE.info("Timer %1s sample result: %2$.3fs for %3$,d items @ %4$dns each.",
+            Fermion.INSTANCE.info("Timer %1s sample result: %2$.3fs for %3$,d items @ %4$dns each.",
                     name, ((double)nanos / 1000000000), samples,  nanos / samples);
         }
     }

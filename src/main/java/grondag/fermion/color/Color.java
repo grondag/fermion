@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package grondag.fermion.varia;
+package grondag.fermion.color;
 
 import net.minecraft.util.math.MathHelper;
 

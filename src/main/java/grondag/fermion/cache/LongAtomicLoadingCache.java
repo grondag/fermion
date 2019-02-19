@@ -1,11 +1,11 @@
 package grondag.fermion.cache;
 
-import static grondag.exotic_matter.concurrency.Danger.*;
+import static grondag.fermion.concurrency.Danger.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import grondag.exotic_matter.varia.Useful;
+import grondag.fermion.varia.Useful;
 import sun.misc.Unsafe;
 
 @SuppressWarnings({ "unused", "restriction" })
@@ -42,7 +42,6 @@ public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
         this.activeState = new LongCacheState<V>(this.capacity);
     }
     
-    @SuppressWarnings("null")
     public V get(long key)
     {
         LongCacheState<V> localState = activeState;
@@ -106,7 +105,6 @@ public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
     }
     
     
-    @SuppressWarnings("null")
     protected V load(LongCacheState<V> localState, long key, int position)
     {        
         // no need to handle zero key here - is handled as privileged case in get();
@@ -144,7 +142,7 @@ public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
         return result;
     }
     
-    @SuppressWarnings({"unchecked", "null"})
+    @SuppressWarnings({"unchecked"})
     private V getValueEventually(LongCacheState<V> localState, int position, long key)
     {
         long offset = objectByteOffset(position);

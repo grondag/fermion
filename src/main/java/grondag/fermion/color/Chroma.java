@@ -1,6 +1,6 @@
 package grondag.fermion.color;
 
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resource.language.I18n;
 
 public enum Chroma
 {
@@ -27,9 +27,8 @@ public enum Chroma
         this.value = chromaValue;
     }
 
-    @SuppressWarnings("deprecation")
     public String localizedName()
     {
-        return I18n.translateToLocal("color.chroma." + this.name().toLowerCase());
+        return I18n.translate("color.chroma." + this.name().toLowerCase());
     }
 }

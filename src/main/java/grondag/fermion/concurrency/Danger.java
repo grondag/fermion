@@ -2,14 +2,11 @@ package grondag.fermion.concurrency;
 
 import java.lang.reflect.Field;
 
-import javax.annotation.Nullable;
-
 import sun.misc.Unsafe;
 
-@SuppressWarnings({ "restriction", "unused", "null" })
+@SuppressWarnings({ "restriction"})
 public class Danger
 {
-    @Nullable 
     public static final Unsafe UNSAFE;
 
     private static final int longBase;

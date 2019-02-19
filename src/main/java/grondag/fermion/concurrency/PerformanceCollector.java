@@ -3,10 +3,7 @@ package grondag.fermion.concurrency;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import javax.annotation.Nullable;
-
-import grondag.exotic_matter.ExoticMatter;
-
+import grondag.fermion.Fermion;
 
 public class PerformanceCollector
 {
@@ -35,7 +32,7 @@ public class PerformanceCollector
         {
 
             @Override
-            public int compare(@Nullable PerformanceCounter o1, @Nullable PerformanceCounter o2)
+            public int compare(PerformanceCounter o1, PerformanceCounter o2)
             {
                 return Long.compare(o2.runTime(), o1.runTime());
             }
@@ -48,15 +45,15 @@ public class PerformanceCollector
         }
         if(total == 0) total = 1;  // prevent div by zero below
         
-        ExoticMatter.INSTANCE.info("======================================================================================");
-        ExoticMatter.INSTANCE.info("Performance Measurement for " + this.title);
-        ExoticMatter.INSTANCE.info("--------------------------------------------------------------------------------------");
+        Fermion.INSTANCE.info("======================================================================================");
+        Fermion.INSTANCE.info("Performance Measurement for " + this.title);
+        Fermion.INSTANCE.info("--------------------------------------------------------------------------------------");
         for(PerformanceCounter counter : this.counters)
         {
-            if(counter.runTime() > 0) ExoticMatter.INSTANCE.info((counter.runTime() * 100 / total) + "% " + counter.stats());
+            if(counter.runTime() > 0) Fermion.INSTANCE.info((counter.runTime() * 100 / total) + "% " + counter.stats());
         }
-        ExoticMatter.INSTANCE.info("--------------------------------------------------------------------------------------");
-        ExoticMatter.INSTANCE.info(String.format("TOTAL TIME = %1$.3fs (%2$,dns)", (double)total/1000000000L, total));
+        Fermion.INSTANCE.info("--------------------------------------------------------------------------------------");
+        Fermion.INSTANCE.info(String.format("TOTAL TIME = %1$.3fs (%2$,dns)", (double)total/1000000000L, total));
     }
     
     public void clearStats()

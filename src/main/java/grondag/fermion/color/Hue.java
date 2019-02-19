@@ -1,7 +1,6 @@
 package grondag.fermion.color;
 
-import grondag.exotic_matter.varia.Color;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resource.language.I18n;
 
 public enum Hue
 {
@@ -99,9 +98,8 @@ public enum Hue
         return this.hueSample;
     }
 
-    @SuppressWarnings("deprecation")
     public String localizedName()
     {
-        return I18n.translateToLocal("color.hue." + this.name().toLowerCase());
+        return I18n.translate("color.hue." + this.name().toLowerCase());
     }
 }

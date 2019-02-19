@@ -3,7 +3,7 @@ package grondag.fermion.cache;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import grondag.exotic_matter.varia.Useful;
+import grondag.fermion.varia.Useful;
 
 
 public class LongSimpleLoadingCache<V> implements ISimpleLoadingCache
