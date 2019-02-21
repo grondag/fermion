@@ -1,4 +1,4 @@
-package grondag.exotic_matter.varia.intstream;
+package grondag.fermion;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -6,6 +6,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.jupiter.api.Test;
 
+import grondag.fermion.intstream.IIntStream;
+import grondag.fermion.intstream.IntStreams;
 import net.minecraft.util.math.MathHelper;
 
 class IntStreamsTest {

@@ -1,8 +1,10 @@
-package grondag.exotic_matter;
+package grondag.fermion;
 
 
 import org.junit.jupiter.api.Test;
 
+import grondag.fermion.world.Alternator;
+import grondag.fermion.world.IAlternator;
 import net.minecraft.util.math.BlockPos;
 
 public class AlternatorTest {

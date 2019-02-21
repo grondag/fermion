@@ -1,11 +1,11 @@
-package grondag.exotic_matter.varia.structures;
+package grondag.fermion.structures;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import grondag.exotic_matter.varia.structures.BinaryEnumSet;
-import net.minecraft.util.BlockRenderLayer;
+import grondag.fermion.structures.BinaryEnumSet;
+import net.minecraft.block.BlockRenderLayer;
 
 public class BinaryEnumMapTest {
 
@@ -28,7 +28,7 @@ public class BinaryEnumMapTest {
         assertTrue(bem.isFlagSetForValue(BlockRenderLayer.CUTOUT, flags));
         assertTrue(bem.isFlagSetForValue(BlockRenderLayer.SOLID, flags));
         assertTrue(bem.isFlagSetForValue(BlockRenderLayer.TRANSLUCENT, flags));
-        assertFalse(bem.isFlagSetForValue(BlockRenderLayer.CUTOUT_MIPPED, flags));
+        assertFalse(bem.isFlagSetForValue(BlockRenderLayer.MIPPED_CUTOUT, flags));
 
         flags = bem.getFlagsForIncludedValues(BlockRenderLayer.values());
         assertArrayEquals(bem.getValuesForSetFlags(flags), BlockRenderLayer.values());

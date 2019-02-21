@@ -1,8 +1,8 @@
-package grondag.exotic_matter;
+package grondag.fermion;
 
 import org.junit.Test;
 
-import grondag.exotic_matter.varia.BitPacker64;
+import grondag.fermion.varia.BitPacker64;
 
 public class BitPackerTest {
 

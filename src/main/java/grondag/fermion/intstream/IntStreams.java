@@ -22,7 +22,7 @@ import grondag.fermion.Fermion;
 import net.minecraft.util.math.MathHelper;
 
 public abstract class IntStreams {
-    static final int BLOCK_SIZE = 1024;
+    public static final int BLOCK_SIZE = 1024;
     static final int BLOCK_MASK = BLOCK_SIZE - 1;
     static final int BLOCK_SHIFT = Integer.bitCount(BLOCK_MASK);
 

@@ -1,8 +1,8 @@
-package grondag.exotic_matter;
+package grondag.fermion;
 
 import org.junit.Test;
 
-import grondag.exotic_matter.varia.Base32Namer;
+import grondag.fermion.varia.Base32Namer;
 
 public class Base32NamerTest {
 

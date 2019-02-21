@@ -1,9 +1,6 @@
-package grondag.exotic_matter.varia.structures;
+package grondag.fermion.structures;
 
 import org.junit.Test;
-
-import grondag.exotic_matter.varia.structures.KeyedTuple;
-import grondag.exotic_matter.varia.structures.SimpleUnorderedArraySet;
 
 public class SimpleUnorderedArraySetTest {
     private class TestObject extends KeyedTuple<String> {
@@ -15,7 +12,6 @@ public class SimpleUnorderedArraySetTest {
         }
     }
 
-    @SuppressWarnings("null")
     @Test
     public void test() {
         SimpleUnorderedArraySet<TestObject> set = new SimpleUnorderedArraySet<TestObject>();

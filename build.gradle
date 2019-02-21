@@ -1,3 +1,5 @@
+// Much of this stolen with permission from https://github.com/CottonMC/cotton/blob/master/build.gradle
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 buildscript {

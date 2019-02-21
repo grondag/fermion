@@ -1,10 +1,10 @@
-package grondag.exotic_matter.varia.structures;
+package grondag.fermion.structures;
 
 import org.junit.Test;
 
-import grondag.exotic_matter.concurrency.SimpleConcurrentList;
-import grondag.exotic_matter.varia.MicroTimer;
-import grondag.exotic_matter.varia.structures.SimpleUnorderedArrayList;
+import grondag.fermion.concurrency.SimpleConcurrentList;
+import grondag.fermion.varia.MicroTimer;
+
 
 public class SimpleConcurrentListTest {
     @Test

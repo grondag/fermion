@@ -1,4 +1,4 @@
-package grondag.exotic_matter;
+package grondag.fermion;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -6,8 +6,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.junit.Test;
 
@@ -15,13 +13,13 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import grondag.exotic_matter.cache.LongAtomicLoadingCache;
-import grondag.exotic_matter.cache.LongSimpleCacheLoader;
-import grondag.exotic_matter.cache.LongSimpleLoadingCache;
-import grondag.exotic_matter.cache.ObjectSimpleCacheLoader;
-import grondag.exotic_matter.cache.ObjectSimpleLoadingCache;
-import grondag.exotic_matter.cache.WideSimpleCacheLoader;
-import grondag.exotic_matter.cache.WideSimpleLoadingCache;
+import grondag.fermion.cache.LongAtomicLoadingCache;
+import grondag.fermion.cache.LongSimpleCacheLoader;
+import grondag.fermion.cache.LongSimpleLoadingCache;
+import grondag.fermion.cache.ObjectSimpleCacheLoader;
+import grondag.fermion.cache.ObjectSimpleLoadingCache;
+import grondag.fermion.cache.WideSimpleCacheLoader;
+import grondag.fermion.cache.WideSimpleLoadingCache;
 import io.netty.util.internal.ThreadLocalRandom;
 
 public class SimpleLoadingCacheTest {
@@ -50,7 +48,7 @@ public class SimpleLoadingCacheTest {
         }
 
         @Override
-        public @Nonnull Long load(@Nullable Long key) {
+        public Long load(Long key) {
             if (LOAD_COST > 0) {
                 for (int i = 0; i < LOAD_COST; i++) {
                     twiddler.incrementAndGet();
@@ -85,7 +83,7 @@ public class SimpleLoadingCacheTest {
         }
 
         @Override
-        public @Nullable Void call() {
+        public Void call() {
             try {
                 Random random = ThreadLocalRandom.current();
 
@@ -144,7 +142,6 @@ public class SimpleLoadingCacheTest {
     }
 
     private class GoogleAdapter implements CacheAdapter {
-        @SuppressWarnings("null")
         private LoadingCache<Long, Long> cache;
 
         @Override
@@ -167,7 +164,6 @@ public class SimpleLoadingCacheTest {
     }
 
     private class LongAtomicAdapter implements CacheAdapter {
-        @SuppressWarnings("null")
         private LongAtomicLoadingCache<Long> cache;
 
         @Override
@@ -187,7 +183,6 @@ public class SimpleLoadingCacheTest {
     }
 
     private class LongSimpleAdapter implements CacheAdapter {
-        @SuppressWarnings("null")
         private LongSimpleLoadingCache<Long> cache;
 
         @Override
@@ -207,7 +202,6 @@ public class SimpleLoadingCacheTest {
     }
 
     private class ObjectSimpleAdapter implements CacheAdapter {
-        @SuppressWarnings("null")
         private ObjectSimpleLoadingCache<Long, Long> cache;
 
         @Override
@@ -227,7 +221,6 @@ public class SimpleLoadingCacheTest {
     }
 
     private class WideSimpleAdapter implements CacheAdapter {
-        @SuppressWarnings("null")
         private WideSimpleLoadingCache<Long> cache;
 
         @Override

@@ -1,9 +1,9 @@
-package grondag.exotic_matter;
+package grondag.fermion;
 
 import org.junit.Test;
 
-import grondag.exotic_matter.varia.ColorHelper;
-import grondag.exotic_matter.varia.ColorHelper.CMYK;
+import grondag.fermion.color.ColorHelper;
+import grondag.fermion.color.ColorHelper.CMYK;
 
 public class ColorHelperTest {
 

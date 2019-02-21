@@ -1,4 +1,4 @@
-package grondag.exotic_matter;
+package grondag.fermion;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ExecutionException;
@@ -7,18 +7,14 @@ import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
 import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Nullable;
-
 import org.junit.Test;
 
-import grondag.exotic_matter.concurrency.SimpleConcurrentList;
-import grondag.exotic_matter.concurrency.ScatterGatherThreadPool;
+import grondag.fermion.concurrency.ScatterGatherThreadPool;
+import grondag.fermion.concurrency.SimpleConcurrentList;
 
 public class ThreadPoolTest {
-    @SuppressWarnings("null")
     SimpleConcurrentList<TestSubject> bigThings = SimpleConcurrentList.create(TestSubject.class, false, "blort", null);
 
-    @SuppressWarnings("null")
     SimpleConcurrentList<TestSubject> smallThings = SimpleConcurrentList.create(TestSubject.class, false, "blort",
             null);
 
@@ -46,15 +42,15 @@ public class ThreadPoolTest {
                 private AtomicInteger count = new AtomicInteger(1);
 
                 @Override
-                public ForkJoinWorkerThread newThread(@Nullable ForkJoinPool pool) {
+                public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
                     ForkJoinWorkerThread result = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
                     result.setName("Exotic Matter Simulation Thread -" + count.getAndIncrement());
                     return result;
                 }
             }, new UncaughtExceptionHandler() {
                 @Override
-                public void uncaughtException(@Nullable Thread t, @Nullable Throwable e) {
-                    ExoticMatter.INSTANCE.getLog()
+                public void uncaughtException(Thread t, Throwable e) {
+                    Fermion.INSTANCE.getLog()
                             .error("Simulator thread terminated due to uncaught exception.  Badness may ensue.", e);
                 }
             }, true);

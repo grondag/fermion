@@ -1,8 +1,8 @@
-package grondag.exotic_matter.varia.structures;
+package grondag.fermion.structures;
 
 import org.junit.Test;
 
-import grondag.exotic_matter.varia.structures.LongQueue;
+import grondag.fermion.structures.LongQueue;
 
 public class LongQueueTest {
 

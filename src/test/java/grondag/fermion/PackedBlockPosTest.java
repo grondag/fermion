@@ -1,14 +1,14 @@
-package grondag.exotic_matter;
+package grondag.fermion;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Test;
 
-import grondag.exotic_matter.world.PackedBlockPos;
-import grondag.exotic_matter.world.PackedChunkPos;
+import grondag.fermion.world.PackedBlockPos;
+import grondag.fermion.world.PackedChunkPos;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.ChunkPos;
 
 public class PackedBlockPosTest {
 
@@ -111,8 +111,8 @@ public class PackedBlockPosTest {
             long1 = PackedChunkPos.getPackedChunkPos(PackedBlockPos.pack(pos1));
             assert (PackedChunkPos.getChunkXPos(long1) == cpos.x);
             assert (PackedChunkPos.getChunkZPos(long1) == cpos.z);
-            assert (PackedChunkPos.getChunkXStart(long1) == cpos.getXStart());
-            assert (PackedChunkPos.getChunkZStart(long1) == cpos.getZStart());
+            assert (PackedChunkPos.getChunkXStart(long1) == cpos.getStartX());
+            assert (PackedChunkPos.getChunkZStart(long1) == cpos.getStartZ());
             ChunkPos cpos2 = PackedChunkPos.unpackChunkPos(long1);
             assert cpos2.x == cpos.x;
             assert cpos2.z == cpos.z;

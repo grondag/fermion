@@ -1,14 +1,14 @@
-package grondag.exotic_matter.varia.structures;
+package grondag.fermion.structures;
 
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-class ObjectHandleTest {
+class IndexedInternerTest {
 
     @Test
     void test() {
-        final ObjectHandle<Integer> handler = new ObjectHandle<Integer>(Integer.class);
+        final IndexedInterner<Integer> handler = new IndexedInterner<Integer>(Integer.class);
 
         final Integer[] data = new Integer[320000];
 

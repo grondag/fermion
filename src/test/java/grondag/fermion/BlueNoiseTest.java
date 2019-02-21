@@ -1,8 +1,8 @@
-package grondag.exotic_matter;
+package grondag.fermion;
 
 import org.junit.Test;
 
-import grondag.exotic_matter.varia.BlueNoise;
+import grondag.fermion.varia.BlueNoise;
 
 public class BlueNoiseTest {
 

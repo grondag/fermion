@@ -456,7 +456,7 @@ public class Useful {
      * {@link #longToIntLow(long)} and {@link #longToIntHigh(long)}
      */
     public static final long longFromInts(final int high, final int low) {
-        return (long) high << 32 | low & 0xFFFFFFFFL;
+        return (long) high << 32 | (low & 0xFFFFFFFFL);
     }
 
     /**

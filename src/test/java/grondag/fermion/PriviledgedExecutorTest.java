@@ -1,11 +1,11 @@
-package grondag.exotic_matter;
+package grondag.fermion;
 
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import grondag.exotic_matter.concurrency.PrivilegedExecutor;
+import grondag.fermion.concurrency.PrivilegedExecutor;
 
 public class PriviledgedExecutorTest {
     HashSet<Runnable> plain = new HashSet<Runnable>();
