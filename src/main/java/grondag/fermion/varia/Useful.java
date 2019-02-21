@@ -25,10 +25,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import grondag.fermion.world.PackedBlockPos;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
-//import javax.vecmath.Matrix4f;
-
-//import org.lwjgl.util.vector.Vector3f;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;

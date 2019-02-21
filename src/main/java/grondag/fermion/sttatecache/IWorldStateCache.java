@@ -1,8 +1,6 @@
 package grondag.fermion.sttatecache;
 
-import javax.annotation.Nullable;
 
-import grondag.exotic_matter.block.ISuperBlockAccess;
 import net.minecraft.world.World;
 
 /**
@@ -18,11 +16,11 @@ import net.minecraft.world.World;
  * the lookup of many block states for each neighbor.<p>
  * 
  */
-public interface IWorldStateCache extends ISuperBlockAccess
+public interface IWorldStateCache //extends ISuperBlockAccess
 {
     default void markBlockRangeForRenderUpdate(int xStart, int i, int zStart, int xEnd, int j, int zEnd) {}
 
-    default void setWorld(@Nullable World world) {}
+    default void setWorld(World world) {}
     
     void clear();
 }
