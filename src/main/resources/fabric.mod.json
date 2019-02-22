@@ -3,7 +3,7 @@
   "name": "Grondag Java Library",
   "description": "Utility functions for Minecraft Fabric mods",
   "version": "1.0.0",
-  "side": "client",
+  "side": "universal",
   "initializer": "grondag.fermion.Fermion",
   "requires": {
     "fabric": "*"

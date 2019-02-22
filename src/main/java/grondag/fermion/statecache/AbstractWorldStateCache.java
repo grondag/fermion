@@ -1,4 +1,4 @@
-package grondag.fermion.sttatecache;
+package grondag.fermion.statecache;
 
 /**
  * Listens to a world and caches terrain height (if applies) and 

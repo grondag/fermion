@@ -1,4 +1,4 @@
-package grondag.fermion.sttatecache;
+package grondag.fermion.statecache;
 
 public class WorldStateCache //extends AbstractWorldStateCache
 {

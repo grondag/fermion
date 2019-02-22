@@ -1,4 +1,4 @@
-package grondag.fermion.sttatecache;
+package grondag.fermion.statecache;
 
 
 import net.minecraft.world.World;

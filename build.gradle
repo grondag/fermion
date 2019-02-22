@@ -1,34 +1,12 @@
-// Much of this stolen with permission from https://github.com/CottonMC/cotton/blob/master/build.gradle
-
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
-buildscript {
-	repositories {
-		mavenCentral()
-		jcenter()
-		maven {
-			name = "Fabric"
-			url = "http://maven.modmuss50.me/"
-		}
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-	}
-	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.2.0-SNAPSHOT" //Don't backdate before 0.2.0; features in this version prevent messy workarounds!
-		classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
-	}
+plugins {
+	id 'fabric-loom' version '0.2.0-SNAPSHOT'
 }
-
-apply plugin: "maven-publish"
-apply plugin: "com.github.johnrengelman.shadow"
-apply plugin: net.fabricmc.loom.LoomGradlePlugin
 
 repositories {
     flatDir {
         dirs '../localdeps'
+        dirs '../boson/build/libs'
     }
-    mavenCentral()
 }
 
 sourceCompatibility = 1.8
@@ -41,6 +19,25 @@ version = "1.0.0"
 minecraft {
 }
 
+sourceSets {
+	main {
+	        java {
+	            include 'grondag/**/*'
+	            exclude '*.DS_Store'
+	        }
+	        resources
+	        {
+	        	include '**/*'
+	        	exclude '*.DS_Store'
+	        }
+	    }
+    test {
+        java {
+            exclude 'grondag/**'
+        }
+    }
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:19w08a"
 	mappings "net.fabricmc:yarn:19w08a.4"
@@ -48,29 +45,14 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modCompile "net.fabricmc:fabric:0.2.2.local"
-	modCompile "net.fabricmc:indigo:1.0.0"
-	
-	shadow "org.joml:joml:1.9.9"
-	implementation "org.joml:joml:1.9.9"
-	shadow "org.magicwerk:brownies-collections:0.9.13"
-	implementation "org.magicwerk:brownies-collections:0.9.13"
+	modCompile "grondag:boson-1.0.0"
+	compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.0'
 }
 
-task sourcesJar(type: Jar) {
-	baseName = archivesBaseName
-	classifier = "sources"
+// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+// if it is present.
+// If you remove this task, sources will not be generated.
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
 	from sourceSets.main.allSource
-	from sourceSets.main.resources
-}
-
-shadowJar {
-	relocate 'org.joml.joml', 'grondag.fermion.repackage.org.joml.joml'
-	relocate 'org.magicwerk.brownies-collections', 'grondag.fermion.repackage.org.magicwerk.brownies-collections'
-	classifier = "shadow"
-	configurations = [project.configurations.shadow]
-}
-
-remapJar {
-	dependsOn shadowJar
-	jar = shadowJar.archivePath
 }

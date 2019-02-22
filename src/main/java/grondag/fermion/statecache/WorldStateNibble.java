@@ -1,4 +1,4 @@
-package grondag.fermion.sttatecache;
+package grondag.fermion.statecache;
 
 /**
  * Cache for a single 16x16x16 region.
