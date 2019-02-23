@@ -31,7 +31,7 @@ public class FermionConfig {
     public static class BlockSettings
     {
 //        @Comment("Allow user selection of hidden textures in SuperModel Block GUI. Generally only useful for testing.")
-        public boolean showHiddenTextures = false;
+        public boolean showHiddenTextures = true; //TODO: make false for release
 
 //        @Comment("Controls how much detail should be shown if The One Probe is enabled.")
         public ProbeInfoLevel probeInfoLevel = ProbeInfoLevel.BASIC;
