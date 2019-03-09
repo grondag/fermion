@@ -21,4 +21,9 @@ public abstract class PrimitiveFunctions {
     public interface IntToIntFunction {
         int apply(int i);
     }
+    
+    @FunctionalInterface
+    public interface ObjToIntFunction<T> {
+        int apply(T input);
+    }
 }

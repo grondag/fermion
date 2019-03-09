@@ -4,8 +4,8 @@ plugins {
 
 repositories {
     flatDir {
+    	dirs '../fabric/build/libs'
         dirs '../localdeps'
-        dirs '../boson/build/libs'
     }
 }
 
@@ -14,7 +14,7 @@ targetCompatibility = 1.8
 
 archivesBaseName = "fermion"
 group = "grondag"
-version = "1.0.0"
+version = "0.0.1"
 
 minecraft {
 }
@@ -45,7 +45,6 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modCompile "net.fabricmc:fabric:0.2.3.local"
-	modCompile "grondag:boson-1.0.0"
 	compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.0'
 }
 

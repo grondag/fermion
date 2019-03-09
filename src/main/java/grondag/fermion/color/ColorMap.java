@@ -33,11 +33,11 @@ public class ColorMap
     
     public String localizedName()
     {
-        @SuppressWarnings("deprecation")
         String format = I18n.translate(this.chroma == Chroma.PURE_NETURAL ? "color.format.pure_neutral" : "color.format.color");
         return String.format(format, this.hue.localizedName(), this.chroma.localizedName(), this.luminance.localizedName());
     
     }
+    
     public static ColorMap makeColorMap(Hue hue, Chroma chromaIn, Luminance luminanceIn, int ordinal)
     {
         ColorMap newColorMap = new ColorMap(hue, chromaIn, luminanceIn, ordinal);
