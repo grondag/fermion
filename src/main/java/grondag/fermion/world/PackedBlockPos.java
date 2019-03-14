@@ -27,30 +27,30 @@ import net.minecraft.util.math.MathHelper;
 public class PackedBlockPos {
     public static final int WORLD_BOUNDARY = 30000000;
     public static final long NULL_POS = Long.MIN_VALUE;
-    private static final int NUM_X_BITS = 1
+    public static final int NUM_X_BITS = 1
             + MathHelper.log2(MathHelper.smallestEncompassingPowerOfTwo(WORLD_BOUNDARY));
-    private static final int NUM_Z_BITS = NUM_X_BITS;
-    private static final int NUM_Y_BITS = 8;
-    private static final int NUM_EXTRA_BITS = 3;
+    public static final int NUM_Z_BITS = NUM_X_BITS;
+    public static final int NUM_Y_BITS = 8;
+    public static final int NUM_EXTRA_BITS = 3;
 
-    private static final int Y_SHIFT = 0 + NUM_Z_BITS;
-    private static final int X_SHIFT = Y_SHIFT + NUM_Y_BITS;
-    private static final int EXTRA_SHIFT = X_SHIFT + NUM_Z_BITS;
-    private static final long X_MASK = (1L << NUM_X_BITS) - 1L;
-    private static final long Y_MASK = (1L << NUM_Y_BITS) - 1L;
-    private static final long Z_MASK = (1L << NUM_Z_BITS) - 1L;
-    private static final long EXTRA_MASK = (1L << NUM_EXTRA_BITS) - 1L;
-    private static final long POSITION_MASK = (1L << EXTRA_SHIFT) - 1L;
+    public static final int Y_SHIFT = 0 + NUM_Z_BITS;
+    public static final int X_SHIFT = Y_SHIFT + NUM_Y_BITS;
+    public static final int EXTRA_SHIFT = X_SHIFT + NUM_Z_BITS;
+    public static final long X_MASK = (1L << NUM_X_BITS) - 1L;
+    public static final long Y_MASK = (1L << NUM_Y_BITS) - 1L;
+    public static final long Z_MASK = (1L << NUM_Z_BITS) - 1L;
+    public static final long EXTRA_MASK = (1L << NUM_EXTRA_BITS) - 1L;
+    public static final long POSITION_MASK = (1L << EXTRA_SHIFT) - 1L;
 
     /**
      * must be subtracted when packed values are added - otherwise boundary offsets
      * get included twice
      */
-    private static final long ADDITION_OFFSET = ((long) WORLD_BOUNDARY << X_SHIFT) | WORLD_BOUNDARY;
+    public static final long ADDITION_OFFSET = ((long) WORLD_BOUNDARY << X_SHIFT) | WORLD_BOUNDARY;
 
-    private static final long X_INCREMENT = 1L << X_SHIFT;
-    private static final long Y_INCREMENT = 1L << Y_SHIFT;
-    private static final long Z_INCREMENT = 1L;
+    public static final long X_INCREMENT = 1L << X_SHIFT;
+    public static final long Y_INCREMENT = 1L << Y_SHIFT;
+    public static final long Z_INCREMENT = 1L;
 
     /**
      * Very similar to MC vanilla method on BlockPos but only uses 8 bits for Y
