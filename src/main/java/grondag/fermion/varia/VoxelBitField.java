@@ -49,7 +49,7 @@ public class VoxelBitField {
 
         private DistanceRankedVoxel(int x, int y, int z, Vec3i origin) {
             super(x, y, z);
-            distanceSq = this.squaredDistanceTo(origin);
+            distanceSq = this.getSquaredDistance(origin);
         }
     }
 
