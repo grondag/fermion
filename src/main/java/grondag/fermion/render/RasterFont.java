@@ -455,7 +455,7 @@ public class RasterFont extends Sprite
 //                fv = makeFaceVertices(g, left, 1.05f, glyphWidth, height, color);
 //                left += glyphWidth;
 //                
-//                for(EnumFacing face : EnumFacing.VALUES)
+//                for(Direction face : Direction.VALUES)
 //                {
 //                    template.setupFaceQuad(face, fv[0], fv[1], fv[2], fv[3], null);
 //                    template.scaleFromBlockCenter(bumpFactor);
@@ -488,7 +488,7 @@ public class RasterFont extends Sprite
 //    {
 //        BufferedImage bufferedimage = this.fontMap;
 //        this.fontMap = null;
-//        int mipmapLevels = Minecraft.getMinecraft().gameSettings.mipmapLevels;
+//        int mipmapLevels = MinecraftClient.getMinecraft().gameSettings.mipmapLevels;
 //        
 //        int[][] aint = new int[mipmapLevels + 1][];
 //        aint[0] = new int[bufferedimage.getWidth() * bufferedimage.getHeight()];

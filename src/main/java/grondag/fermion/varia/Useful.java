@@ -494,7 +494,7 @@ public class Useful {
 
     /**
      * Writes tag value for later reading by
-     * {@link #safeEnumFromTag(NBTTagCompound, String, Enum)}
+     * {@link #safeEnumFromTag(CompoundTag, String, Enum)}
      */
     public static void saveEnumToTag(CompoundTag tag, String tagName, Enum<?> enumValue) {
         tag.putInt(tagName, enumValue == null ? 0 : enumValue.ordinal());

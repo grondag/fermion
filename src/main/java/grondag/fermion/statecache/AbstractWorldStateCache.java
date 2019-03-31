@@ -44,7 +44,7 @@ public abstract class AbstractWorldStateCache implements IWorldStateCache //,  I
 //    }
 //    
 //    @Override
-//    public void notifyBlockUpdate(World worldIn, BlockPos pos, IBlockState oldState, IBlockState newState, int flags)
+//    public void notifyBlockUpdate(World worldIn, BlockPos pos, BlockState oldState, BlockState newState, int flags)
 //    {
 //        this.invalidateCacheRange(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
 //    }
@@ -63,7 +63,7 @@ public abstract class AbstractWorldStateCache implements IWorldStateCache //,  I
 //    }
 //
 //    @Override
-//    public void playSoundToAllNearExcept(@Nullable EntityPlayer player, SoundEvent soundIn, SoundCategory category, double x, double y, double z, float volume,
+//    public void playSoundToAllNearExcept(EntityPlayer player, SoundEvent soundIn, SoundCategory category, double x, double y, double z, float volume,
 //            float pitch)
 //    {
 //        // NOOP

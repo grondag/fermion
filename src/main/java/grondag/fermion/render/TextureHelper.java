@@ -39,9 +39,9 @@ public class TextureHelper
 //    
 //    public static void postStitch()
 //    {
-//        blockGlTextureId = Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId();
+//        blockGlTextureId = MinecraftClient.getMinecraft().getTextureMapBlocks().getGlTextureId();
 //        
-//        blockGlTextureObject = Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+//        blockGlTextureObject = MinecraftClient.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 //    }
 //    
 //    /**
@@ -127,7 +127,7 @@ public class TextureHelper
 //            GL11.glGetTexImage(GL11.GL_TEXTURE_2D, lod, EXTBgra.GL_BGRA_EXT, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, DATA_BUFFER[lod]);
 //        }
 //        
-//        GL11.glBindTexture(GL11.GL_TEXTURE_2D, Minecraft.getMinecraft().getTextureMapBlocks().getGlTextureId());
+//        GL11.glBindTexture(GL11.GL_TEXTURE_2D, MinecraftClient.getMinecraft().getTextureMapBlocks().getGlTextureId());
 //        for(int lod = 0; lod < lodCount; lod++)
 //        {
 //            if (imageWidth >> lod <= 0) break;
@@ -178,7 +178,7 @@ public class TextureHelper
 //    {
 //        int[] aint = sourceData;
 //
-//        if (Minecraft.getMinecraft().gameSettings.anaglyph)
+//        if (MinecraftClient.getMinecraft().gameSettings.anaglyph)
 //        {
 //            aint = TextureUtil.updateAnaglyph(sourceData);
 //        }

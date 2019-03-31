@@ -1,7 +1,7 @@
 package grondag.fermion.statecache;
 
 //import grondag.exotic_matter.terrain.TerrainState;
-//import net.minecraft.block.state.IBlockState;
+//import net.minecraft.block.BlockState;
 //import net.minecraft.util.math.BlockPos;
 //import net.minecraft.world.IBlockAccess;
 
@@ -27,25 +27,25 @@ public class FakeWorldStateCache // extends AbstractWorldStateCache
 //    }
 //
 //    @Override
-//    public IBlockState getBlockState(long packedBlockPos)
+//    public BlockState getBlockState(long packedBlockPos)
 //    {
 //        throw new UnsupportedOperationException();
 //    }
 //
 //    @Override
-//    public TerrainState terrainState(IBlockState state, long packedBlockPos)
+//    public TerrainState terrainState(BlockState state, long packedBlockPos)
 //    {
 //        throw new UnsupportedOperationException();
 //    }
 //
 //    @Override
-//    public TerrainState terrainState(IBlockState state, BlockPos pos)
+//    public TerrainState terrainState(BlockState state, BlockPos pos)
 //    {
 //        throw new UnsupportedOperationException();
 //    }
 //
 //    @Override
-//    public IBlockState getBlockState(BlockPos pos)
+//    public BlockState getBlockState(BlockPos pos)
 //    {
 //        throw new UnsupportedOperationException();
 //    }

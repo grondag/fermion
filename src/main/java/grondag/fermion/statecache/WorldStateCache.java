@@ -28,7 +28,7 @@ public class WorldStateCache //extends AbstractWorldStateCache
 //    }
 //    
 //    @Override
-//    public ISuperModelState getModelState(ISuperBlock block, IBlockState blockState, BlockPos pos, boolean refreshFromWorld)
+//    public ISuperModelState getModelState(ISuperBlock block, BlockState blockState, BlockPos pos, boolean refreshFromWorld)
 //    {
 //        return this.getNibble(pos).getModelState(block, this, blockState, pos, refreshFromWorld);
 //    }
@@ -71,26 +71,26 @@ public class WorldStateCache //extends AbstractWorldStateCache
 //    }
 //
 //    @Override
-//    public TerrainState terrainState(IBlockState state, long packedBlockPos)
+//    public TerrainState terrainState(BlockState state, long packedBlockPos)
 //    {
 //        return this.getNibble(packedBlockPos).getTerrainState(this, PackedBlockPos.unpack(packedBlockPos));
 //    }
 //
 //    @Override
-//    public TerrainState terrainState(IBlockState state, BlockPos pos)
+//    public TerrainState terrainState(BlockState state, BlockPos pos)
 //    {
 //        return this.getNibble(pos).getTerrainState(this, pos);
 //    }
 //
 //    @Override
-//    public IBlockState getBlockState(BlockPos pos)
+//    public BlockState getBlockState(BlockPos pos)
 //    {
 //        IBlockAccess world = this.world;
 //        return world == null ? Blocks.AIR.getDefaultState() : world.getBlockState(pos);
 //    }
 //    
 //    @Override
-//    public IBlockState getBlockState(long packedBlockPos)
+//    public BlockState getBlockState(long packedBlockPos)
 //    {
 //        return getBlockState(PackedBlockPos.unpack(packedBlockPos));
 //    }

@@ -28,27 +28,27 @@ public class ModifierKeys //implements ICapabilityProvider, IReadWriteNBT
 //    private int modifierKeyFlags;
 //
 //    @Override
-//    public boolean hasCapability(@Nonnull @Nullable Capability<?> capability, @Nullable EnumFacing facing)
+//    public boolean hasCapability(Capability<?> capability, Direction facing)
 //    {
 //        return capability == CAP_INSTANCE;
 //    }
 //
 //    @SuppressWarnings("unchecked")
 //    @Override
-//    @Nullable
-//    public <T> T getCapability(@Nonnull @Nullable Capability<T> capability, @Nullable EnumFacing facing)
+//    
+//    public <T> T getCapability(Capability<T> capability, Direction facing)
 //    {
 //        return capability == CAP_INSTANCE ? (T) this : null;
 //    }
 //
 //    @Override
-//    public void serializeNBT(NBTTagCompound tag)
+//    public void serializeNBT(CompoundTag tag)
 //    {
 //        
 //    }
 //    
 //    @Override
-//    public void deserializeNBT(@Nullable NBTTagCompound nbt)
+//    public void deserializeNBT(CompoundTag nbt)
 //    {
 //        
 //    }

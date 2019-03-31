@@ -14,7 +14,7 @@ public class WorldStateNibble
 ////    private static AtomicInteger modelLookups = new AtomicInteger(0);
 ////    private static AtomicInteger modelHits = new AtomicInteger(0);
 //    
-//    public ISuperModelState getModelState(ISuperBlock block, ISuperBlockAccess world, IBlockState blockState, BlockPos pos, boolean refreshFromWorld)
+//    public ISuperModelState getModelState(ISuperBlock block, ISuperBlockAccess world, BlockState blockState, BlockPos pos, boolean refreshFromWorld)
 //    {
 //        ISuperModelState result;
 //        final int index =  computeIndex(pos);
