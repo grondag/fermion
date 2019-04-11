@@ -18,8 +18,11 @@ package grondag.fermion.world;
 
 import grondag.fermion.serialization.NBTDictionary;
 import grondag.fermion.varia.Useful;
-import net.fabricmc.loader.FabricLoader;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -95,7 +98,9 @@ public class Location extends BlockPos {
     }
 
     public World world() {
-        return FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance().getWorld(dimension());
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT
+                ? ((MinecraftClient)FabricLoader.getInstance().getGameInstance()).getServer().getWorld(dimension())
+                : ((MinecraftDedicatedServer)FabricLoader.getInstance().getGameInstance()).getWorld(dimension());
     }
 
     @Override
