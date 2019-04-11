@@ -1,13 +1,35 @@
 {
+  "schemaVersion": 1,
   "id": "fermion",
-  "name": "Grondag Java Library",
-  "description": "Utility functions for Minecraft Fabric mods",
-  "version": "1.0.0",
-  "side": "universal",
-  "initializer": "grondag.fermion.Fermion",
+  "version": "0.2.0",
+  "name": "Fermion",
+  "description": "Grondag's utility library for Minecraft Fabric mods",
+  "authors": [
+    "Grondag"
+  ],
+  "contact": {
+    "homepage": "https://minecraft.curseforge.com/projects/fermion",
+    "sources": "https://github.com/grondag/fermion"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/fermion/fermion_icon.png",
+  
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "grondag.fermion.Fermion"
+    ]
+  },
+  
+  "mixins": [
+  ],
+  
   "requires": {
+    "fabricloader": ">=0.4.0",
     "fabric": "*"
   },
-  "mixins": {
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:clientsideOnly": false
   }
 }
