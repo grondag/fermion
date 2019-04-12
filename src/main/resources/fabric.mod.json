@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fermion",
-  "version": "0.2.0",
+  "version": "${version}",
   "name": "Fermion",
   "description": "Grondag's utility library for Minecraft Fabric mods",
   "authors": [
