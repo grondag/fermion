@@ -9,6 +9,7 @@
   ],
   "contact": {
     "homepage": "https://minecraft.curseforge.com/projects/fermion",
+    "issues": "https://github.com/grondag/fermion/issues",
     "sources": "https://github.com/grondag/fermion"
   },
   "license": "Apache-2.0",
