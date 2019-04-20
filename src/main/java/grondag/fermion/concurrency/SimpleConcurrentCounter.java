@@ -45,7 +45,7 @@ public class SimpleConcurrentCounter
         {
             runCount.addAndGet(-samples);
             runTime.addAndGet(-nanos);
-            Fermion.INSTANCE.info("Timer %1s sample result: %2$.3fs for %3$,d items @ %4$dns each.",
+            Fermion.LOG.info("Timer %1s sample result: %2$.3fs for %3$,d items @ %4$dns each.",
                     name, ((double)nanos / 1000000000), samples,  nanos / samples);
         }
     }

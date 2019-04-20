@@ -45,15 +45,15 @@ public class PerformanceCollector
         }
         if(total == 0) total = 1;  // prevent div by zero below
         
-        Fermion.INSTANCE.info("======================================================================================");
-        Fermion.INSTANCE.info("Performance Measurement for " + this.title);
-        Fermion.INSTANCE.info("--------------------------------------------------------------------------------------");
+        Fermion.LOG.info("======================================================================================");
+        Fermion.LOG.info("Performance Measurement for " + this.title);
+        Fermion.LOG.info("--------------------------------------------------------------------------------------");
         for(PerformanceCounter counter : this.counters)
         {
-            if(counter.runTime() > 0) Fermion.INSTANCE.info((counter.runTime() * 100 / total) + "% " + counter.stats());
+            if(counter.runTime() > 0) Fermion.LOG.info((counter.runTime() * 100 / total) + "% " + counter.stats());
         }
-        Fermion.INSTANCE.info("--------------------------------------------------------------------------------------");
-        Fermion.INSTANCE.info(String.format("TOTAL TIME = %1$.3fs (%2$,dns)", (double)total/1000000000L, total));
+        Fermion.LOG.info("--------------------------------------------------------------------------------------");
+        Fermion.LOG.info(String.format("TOTAL TIME = %1$.3fs (%2$,dns)", (double)total/1000000000L, total));
     }
     
     public void clearStats()

@@ -41,7 +41,7 @@ public class BitPacker64<T> {
         this.totalBitLength += element.bitLength;
         this.bitMask = Useful.longBitMask(totalBitLength);
         if (totalBitLength > 64)
-            Fermion.INSTANCE.warn(
+            Fermion.LOG.warn(
                     "BitPacker length exceeded. This is definately a bug, and should be impossible in released code. Some things probably won't work correctly.");
     }
 

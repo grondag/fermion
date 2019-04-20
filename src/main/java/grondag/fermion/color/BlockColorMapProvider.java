@@ -167,7 +167,7 @@ public class BlockColorMapProvider
         }
         catch (IOException e)
         {
-            Fermion.INSTANCE.warn("Unable to output color atlas due to file error:" + e.getMessage());
+            Fermion.LOG.warn("Unable to output color atlas due to file error:" + e.getMessage());
         }
     }
 }

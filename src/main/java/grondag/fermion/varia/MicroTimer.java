@@ -65,7 +65,7 @@ public class MicroTimer {
     private void doReportAndClear(long e, long h) {
         this.hits.set(0);
         this.elapsed.set(0);
-        Fermion.INSTANCE.info("Avg %s duration = %d ns, total duration = %d, total runs = %d", label, e / h,
+        Fermion.LOG.info("Avg %s duration = %d ns, total duration = %d, total runs = %d", label, e / h,
                 e / 1000000, h);
     }
 

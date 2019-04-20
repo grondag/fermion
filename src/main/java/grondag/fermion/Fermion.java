@@ -19,29 +19,6 @@ package grondag.fermion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.fabricmc.api.ModInitializer;
-
-public class Fermion implements ModInitializer, IGrondagMod {
-    public static Fermion INSTANCE = new Fermion();
-
-    @Override
-    public void onInitialize() {
-    }
-
-    private static Logger log;
-
-    @Override
-    public Logger getLog() {
-        Logger result = log;
-        if (result == null) {
-            result = LogManager.getLogger("Fermion");
-            log = result;
-        }
-        return result;
-    }
-
-    @Override
-    public String modID() {
-        return "fermion";
-    }
+public class Fermion {
+    public static Logger LOG = LogManager.getLogger("Fermion");
 }

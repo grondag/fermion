@@ -249,7 +249,7 @@ public class ScatterGatherThreadPool
                     }
                     catch (Exception e) 
                     { 
-                        Fermion.INSTANCE.error("Unhandled error during concurrent processing. Impact unknown.", e);
+                        Fermion.LOG.error("Unhandled error during concurrent processing. Impact unknown.", e);
                     }
                     completionLock.unlock();
                 }
@@ -421,7 +421,7 @@ public class ScatterGatherThreadPool
         }
         catch (Exception e) 
         { 
-            Fermion.INSTANCE.error("Unhandled error during concurrent processing. Impact unknown.", e);
+            Fermion.LOG.error("Unhandled error during concurrent processing. Impact unknown.", e);
         }
        
         // don't hold reference & prevent restart of worker threads

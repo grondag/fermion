@@ -45,7 +45,7 @@ public abstract class IntStreams {
     private static void releaseBlock(int[] block) {
         // TODO: remove message
         if (!bigBlocks.offer(block))
-            Fermion.INSTANCE.info("Big block buffer was full on block release");
+            Fermion.LOG.info("Big block buffer was full on block release");
     }
 
     public static IIntStream claim(int sizeHint) {

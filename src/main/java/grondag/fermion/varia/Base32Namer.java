@@ -41,7 +41,7 @@ public class Base32Namer {
             String[] badNames = g.fromJson(jsonStringArray, String[].class);
             loadBadNames(badNames);
         } catch (Exception e) {
-            Fermion.INSTANCE.warn("Unable to parse bad names.  Naughtiness might ensue.");
+            Fermion.LOG.warn("Unable to parse bad names.  Naughtiness might ensue.");
         }
     }
 

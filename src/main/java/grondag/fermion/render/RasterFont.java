@@ -95,7 +95,7 @@ public class RasterFont extends Sprite
         sizeloop:
         while(!isSizeRight)
         {
-            Font font = getFont(new Identifier(Fermion.INSTANCE.prefixResource("fonts/" + fontName)), fontSize);
+            Font font = getFont(new Identifier("fermion", "fonts/" + fontName), fontSize);
             
             // Create a temporary image to extract the character's size
             
@@ -209,7 +209,7 @@ public class RasterFont extends Sprite
             }
             catch (Exception e)
             {
-                Fermion.INSTANCE.error("Failed to create font. Stuff won't render correctly if it renders at all.", e);
+                Fermion.LOG.error("Failed to create font. Stuff won't render correctly if it renders at all.", e);
             }
         }
         this.fontHeight = fontHeight;

@@ -16,14 +16,6 @@
   "icon": "assets/fermion/fermion_icon.png",
   
   "environment": "*",
-  "entrypoints": {
-    "main": [
-      "grondag.fermion.Fermion"
-    ]
-  },
-  
-  "mixins": [
-  ],
   
   "requires": {
     "fabricloader": ">=0.4.0",
