@@ -28,7 +28,7 @@ public class SingleBlockRegion implements IBlockRegion {
 
     @Override
     public Iterable<BlockPos> surfacePositions() {
-        return BlockPos.iterateBoxPositions(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
+        return BlockPos.iterate(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override

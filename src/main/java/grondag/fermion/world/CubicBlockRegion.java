@@ -77,7 +77,7 @@ public class CubicBlockRegion extends IntegerAABB implements IBlockRegion {
      * hollow
      */
     public Iterable<BlockPos> allPositions() {
-        return BlockPos.iterateBoxPositions(this.minX, this.minY, this.minZ, this.maxX - 1, this.maxY - 1, this.maxZ - 1);
+        return BlockPos.iterate(this.minX, this.minY, this.minZ, this.maxX - 1, this.maxY - 1, this.maxZ - 1);
     }
 
     /**
@@ -154,7 +154,7 @@ public class CubicBlockRegion extends IntegerAABB implements IBlockRegion {
             final int x2, final int y2, final int z2) {
         // has to be at least 3x3x3 or logic will get stuck and is also inefficient
         if (x2 - x1 < 2 || y2 - y1 < 2 || z2 - z1 < 2)
-            return BlockPos.iterateBoxPositions(x1, y1, z1, x2, y2, z2);
+            return BlockPos.iterate(x1, y1, z1, x2, y2, z2);
 
         return new Iterable<BlockPos>() {
             @Override
