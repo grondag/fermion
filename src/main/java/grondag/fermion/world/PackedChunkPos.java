@@ -17,8 +17,8 @@
 package grondag.fermion.world;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkPos;
 
 public class PackedChunkPos {
     private static final int CHUNK_BOUNDARY = PackedBlockPos.WORLD_BOUNDARY >> 4;
