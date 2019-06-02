@@ -1,31 +1,82 @@
+import net.fabricmc.loom.task.RemapJar
+
 plugins {
 	id 'fabric-loom' version '0.2.2-SNAPSHOT'
 	id 'java'
 	id 'maven'
 	id 'maven-publish'
-	id "com.zoltu.git-versioning" version "3.0.3"
+	id 'com.github.johnrengelman.shadow' version '4.0.3'
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-def versionInfo = ZoltuGitVersioning.versionInfo
-def autoVersion = "${versionInfo.major}.${versionInfo.minor}.${versionInfo.commitCount}"
+ext.getVersionCode = { ->
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-list', '--first-parent', '--count', 'origin/master'
+            standardOutput = stdout
+        }
+        return Integer.parseInt(stdout.toString().trim())
+    }
+    catch (ignored) {
+        return -1;
+    }
+}
 
 archivesBaseName = "fermion"
 group = "grondag"
-version = autoVersion
+version = version = "0.6.0+build." + project.getVersionCode();
 
 minecraft {
 }
 
+repositories {
+    maven { url "https://tehnut.info/maven"}
+    maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
+    maven { url "https://minecraft.curseforge.com/api/maven" }
+    maven { url "https://maven.fabricmc.net/io/github/prospector/modmenu/ModMenu/" }
+    maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
+    
+ 	maven {
+    	name = "grondag"
+    	url = "https://grondag-repo.appspot.com"
+    	credentials {
+            username "guest"
+            password ""
+		}
+    }
+}
+
 processResources {
-	inputs.property "version", autoVersion
+	inputs.property "version", version
 	from(sourceSets.main.resources.srcDirs) {
 		include "fabric.mod.json"
 		expand "version": version
 	}
 }
+
+configurations {
+    included {
+        transitive = false
+    }
+}
+
+shadowJar {
+    version = version
+    classifier = null
+    configurations = [project.configurations.included]
+    relocate 'blue.endless.jankson', 'grondag.fermion.shadow.jankson'
+}
+
+task remapShadowJar(type: RemapJar) {
+    jar = shadowJar.archivePath
+}
+
+tasks.remapShadowJar.dependsOn tasks.shadowJar
+
+tasks.assemble.dependsOn tasks.remapShadowJar
 
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 // if it is present.
@@ -33,6 +84,18 @@ processResources {
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = "sources"
 	from sourceSets.main.allSource
+}
+
+// ensure that the encoding is set to UTF-8, no matter what the system default is
+// this fixes some edge cases with special characters not displaying correctly
+// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
+
+jar {
+	classifier = "slim"
+	from "LICENSE"
 }
 
 sourceSets {
@@ -54,16 +117,26 @@ sourceSets {
     }
 }
 
-def mcVersion = "1.14.1"
+def mcVersion = "1.14.2"
 
 dependencies {
 	minecraft "com.mojang:minecraft:$mcVersion"
-	mappings "net.fabricmc:yarn:$mcVersion+build.5"
-	modCompile "net.fabricmc:fabric-loader:0.4.7+build.147"
-	modCompile "net.fabricmc.fabric-api:fabric-api:0.3.0-pre+build.156"
+	mappings "net.fabricmc:yarn:$mcVersion+build.2"
+    modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
+    modCompile "net.fabricmc.fabric-api:fabric-api:0.3.0+build.175"
 	
 	compile "org.apiguardian:apiguardian-api:1.0.0"
 	compile "com.google.code.findbugs:jsr305:3.0.2"
+	
+    modCompile "cloth-config:ClothConfig:0.2.1.14"
+    include "cloth-config:ClothConfig:0.2.1.14"
+	
+	compile "blue.endless:jankson:1.1.0"
+	included "blue.endless:jankson:1.1.0"
+	
+	// For dev env testing 
+	modCompile "com.jamieswhiteshirt:developer-mode:1.0.11"
+	modCompile "io.github.prospector.modmenu:ModMenu:1.6.1-90"
 }
 
 publishing {
@@ -75,6 +148,9 @@ publishing {
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
+			artifact(shadowJar) {
+				builtBy remapShadowJar
+			}
         }
     }
 
@@ -82,8 +158,12 @@ publishing {
         maven {
             url "https://grondag-repo.appspot.com"
             credentials {
-	            username "${maven_user}"
-	            password "${maven_password}"
+            	if (project.hasProperty('maven_user')){
+					username = project.getProperty('maven_user')
+				}
+				if (project.hasProperty('maven_password')){
+					password = project.getProperty('maven_password')
+				}
 			}
         }
     }
