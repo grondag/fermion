@@ -84,7 +84,7 @@ public class ItemHelper {
             return false;
         }
 
-        else if (stack1.getAmount() != stack2.getAmount()) {
+        else if (stack1.getCount() != stack2.getCount()) {
             return false;
         }
 

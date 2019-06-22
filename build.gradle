@@ -1,7 +1,7 @@
-import net.fabricmc.loom.task.RemapJar
+import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
-	id 'fabric-loom' version '0.2.2-SNAPSHOT'
+	id 'fabric-loom' version '0.2.4-SNAPSHOT'
 	id 'java'
 	id 'maven'
 	id 'maven-publish'
@@ -27,7 +27,7 @@ ext.getVersionCode = { ->
 
 archivesBaseName = "fermion"
 group = "grondag"
-version = version = "0.6.0+build." + project.getVersionCode();
+version = version = "0.6.1+build." + project.getVersionCode();
 
 minecraft {
 }
@@ -70,8 +70,9 @@ shadowJar {
     relocate 'blue.endless.jankson', 'grondag.fermion.shadow.jankson'
 }
 
-task remapShadowJar(type: RemapJar) {
-    jar = shadowJar.archivePath
+task remapShadowJar(type: RemapJarTask) {
+    input = shadowJar.archivePath
+    output = shadowJar.archivePath
 }
 
 tasks.remapShadowJar.dependsOn tasks.shadowJar
@@ -121,9 +122,9 @@ def mcVersion = "1.14.2"
 
 dependencies {
 	minecraft "com.mojang:minecraft:$mcVersion"
-	mappings "net.fabricmc:yarn:$mcVersion+build.2"
-    modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
-    modCompile "net.fabricmc.fabric-api:fabric-api:0.3.0+build.175"
+	mappings "net.fabricmc:yarn:$mcVersion+build.7"
+    modImplementation "net.fabricmc:fabric-loader:0.4.8+build.155"
+    modCompile "net.fabricmc.fabric-api:fabric-api:0.3.0+build.185"
 	
 	compile "org.apiguardian:apiguardian-api:1.0.0"
 	compile "com.google.code.findbugs:jsr305:3.0.2"
@@ -135,8 +136,8 @@ dependencies {
 	included "blue.endless:jankson:1.1.0"
 	
 	// For dev env testing 
-	modCompile "com.jamieswhiteshirt:developer-mode:1.0.11"
-	modCompile "io.github.prospector.modmenu:ModMenu:1.6.1-90"
+	modRuntime "com.jamieswhiteshirt:developer-mode:1.0.11"
+	modRuntime "io.github.prospector.modmenu:ModMenu:1.6.2-92"
 }
 
 publishing {
