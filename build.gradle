@@ -27,7 +27,7 @@ ext.getVersionCode = { ->
 
 archivesBaseName = "fermion"
 group = "grondag"
-version = version = "0.6.2+build." + project.getVersionCode();
+version = version = "0.6.3+build." + project.getVersionCode();
 
 minecraft {
 }
@@ -128,12 +128,6 @@ dependencies {
 	
 	compile "org.apiguardian:apiguardian-api:1.0.0"
 	compile "com.google.code.findbugs:jsr305:3.0.2"
-	
-    modCompile "cloth-config:ClothConfig2:0.2.0"
-    include "cloth-config:ClothConfig2:0.2.0"
-	
-	compile "blue.endless:jankson:1.1.0"
-	included "blue.endless:jankson:1.1.0"
 	
 	// For dev env testing 
 	modRuntime "com.jamieswhiteshirt:developer-mode:1.0.11"
