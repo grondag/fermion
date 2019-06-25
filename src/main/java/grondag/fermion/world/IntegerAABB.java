@@ -18,7 +18,7 @@ package grondag.fermion.world;
 
 import grondag.fermion.varia.Useful;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
@@ -100,12 +100,12 @@ public class IntegerAABB {
         this.maxZ = Math.max(pos1.getZ(), pos2.getZ()) + 1;
     }
 
-    private BoundingBox aabb = null;
+    private Box aabb = null;
 
-    public BoundingBox toAABB() {
-        BoundingBox result = this.aabb;
+    public Box toAABB() {
+        Box result = this.aabb;
         if (result == null) {
-            result = new BoundingBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+            result = new Box(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
             this.aabb = result;
         }
         return result;

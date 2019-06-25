@@ -28,7 +28,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -334,16 +334,16 @@ public class Useful {
     /**
      * Returns volume of given AABB
      */
-    public static double volumeAABB(BoundingBox box) {
+    public static double volumeAABB(Box box) {
         return (box.maxX - box.minX) * (box.maxY - box.minY) * (box.maxZ - box.minZ);
     }
 
     /**
      * Retuns sum of volume of all AABB in the list.
      */
-    public static double volumeAABB(List<BoundingBox> list) {
+    public static double volumeAABB(List<Box> list) {
         double retVal = 0;
-        for (BoundingBox box : list) {
+        for (Box box : list) {
             retVal += volumeAABB(box);
         }
         return retVal;
@@ -352,7 +352,7 @@ public class Useful {
     /**
      * Returns true if the given ray intersects with the given AABB.
      */
-    public static boolean doesRayIntersectAABB(Vec3d origin, Vec3d direction, BoundingBox box) {
+    public static boolean doesRayIntersectAABB(Vec3d origin, Vec3d direction, Box box) {
 
         double tmin = Double.NEGATIVE_INFINITY;
         double tmax = Double.POSITIVE_INFINITY;

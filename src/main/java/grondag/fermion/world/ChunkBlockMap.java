@@ -27,14 +27,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 
 public class ChunkBlockMap<T> {
     protected final HashMap<BlockPos, T> blocks = new HashMap<BlockPos, T>();
 
     protected List<Pair<BlockPos, T>> sortedList;
 
-    public final BoundingBox chunkAABB;
+    public final Box chunkAABB;
 //    public final int chunkX;
 //    public final int chunkZ;
 
@@ -43,7 +43,7 @@ public class ChunkBlockMap<T> {
     public ChunkBlockMap(BlockPos pos) {
 //        this.chunkX = pos.getX() >> 4;
 //        this.chunkZ = pos.getZ() >> 4;
-        this.chunkAABB = new BoundingBox(pos.getX() & CHUNK_START_MASK, 0, pos.getZ() & CHUNK_START_MASK,
+        this.chunkAABB = new Box(pos.getX() & CHUNK_START_MASK, 0, pos.getZ() & CHUNK_START_MASK,
                 pos.getX() | 0xF, 255, pos.getZ() | 0xF);
     }
 
