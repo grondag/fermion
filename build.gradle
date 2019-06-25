@@ -1,11 +1,6 @@
-import net.fabricmc.loom.task.RemapJarTask
-
 plugins {
 	id 'fabric-loom' version '0.2.4-SNAPSHOT'
-	id 'java'
-	id 'maven'
 	id 'maven-publish'
-	id 'com.github.johnrengelman.shadow' version '4.0.3'
 }
 
 sourceCompatibility = 1.8
@@ -56,29 +51,6 @@ processResources {
 		expand "version": version
 	}
 }
-
-configurations {
-    included {
-        transitive = false
-    }
-}
-
-shadowJar {
-    version = version
-    classifier = null
-    configurations = [project.configurations.included]
-    relocate 'blue.endless.jankson', 'grondag.fermion.shadow.jankson'
-}
-
-task remapShadowJar(type: RemapJarTask) {
-    input = shadowJar.archivePath
-    output = shadowJar.archivePath
-}
-
-tasks.remapShadowJar.dependsOn tasks.shadowJar
-
-tasks.assemble.dependsOn tasks.remapShadowJar
-
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 // if it is present.
 // If you remove this task, sources will not be generated.
@@ -95,7 +67,6 @@ tasks.withType(JavaCompile) {
 }
 
 jar {
-	classifier = "slim"
 	from "LICENSE"
 }
 
@@ -137,14 +108,11 @@ dependencies {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-			artifact(jar) {
+			artifact(jar.archivePath) {
 				builtBy remapJar
 			}
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
-			}
-			artifact(shadowJar) {
-				builtBy remapShadowJar
 			}
         }
     }
