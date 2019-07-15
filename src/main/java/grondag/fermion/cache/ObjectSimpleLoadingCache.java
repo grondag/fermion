@@ -2,28 +2,35 @@ package grondag.fermion.cache;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 public class ObjectSimpleLoadingCache<K, V> implements ISimpleLoadingCache
 {
     private final int capacity;
     private final int maxFill;
-    protected final int positionMask;
+    private final int positionMask;
     
-    protected final ObjectSimpleCacheLoader<K, V> loader;
+    private final ObjectSimpleCacheLoader<K, V> loader;
+
+    private final Function<K, K> keyInterner;
     
     private final AtomicInteger backupMissCount = new AtomicInteger(0);
     
-    protected volatile ObjectCacheState activeState;
+    private volatile ObjectCacheState activeState;
     private final AtomicReference<ObjectCacheState> backupState = new AtomicReference<ObjectCacheState>();
     
     private final Object writeLock = new Object();
 
-    public ObjectSimpleLoadingCache(ObjectSimpleCacheLoader<K, V> loader, int maxSize)
-    {
+    public ObjectSimpleLoadingCache(ObjectSimpleCacheLoader<K, V> loader, int maxSize) {
+        this(loader, k -> k, maxSize);
+    }
+
+    public ObjectSimpleLoadingCache(ObjectSimpleCacheLoader<K, V> loader, Function<K, K> keyInterner, int maxSize) {
         this.capacity = 1 << (Long.SIZE - Long.numberOfLeadingZeros((long) (maxSize / LOAD_FACTOR)));
         this.maxFill = (int) (capacity * LOAD_FACTOR);
         this.positionMask = capacity * 2 - 1;
         this.loader = loader;
+        this.keyInterner = keyInterner;
         this.activeState = new ObjectCacheState(this.capacity);
         this.clear();
     }
@@ -38,8 +45,7 @@ public class ObjectSimpleLoadingCache<K, V> implements ISimpleLoadingCache
     }
     
     @SuppressWarnings("unchecked")
-    public V get(K key)
-    {
+    public V get(K key) {
         ObjectCacheState localState = activeState;
         
         int position = (key.hashCode() * 2) & positionMask;
@@ -56,8 +62,7 @@ public class ObjectSimpleLoadingCache<K, V> implements ISimpleLoadingCache
     }
 
     @SuppressWarnings("unchecked")
-    protected V loadFromBackup(ObjectCacheState backup, final K key)
-    {
+    private V loadFromBackup(ObjectCacheState backup, final K key) {
         int position = (key.hashCode() * 2) & positionMask;
         do
         {
@@ -81,8 +86,7 @@ public class ObjectSimpleLoadingCache<K, V> implements ISimpleLoadingCache
     
     
     @SuppressWarnings("unchecked")
-    protected V load(ObjectCacheState localState, K key, int position)
-    {        
+    protected V load(ObjectCacheState localState, K key, int position) {
         
         ObjectCacheState backupState = this.backupState.get();
         
@@ -98,7 +102,7 @@ public class ObjectSimpleLoadingCache<K, V> implements ISimpleLoadingCache
                 {
                     //write value start in case another thread tries to read it based on key before we can write it
                     localState.kv[position + 1] = result;
-                    localState.kv[position] = key;
+                    localState.kv[position] = keyInterner.apply(key);
                     break;
                 }
             }
@@ -120,8 +124,7 @@ public class ObjectSimpleLoadingCache<K, V> implements ISimpleLoadingCache
         return result;
     }
     
-    public ObjectSimpleLoadingCache<K, V> createNew(ObjectSimpleCacheLoader<K, V> loader, int startingCapacity)
-    {
+    public ObjectSimpleLoadingCache<K, V> createNew(ObjectSimpleCacheLoader<K, V> loader, int startingCapacity) {
         return new ObjectSimpleLoadingCache<K, V>(loader, startingCapacity);
     }
 }

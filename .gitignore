@@ -49,3 +49,4 @@ discarded textures
 notes.txt
 *.csv
 .mixin.out/audit/mixin_implementation_report.txt
+*.xml

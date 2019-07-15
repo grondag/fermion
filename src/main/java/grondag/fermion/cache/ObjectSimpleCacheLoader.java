@@ -1,8 +1,9 @@
 package grondag.fermion.cache;
 
-public interface ObjectSimpleCacheLoader<K, V>
-{
-    abstract public V load(K key);
+
+@FunctionalInterface
+public interface ObjectSimpleCacheLoader<K, V> {
+    V load(K key);
     
     /** for benchmark testing */
     default ObjectSimpleCacheLoader<K, V> createNew()
