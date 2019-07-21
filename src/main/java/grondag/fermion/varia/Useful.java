@@ -24,7 +24,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import grondag.fermion.world.PackedBlockPos;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
@@ -32,8 +31,8 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.World;
 
 /**
  * Random utilities that have not yet found a more appropriate home.
@@ -158,16 +157,6 @@ public class Useful {
         return (value1 * (1 - location) + value2 * location);
     }
 
-    /**
-     * Computes long hash from long value. Use as many bits as needed/practical for
-     * specific application. see http://brpreiss.com/books/opus4/html/page214.html
-     */
-    public static long longHash(long l) {
-        // constant is golden ratio
-        long h = l * 0x9E3779B97F4A7C15L;
-        h ^= h >>> 32;
-        return h ^ (h >>> 16);
-    }
 
     /**
      * Returns a list of packed block position x & z OFFSETS within the given

@@ -17,7 +17,7 @@
 package grondag.fermion.world;
 
 import grondag.fermion.serialization.NBTDictionary;
-import grondag.fermion.varia.Useful;
+import it.unimi.dsi.fastutil.HashCommon;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -114,6 +114,6 @@ public class Location extends BlockPos {
 
     @Override
     public int hashCode() {
-        return (int) Useful.longHash((long) super.hashCode() | (this.dimensionID << 32));
+        return (int) HashCommon.mix((long) super.hashCode() | (this.dimensionID << 32));
     }
 }
