@@ -8,7 +8,7 @@ import org.junit.Test;
 import grondag.fermion.world.PackedBlockPos;
 import grondag.fermion.world.PackedChunkPos;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.ChunkPos;
+import net.minecraft.util.math.ChunkPos;
 
 public class PackedBlockPosTest {
 
