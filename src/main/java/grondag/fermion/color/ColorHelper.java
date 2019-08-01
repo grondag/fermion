@@ -130,7 +130,7 @@ public class ColorHelper {
     
     public static int lampColor(int baseColor) {
         final int alpha = baseColor & 0xFF000000;
-        return Color.fromRGB(baseColor).lumify().RGB_int | alpha;
+        return Color.fromRGB(baseColor).lumify().ARGB | alpha;
     }
 
     /**

@@ -8,7 +8,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import grondag.fermion.Fermion;
-import grondag.fermion.color.Color.EnumHCLFailureMode;
+import grondag.fermion.color.Color.HCLMode;
 import grondag.fermion.color.ColorMap.EnumColorMap;
 
 
@@ -40,7 +40,7 @@ public class BlockColorMapProvider
                     final Chroma chroma = Chroma.VALUES[c];
                     if(chroma != Chroma.PURE_NETURAL)
                     {
-                        Color testColor = Color.fromHCL(hue.hueDegrees(), chroma.value, luminance.value, EnumHCLFailureMode.REDUCE_CHROMA);
+                        Color testColor = Color.fromHCL(hue.hueDegrees(), chroma.value, luminance.value, HCLMode.REDUCE_CHROMA);
                         
                         if(testColor.IS_VISIBLE && testColor.HCL_C > chroma.value - 6)
                         {
@@ -58,7 +58,7 @@ public class BlockColorMapProvider
         {
             final Luminance luminance = Luminance.VALUES[l];
             
-            Color testColor = Color.fromHCL(Hue.BLUE.hueDegrees(), Chroma.PURE_NETURAL.value, luminance.value, EnumHCLFailureMode.REDUCE_CHROMA);
+            Color testColor = Color.fromHCL(Hue.BLUE.hueDegrees(), Chroma.PURE_NETURAL.value, luminance.value, HCLMode.REDUCE_CHROMA);
             
             if(testColor.IS_VISIBLE)
             {

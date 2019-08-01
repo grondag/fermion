@@ -28,10 +28,10 @@ import net.minecraft.util.math.MathHelper;
 public class Color {
     public final static int HCL_MAX = 999;
 
-    public final int RGB_int;
-    public final int RGB_R;
-    public final int RGB_G;
-    public final int RGB_B;
+    public final int ARGB;
+    public final int red;
+    public final int green;
+    public final int blue;
 
     public final float HSV_H;
     public final float HSV_S;
@@ -75,10 +75,14 @@ public class Color {
     }
 
     public static Color fromHCL(double hue, double chroma, double luminance) {
-        return fromHCL(hue, chroma, luminance, EnumHCLFailureMode.NORMAL);
+        return fromHCL(hue, chroma, luminance, HCLMode.NORMAL);
     }
 
-    public static Color fromHCL(double hue, double chroma, double luminance, EnumHCLFailureMode failureMode) {
+    public static Color fromHCL(Hue hue, Chroma chroma, Luminance luminance) {
+        return fromHCL(hue.hueDegrees(), chroma.value, luminance.value, HCLMode.REDUCE_CHROMA);
+    }
+    
+    public static Color fromHCL(double hue, double chroma, double luminance, HCLMode failureMode) {
         // if both are max then make as saturated as possible, then find max lightness
         if (luminance == HCL_MAX && chroma == HCL_MAX) {
 //            double maxLuminance = 0;
@@ -126,7 +130,7 @@ public class Color {
         }
 
         Color testColor = fromHCLSimple(hue, chroma, luminance);
-        if (!testColor.IS_VISIBLE && failureMode == EnumHCLFailureMode.REDUCE_CHROMA) {
+        if (!testColor.IS_VISIBLE && failureMode == HCLMode.REDUCE_CHROMA) {
             while (!testColor.IS_VISIBLE && chroma > 1) {
                 chroma--;
                 testColor = fromHCLSimple(hue, chroma, luminance);
@@ -167,10 +171,10 @@ public class Color {
         this.XYZ_Z = (float) z;
 
         if (!(x >= 0 && x <= D65X && y >= 0 && y <= D65Y && z >= 0 && z <= D65Z)) {
-            this.RGB_R = 0;
-            this.RGB_G = 0;
-            this.RGB_B = 0;
-            this.RGB_int = 0;
+            this.red = 0;
+            this.green = 0;
+            this.blue = 0;
+            this.ARGB = 0;
             this.IS_VISIBLE = false;
         } else
         // Convert to sRGB
@@ -189,16 +193,16 @@ public class Color {
 
             if (r1 >= -0.000001 && r1 <= 1.000001 && g1 >= -0.000001 && g1 <= 1.000001 && b1 >= -0.000001
                     && b1 <= 1.000001) {
-                this.RGB_R = (int) Math.round(r1 * 255);
-                this.RGB_G = (int) Math.round(g1 * 255);
-                this.RGB_B = (int) Math.round(b1 * 255);
-                this.RGB_int = (RGB_R << 16) | (RGB_G << 8) | RGB_B;
+                this.red = (int) Math.round(r1 * 255);
+                this.green = (int) Math.round(g1 * 255);
+                this.blue = (int) Math.round(b1 * 255);
+                this.ARGB = 0xFF000000 | (red << 16) | (green << 8) | blue;
                 this.IS_VISIBLE = true;
             } else {
-                this.RGB_R = 0;
-                this.RGB_G = 0;
-                this.RGB_B = 0;
-                this.RGB_int = 0;
+                this.red = 0;
+                this.green = 0;
+                this.blue = 0;
+                this.ARGB = 0;
                 this.IS_VISIBLE = false;
             }
         }
@@ -210,9 +214,9 @@ public class Color {
                 this.HSV_S = 0;
                 this.HSV_V = 0;
             } else {
-                final double r = this.RGB_R / 255;
-                final double g = this.RGB_G / 255;
-                final double b = this.RGB_B / 255;
+                final double r = this.red / 255;
+                final double g = this.green / 255;
+                final double b = this.blue / 255;
 
                 final double min = Math.min(Math.min(r, g), b);
                 final double max = Math.max(Math.max(r, g), b);
@@ -284,7 +288,7 @@ public class Color {
      */
     public Color lighten(int howMuch) {
         float lightness = MathHelper.clamp(this.HCL_L + howMuch, 0, 100);
-        return fromHCL(this.HCL_H, this.HCL_C, lightness, EnumHCLFailureMode.REDUCE_CHROMA);
+        return fromHCL(this.HCL_H, this.HCL_C, lightness, HCLMode.REDUCE_CHROMA);
     }
 
     /**
@@ -292,7 +296,7 @@ public class Color {
      * already at max luminance
      */
     public Color lumify() {
-        return Color.fromHCL(this.HCL_H, this.HCL_C, Color.HCL_MAX, EnumHCLFailureMode.NORMAL);
+        return Color.fromHCL(this.HCL_H, this.HCL_C, Color.HCL_MAX, HCLMode.NORMAL);
     }
 
     /**
@@ -301,10 +305,10 @@ public class Color {
      */
     public Color saturate(int howMuch) {
         float chroma = MathHelper.clamp(this.HCL_C + howMuch, 0, 100);
-        return fromHCL(this.HCL_H, chroma, this.HCL_L, EnumHCLFailureMode.REDUCE_CHROMA);
+        return fromHCL(this.HCL_H, chroma, this.HCL_L, HCLMode.REDUCE_CHROMA);
     }
 
-    public static enum EnumHCLFailureMode {
+    public static enum HCLMode {
         NORMAL, REDUCE_CHROMA;
     }
 }

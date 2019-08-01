@@ -1,6 +1,6 @@
 package grondag.fermion.color;
 
-import grondag.fermion.color.Color.EnumHCLFailureMode;
+import grondag.fermion.color.Color.HCLMode;
 import net.minecraft.client.resource.language.I18n;
 
 public class ColorMap
@@ -46,28 +46,28 @@ public class ColorMap
         double chroma = chromaIn.value;
         double luminance = luminanceIn.value;
 
-        Color baseColor = Color.fromHCL(hue.hueDegrees(), chroma, luminance, EnumHCLFailureMode.REDUCE_CHROMA);
+        Color baseColor = Color.fromHCL(hue.hueDegrees(), chroma, luminance, HCLMode.REDUCE_CHROMA);
     
-        newColorMap.setColor(EnumColorMap.BASE, baseColor.RGB_int | 0xFF000000);
+        newColorMap.setColor(EnumColorMap.BASE, baseColor.ARGB | 0xFF000000);
     
     
         // BORDERS
         Color whichColor = Color.fromHCL(hue.hueDegrees() + 15,
                 chroma < 10 ? chroma + 10 : chroma * 0.5,
                 luminance < 60 ? luminance + 15 : luminance - 15,
-                EnumHCLFailureMode.REDUCE_CHROMA);
+                HCLMode.REDUCE_CHROMA);
         assert whichColor.IS_VISIBLE : "makeColorMap produced invisible border color for " + newColorMap.localizedName();
         
-        newColorMap.setColor(EnumColorMap.BORDER, whichColor.RGB_int | 0xFF000000);
+        newColorMap.setColor(EnumColorMap.BORDER, whichColor.ARGB | 0xFF000000);
     
 //        newColorMap.setColor(EnumColorMap.HIGHLIGHT,
 //                NiceHues.INSTANCE.getHueSet(hue).getColorSetForHue(HuePosition.OPPOSITE).getColor(tint) | 0xFF000000);
         
-        Color lampColor = Color.fromHCL(hue.hueDegrees(), baseColor.HCL_C, Color.HCL_MAX, EnumHCLFailureMode.NORMAL);
+        Color lampColor = Color.fromHCL(hue.hueDegrees(), baseColor.HCL_C, Color.HCL_MAX, HCLMode.NORMAL);
         
-        assert lampColor.RGB_int != 0 : "Bad color hcl" + hue.hueDegrees() + " " + chromaIn.value / 2 + " " + Color.HCL_MAX;
+        assert lampColor.ARGB != 0 : "Bad color hcl" + hue.hueDegrees() + " " + chromaIn.value / 2 + " " + Color.HCL_MAX;
         
-        newColorMap.setColor(EnumColorMap.LAMP, lampColor.RGB_int | 0xFF000000);
+        newColorMap.setColor(EnumColorMap.LAMP, lampColor.ARGB | 0xFF000000);
     
         return newColorMap;
     }

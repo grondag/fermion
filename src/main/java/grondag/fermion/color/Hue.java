@@ -93,7 +93,7 @@ public enum Hue
     {
         if(hueSample == 0)
         {
-            this.hueSample = Color.fromHCL(this.hueDegrees(), Color.HCL_MAX, Color.HCL_MAX).RGB_int | 0xFF000000;
+            this.hueSample = Color.fromHCL(this.hueDegrees(), Color.HCL_MAX, Color.HCL_MAX).ARGB | 0xFF000000;
         }
         return this.hueSample;
     }
