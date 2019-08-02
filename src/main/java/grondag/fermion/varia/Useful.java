@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import grondag.fermion.world.PackedBlockPos;
+import grondag.fermion.position.PackedBlockPos;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;

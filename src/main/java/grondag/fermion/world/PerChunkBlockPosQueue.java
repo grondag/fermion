@@ -16,6 +16,8 @@
 
 package grondag.fermion.world;
 
+import grondag.fermion.position.PackedBlockPos;
+import grondag.fermion.position.PackedChunkPos;
 import grondag.fermion.varia.Useful;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;

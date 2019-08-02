@@ -21,6 +21,7 @@ import java.util.Iterator;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Iterators;
 
+import grondag.fermion.position.PackedChunkPos;
 import grondag.fermion.varia.Useful;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.util.math.BlockPos;
