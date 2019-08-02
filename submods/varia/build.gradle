@@ -20,9 +20,9 @@ ext.getVersionCode = { ->
     }
 }
 
-archivesBaseName = "fermion"
+archivesBaseName = "fermion-varia"
 group = "grondag"
-version = project.fermion_version + project.getVersionCode();
+version = project.varia_version + project.getVersionCode();
 
 minecraft {
 }
@@ -102,10 +102,6 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
-	// For dev env testing 
-	modRuntime "com.jamieswhiteshirt:developer-mode:${project.devmode_version}"
-	modApi "io.github.prospector:modmenu:${project.modmenu_version}"
-	
 	// dev env annotation support
 	compile "org.apiguardian:apiguardian-api:1.0.0"
 	compile "com.google.code.findbugs:jsr305:3.0.2"
@@ -122,7 +118,7 @@ publishing {
 			}
         }
     }
-
+    
     repositories {
         maven {
             url "https://grondag-repo.appspot.com"

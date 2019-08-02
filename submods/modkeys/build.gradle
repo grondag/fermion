@@ -20,9 +20,9 @@ ext.getVersionCode = { ->
     }
 }
 
-archivesBaseName = "fermion-color"
+archivesBaseName = "fermion-modkeys"
 group = "grondag"
-version = project.color_version + project.getVersionCode();
+version = project.modkeys_version + project.getVersionCode();
 
 minecraft {
 }

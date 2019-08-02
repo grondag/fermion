@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "fermion-color",
+  "id": "fermion-varia",
   "version": "${version}",
-  "name": "Fermion Color",
-  "description": "Grondag's Color Utility Library'",
+  "name": "Fermion Varia",
+  "description": "Grondag core utility library - miscellaneous",
   "authors": [
     "Grondag"
   ],
