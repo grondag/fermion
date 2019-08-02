@@ -9,22 +9,22 @@ import java.util.ArrayList;
 
 import grondag.fermion.Fermion;
 import grondag.fermion.color.Color.HCLMode;
-import grondag.fermion.color.ColorMap.EnumColorMap;
+import grondag.fermion.color.ColorSet.Tone;
 
 
-public class BlockColorMapProvider
+public class ColorAtlas
 {
-    public static final BlockColorMapProvider INSTANCE = new BlockColorMapProvider();
-    public static final int COLOR_BASALT = INSTANCE.getColorMap(Hue.COBALT, Chroma.NEUTRAL, Luminance.MEDIUM_DARK).getColor(EnumColorMap.BASE);
-    public static final int  COLOR_LAVA = INSTANCE.getMostest(Hue.ROSE).getColor(EnumColorMap.BASE);
+    public static final ColorAtlas INSTANCE = new ColorAtlas();
+    public static final int COLOR_BASALT = INSTANCE.getColorMap(Hue.COBALT, Chroma.NEUTRAL, Luminance.MEDIUM_DARK).getColor(Tone.BASE);
+    public static final int  COLOR_LAVA = INSTANCE.getMostest(Hue.ROSE).getColor(Tone.BASE);
     
     // note: can't be static because must come after Hue static initializaiton
-    private final ColorMap[] validColors;
-    private final ColorMap[][][] allColors = new ColorMap[Hue.COUNT][Chroma.COUNT][Luminance.COUNT];
-    protected BlockColorMapProvider()
+    private final ColorSet[] validColors;
+    private final ColorSet[][][] allColors = new ColorSet[Hue.COUNT][Chroma.COUNT][Luminance.COUNT];
+    protected ColorAtlas()
     {
         
-        ArrayList<ColorMap> colorMaps = new ArrayList<ColorMap>(allColors.length);
+        ArrayList<ColorSet> colorMaps = new ArrayList<ColorSet>(allColors.length);
         int i=0;
         
         for(int h = 0; h < Hue.COUNT; h++)
@@ -44,7 +44,7 @@ public class BlockColorMapProvider
                         
                         if(testColor.IS_VISIBLE && testColor.HCL_C > chroma.value - 6)
                         {
-                            ColorMap newMap = ColorMap.makeColorMap(hue, chroma, luminance, i++);
+                            ColorSet newMap = ColorSet.makeColorMap(hue, chroma, luminance, i++);
                             colorMaps.add(newMap);
                             allColors[hue.ordinal()][chroma.ordinal()][luminance.ordinal()] = newMap;
                         }
@@ -62,7 +62,7 @@ public class BlockColorMapProvider
             
             if(testColor.IS_VISIBLE)
             {
-                ColorMap newMap = ColorMap.makeColorMap(Hue.BLUE, Chroma.PURE_NETURAL, luminance, i++);
+                ColorSet newMap = ColorSet.makeColorMap(Hue.BLUE, Chroma.PURE_NETURAL, luminance, i++);
                 colorMaps.add(newMap);
 
                 for(int h = 0; h < Hue.COUNT; h++)
@@ -72,7 +72,7 @@ public class BlockColorMapProvider
             }
         }
         
-        this.validColors = colorMaps.toArray(new ColorMap[0]);
+        this.validColors = colorMaps.toArray(new ColorSet[0]);
     }
   
    
@@ -81,23 +81,23 @@ public class BlockColorMapProvider
         return validColors.length;
     }
 
-    public ColorMap getColorMap(int colorIndex)
+    public ColorSet getColorMap(int colorIndex)
     {
         return validColors[Math.max(0, Math.min(validColors.length-1, colorIndex))];
     }
     
     /** may return NULL */
-    public ColorMap getColorMap(Hue hue, Chroma chroma, Luminance luminance)
+    public ColorSet getColorMap(Hue hue, Chroma chroma, Luminance luminance)
     {
         return allColors[hue.ordinal()][chroma.ordinal()][luminance.ordinal()];
     }
 
-    public ColorMap getMostest(Hue hue)
+    public ColorSet getMostest(Hue hue)
     {
-        ColorMap[][] chromas = allColors[hue.ordinal()];
+        ColorSet[][] chromas = allColors[hue.ordinal()];
         for(int i = chromas.length - 1; i >= 0; i--)
         {
-            ColorMap[] lums = chromas[i];
+            ColorSet[] lums = chromas[i];
             for(int j = lums.length - 1; j >= 0; j--)
             {
                 if(lums[j] != null) 

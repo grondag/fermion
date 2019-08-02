@@ -3,16 +3,16 @@ package grondag.fermion.color;
 import grondag.fermion.color.Color.HCLMode;
 import net.minecraft.client.resource.language.I18n;
 
-public class ColorMap
+public class ColorSet
 {
     public final int ordinal;
     public final Hue hue;
     public final Chroma chroma;
     public final Luminance luminance;
     
-    private final int[] colors = new int[EnumColorMap.values().length];
+    private final int[] colors = new int[Tone.values().length];
 
-    public ColorMap(Hue hue, Chroma chromaIn, Luminance luminanceIn, int ordinal)
+    public ColorSet(Hue hue, Chroma chromaIn, Luminance luminanceIn, int ordinal)
     {
         this.ordinal = ordinal;
         this.hue = hue;
@@ -20,13 +20,13 @@ public class ColorMap
         this.luminance = luminanceIn;
     }
 
-    public ColorMap setColor(EnumColorMap whichColor, int colorValue)
+    public ColorSet setColor(Tone whichColor, int colorValue)
     {
         colors[whichColor.ordinal()] = colorValue;
         return this;
     }
     
-    public int getColor(EnumColorMap whichColor)
+    public int getColor(Tone whichColor)
     {
         return colors[whichColor.ordinal()];
     }
@@ -38,9 +38,9 @@ public class ColorMap
     
     }
     
-    public static ColorMap makeColorMap(Hue hue, Chroma chromaIn, Luminance luminanceIn, int ordinal)
+    public static ColorSet makeColorMap(Hue hue, Chroma chromaIn, Luminance luminanceIn, int ordinal)
     {
-        ColorMap newColorMap = new ColorMap(hue, chromaIn, luminanceIn, ordinal);
+        ColorSet newColorMap = new ColorSet(hue, chromaIn, luminanceIn, ordinal);
     
         // use these for manipulation so can use realistic values for HCL_MAX inputs
         double chroma = chromaIn.value;
@@ -48,7 +48,7 @@ public class ColorMap
 
         Color baseColor = Color.fromHCL(hue.hueDegrees(), chroma, luminance, HCLMode.REDUCE_CHROMA);
     
-        newColorMap.setColor(EnumColorMap.BASE, baseColor.ARGB | 0xFF000000);
+        newColorMap.setColor(Tone.BASE, baseColor.ARGB | 0xFF000000);
     
     
         // BORDERS
@@ -58,7 +58,7 @@ public class ColorMap
                 HCLMode.REDUCE_CHROMA);
         assert whichColor.IS_VISIBLE : "makeColorMap produced invisible border color for " + newColorMap.localizedName();
         
-        newColorMap.setColor(EnumColorMap.BORDER, whichColor.ARGB | 0xFF000000);
+        newColorMap.setColor(Tone.BORDER, whichColor.ARGB | 0xFF000000);
     
 //        newColorMap.setColor(EnumColorMap.HIGHLIGHT,
 //                NiceHues.INSTANCE.getHueSet(hue).getColorSetForHue(HuePosition.OPPOSITE).getColor(tint) | 0xFF000000);
@@ -67,13 +67,12 @@ public class ColorMap
         
         assert lampColor.ARGB != 0 : "Bad color hcl" + hue.hueDegrees() + " " + chromaIn.value / 2 + " " + Color.HCL_MAX;
         
-        newColorMap.setColor(EnumColorMap.LAMP, lampColor.ARGB | 0xFF000000);
+        newColorMap.setColor(Tone.LAMP, lampColor.ARGB | 0xFF000000);
     
         return newColorMap;
     }
 
-    public static enum EnumColorMap
-    {
+    public static enum Tone {
         BASE,
         HIGHLIGHT,
         BORDER,

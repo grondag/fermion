@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "special-circumstances",
+  "id": "fermion-color",
   "version": "${version}",
-  "name": "Special Circumstances",
-  "description": "Grondag's esoteric utility library for Minecraft Fabric mods",
+  "name": "Fermion Color",
+  "description": "Grondag's Color Utility Library'",
   "authors": [
     "Grondag"
   ],

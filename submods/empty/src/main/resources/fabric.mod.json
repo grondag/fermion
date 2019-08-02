@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "special-circumstances",
+  "id": "empty",
   "version": "${version}",
-  "name": "Special Circumstances",
-  "description": "Grondag's esoteric utility library for Minecraft Fabric mods",
+  "name": "Empty Mod",
+  "description": "Grondag forgot to write something here",
   "authors": [
     "Grondag"
   ],

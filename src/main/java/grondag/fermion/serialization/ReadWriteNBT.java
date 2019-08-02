@@ -22,14 +22,14 @@ import net.minecraft.nbt.CompoundTag;
  * Slightly more flexible version of INBTSerializable that allows for writing to
  * an existing tag instead of always creating a new one.
  */
-public interface IReadWriteNBT {
-    void deserializeNBT(CompoundTag tag);
+public interface ReadWriteNBT {
+    void writeTag(CompoundTag tag);
 
-    void serializeNBT(CompoundTag tag);
+    void readTag(CompoundTag tag);
 
-    default CompoundTag serializeNBT() {
+    default CompoundTag toTag() {
         CompoundTag result = new CompoundTag();
-        this.serializeNBT(result);
+        this.readTag(result);
         return result;
     }
 }

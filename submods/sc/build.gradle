@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.2.4-SNAPSHOT'
+	id 'fabric-loom' version '0.2.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -20,18 +20,19 @@ ext.getVersionCode = { ->
     }
 }
 
-archivesBaseName = project.archives_base_name
-group = project.maven_group
-version = project.mod_version + "+build." + project.getVersionCode();
+archivesBaseName = "special-circumstances"
+group = "grondag"
+version = project.sc_version + project.getVersionCode();
 
 minecraft {
 }
 
 repositories {
+    jcenter();
     maven { url "https://tehnut.info/maven"}
     maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
     maven { url "https://minecraft.curseforge.com/api/maven" }
-    maven { url "https://maven.fabricmc.net/io/github/prospector/modmenu/ModMenu/" }
+    maven { url "https://maven.fabricmc.net/" }
     maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
     
  	maven {
@@ -109,16 +110,9 @@ dependencies {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-			artifact ("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar") { 
-				classifier null
-				builtBy remapJar
+			artifact(jar.archivePath) {
+	    		builtBy remapJar
 			}
-
-			artifact ("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}-dev.jar") { 
-				classifier "dev"
-				builtBy remapJar
-			}
-			
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
