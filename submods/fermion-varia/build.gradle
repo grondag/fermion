@@ -20,14 +20,19 @@ ext.getVersionCode = { ->
     }
 }
 
-archivesBaseName = "fermion-varia"
-group = "grondag"
-version = project.varia_version + project.getVersionCode();
+archivesBaseName = 'fermion-varia'
+group = 'grondag'
+if (project.hasProperty('fermion_varia_version')){
+	version = project.getProperty('fermion_varia_version') + '.' + project.getVersionCode() + '+' + project.minecraft_version
+} else {
+	version = '999.999.999+LOCAL'
+}
 
 minecraft {
 }
 
 repositories {
+    mavenLocal();
     jcenter();
     maven { url "https://tehnut.info/maven"}
     maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
@@ -105,6 +110,9 @@ dependencies {
 	// dev env annotation support
 	compile "org.apiguardian:apiguardian-api:1.0.0"
 	compile "com.google.code.findbugs:jsr305:3.0.2"
+		
+	modImplementation "grondag:fermion:${project.fermion_version}+"
+    include "grondag:fermion:${project.fermion_version}+"
 }
 
 publishing {
