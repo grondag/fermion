@@ -17,7 +17,7 @@
   
   "environment": "*",
   
-  "requires": {
+  "depends": {
     "fabricloader": ">=0.4.8",
     "fabric": "*"
   },
