@@ -108,7 +108,9 @@ dependencies {
 	
 	// For dev env testing 
 	modRuntime "com.jamieswhiteshirt:developer-mode:${project.devmode_version}"
-	modApi "io.github.prospector:modmenu:${project.modmenu_version}"
+	modRuntime ("io.github.prospector:modmenu:${project.modmenu_version}") {
+        exclude group :"net.fabricmc.fabric-api"
+	}
 	
 	// dev env annotation support
 	compile "org.apiguardian:apiguardian-api:1.0.0"
