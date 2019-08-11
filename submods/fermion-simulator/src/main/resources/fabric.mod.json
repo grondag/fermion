@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "fermion-simulator",
+  "version": "${version}",
+  "name": "Fermion Simulator",
+  "description": "Grondag core utility library - simulation",
+  "authors": [
+    "Grondag"
+  ],
+  "contact": {
+    "homepage": "https://minecraft.curseforge.com/projects/fermion",
+    "issues": "https://github.com/grondag/fermion/issues",
+    "sources": "https://github.com/grondag/fermion"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/fermion/fermion_icon.png",
+  
+  "environment": "*",
+  
+  "depends": {
+    "fabricloader": ">=0.4.8",
+    "fabric": "*"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:clientsideOnly": false,
+    "modmenu:parent": "fermion"
+  }
+}
