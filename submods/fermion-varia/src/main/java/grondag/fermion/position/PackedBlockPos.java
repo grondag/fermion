@@ -24,6 +24,7 @@ import net.minecraft.util.math.MathHelper;
  * Serialization of BlockPos to long values with functionality beyond the
  * vanilla serialization methods in the BlockPos class.
  */
+@Deprecated
 public class PackedBlockPos {
     public static final int WORLD_BOUNDARY = 30000000;
     public static final long NULL_POS = Long.MIN_VALUE;

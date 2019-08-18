@@ -36,7 +36,9 @@ import net.minecraft.world.World;
 
 /**
  * Random utilities that have not yet found a more appropriate home.
+ * Many of these are obsolete and should be removed.
  */
+@Deprecated
 public class Useful {
     /**
      * See {@link #getDistanceSortedCircularOffset(int)}. If you simply want to
