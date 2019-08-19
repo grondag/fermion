@@ -58,6 +58,6 @@ public class IndexedInterner<T> {
     }
 
     public T fromHandle(int handle) {
-        return instances[handle - 1];
+        return handle >= 0 ? instances[handle - 1] : null;
     }
 }
