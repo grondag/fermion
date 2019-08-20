@@ -20,8 +20,6 @@ gradle
 .gradle
 build
 run
-gradle.properties
-
 
 ##idea
 *.iml
