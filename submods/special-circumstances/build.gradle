@@ -27,8 +27,8 @@ minecraft {
 }
 
 repositories {
-	mavenLocal();
-    jcenter();
+	mavenLocal()
+    jcenter()
     maven { url "https://tehnut.info/maven"}
     maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
     maven { url "https://minecraft.curseforge.com/api/maven" }
@@ -106,8 +106,8 @@ dependencies {
 	compile "org.apiguardian:apiguardian-api:1.0.0"
 	compile "com.google.code.findbugs:jsr305:3.0.2"
 	
-	modImplementation "grondag:fermion:${project.fermion_version}+"
-    include "grondag:fermion:${project.fermion_version}+"
+	modImplementation "grondag:fermion:${project.fermion_version}.+"
+    include "grondag:fermion:${project.fermion_version}.+"
 }
 
 publishing {
