@@ -107,7 +107,6 @@ dependencies {
 	compile "com.google.code.findbugs:jsr305:3.0.2"
 		
 	modImplementation "grondag:fermion:${project.fermion_version}.+"
-    include "grondag:fermion:${project.fermion_version}.+"
 }
 
 publishing {

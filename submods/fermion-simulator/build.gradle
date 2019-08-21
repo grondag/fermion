@@ -107,13 +107,10 @@ dependencies {
 	compile "com.google.code.findbugs:jsr305:3.0.2"
 		
 	modImplementation "grondag:fermion:${project.fermion_version}.+"
-    include "grondag:fermion:${project.fermion_version}.+"
     
     modImplementation "grondag:fermion-varia:${project.fermion_varia_version}.+"
-    include "grondag:fermion-varia:${project.fermion_varia_version}.+"
     
-    	modImplementation "grondag:special-circumstances:${project.special_circumstances_version}.+"
-    include "grondag:special-circumstances:${project.special_circumstances_version}.+"
+	modImplementation "grondag:special-circumstances:${project.special_circumstances_version}.+"
 }
 
 publishing {
