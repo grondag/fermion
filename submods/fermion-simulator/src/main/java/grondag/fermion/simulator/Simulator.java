@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import grondag.fermion.Fermion;
 import grondag.fermion.sc.concurrency.ScatterGatherThreadPool;
 import grondag.fermion.simulator.persistence.AssignedNumbersAuthority;
-import grondag.fermion.simulator.persistence.IDirtKeeper;
+import grondag.fermion.simulator.persistence.DirtKeeper;
 import grondag.fermion.simulator.persistence.SimulationTopNode;
 import grondag.fermion.varia.NBTDictionary;
 import net.minecraft.nbt.CompoundTag;
@@ -63,7 +63,7 @@ import net.minecraft.world.dimension.DimensionType;
  * machines are running very quickly.
  * 
  */
-public class Simulator extends PersistentState implements IDirtKeeper {
+public class Simulator extends PersistentState implements DirtKeeper {
 
     ////////////////////////////////////////////////////////////
     // STATIC MEMBERS
@@ -135,7 +135,7 @@ public class Simulator extends PersistentState implements IDirtKeeper {
 
     private final IdentityHashMap<Class<? extends SimulationTopNode>, SimulationTopNode> nodes = new IdentityHashMap<>();
 
-    private List<ISimulationTickable> tickables = new ArrayList<ISimulationTickable>();
+    private List<SimulationTickable> tickables = new ArrayList<SimulationTickable>();
 
     private @Nullable Future<?> lastTickFuture = null;
 
@@ -211,8 +211,8 @@ public class Simulator extends PersistentState implements IDirtKeeper {
             this.nodes.values().forEach(n -> n.afterDeserialization());
 
             this.nodes.values().forEach(n -> {
-                if (n instanceof ISimulationTickable)
-                    this.tickables.add((ISimulationTickable) n);
+                if (n instanceof SimulationTickable)
+                    this.tickables.add((SimulationTickable) n);
             });
 
             Fermion.LOG.info("Simulator initialization complete. Simulator running.");
@@ -275,14 +275,14 @@ public class Simulator extends PersistentState implements IDirtKeeper {
                 currentTick = lastSimTick;
 
                 if (!Simulator.this.tickables.isEmpty()) {
-                    for (ISimulationTickable tickable : Simulator.this.tickables) {
+                    for (SimulationTickable tickable : Simulator.this.tickables) {
                         tickable.doOnTick();
                     }
                 }
 
                 lastTickFuture = CONTROL_THREAD.submit(this.offTickFrame);
 
-                this.setDirty();
+                this.makeDirty();
             }
         }
     }
@@ -311,7 +311,7 @@ public class Simulator extends PersistentState implements IDirtKeeper {
         @Override
         public void run() {
             if (!Simulator.this.tickables.isEmpty()) {
-                for (ISimulationTickable tickable : Simulator.this.tickables) {
+                for (SimulationTickable tickable : Simulator.this.tickables) {
                     try {
                         tickable.doOffTick();
                     } catch (Exception e) {
@@ -325,5 +325,10 @@ public class Simulator extends PersistentState implements IDirtKeeper {
     public static Simulator instance() {
         return instance;
 
+    }
+
+    @Override
+    public void makeDirty(boolean isDirty) {
+        this.setDirty(isDirty);
     }
 }

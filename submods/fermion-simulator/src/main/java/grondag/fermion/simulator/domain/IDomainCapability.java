@@ -15,10 +15,10 @@
  ******************************************************************************/
 package grondag.fermion.simulator.domain;
 
-import grondag.fermion.simulator.persistence.ISimulationNode;
+import grondag.fermion.simulator.persistence.SimulationNode;
 import grondag.fermion.varia.ReadWriteNBT;
 
-public interface IDomainCapability extends IDomainMember, ISimulationNode, ReadWriteNBT {
+public interface IDomainCapability extends IDomainMember, SimulationNode, ReadWriteNBT {
     public String tagName();
 
     /**

@@ -23,7 +23,7 @@ import grondag.fermion.simulator.Simulator;
  * child instances.
  *
  */
-public interface ISimulationNode extends IDirtListener {
+public interface SimulationNode extends DirtListener {
     /**
      * Called by simulator at shutdown
      */

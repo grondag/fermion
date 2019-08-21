@@ -16,7 +16,7 @@
 package grondag.fermion.simulator;
 
 //TODO: move to Timeshare
-public interface ISimulationTickable {
+public interface SimulationTickable {
     /**
      * If true, then {@link #doOnTick(int)} will be called during world tick from
      * server thread. Is generally only checked at setup so result should not be

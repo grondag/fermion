@@ -92,13 +92,13 @@ public class DomainUser implements ReadWriteNBT, IDomainMember {
 
     public void grantPrivilege(Privilege p, boolean hasPrivilege) {
         this.privilegeFlags = Privilege.PRIVILEGE_FLAG_SET.setFlagForValue(p, privilegeFlags, hasPrivilege);
-        this.domain.setDirty();
+        this.domain.makeDirty();
         ;
     }
 
     public void setPrivileges(Privilege... granted) {
         this.privilegeFlags = Privilege.PRIVILEGE_FLAG_SET.getFlagsForIncludedValues(granted);
-        this.domain.setDirty();
+        this.domain.makeDirty();
         ;
     }
 

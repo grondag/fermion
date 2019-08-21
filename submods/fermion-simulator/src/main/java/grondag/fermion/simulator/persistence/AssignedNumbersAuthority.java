@@ -25,7 +25,7 @@ import grondag.fermion.varia.ReadWriteNBT;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 
-public class AssignedNumbersAuthority implements ReadWriteNBT, IDirtNotifier {
+public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 
     private static final String NBT_TAG = NBTDictionary.claim("assignedNumAuth");
 
@@ -64,7 +64,7 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, IDirtNotifier {
 
     private int[] lastID = new int[AssignedNumber.values().length];
 
-    private IDirtListener dirtKeeper = NullDirtListener.INSTANCE;
+    private DirtListener dirtKeeper = NullDirtListener.INSTANCE;
 
     private final IdentifiedIndex[] indexes;
 
@@ -102,7 +102,7 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, IDirtNotifier {
      * ID's should start at 1 to distinguish from missing/unset ID.
      */
     public synchronized int newNumber(AssignedNumber numberType) {
-        dirtKeeper.setDirty();
+        dirtKeeper.makeDirty();
         ;
         return ++this.lastID[numberType.ordinal()];
     }
@@ -130,12 +130,12 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, IDirtNotifier {
     }
 
     @Override
-    public void setDirty() {
-        this.dirtKeeper.setDirty();
+    public void makeDirty() {
+        this.dirtKeeper.makeDirty();
     }
 
     @Override
-    public void setDirtKeeper(IDirtKeeper keeper) {
+    public void setDirtKeeper(DirtKeeper keeper) {
         this.dirtKeeper = keeper;
     }
 

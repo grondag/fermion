@@ -24,9 +24,9 @@ import com.google.common.collect.ImmutableList;
 import grondag.fermion.Fermion;
 import grondag.fermion.simulator.Simulator;
 import grondag.fermion.simulator.persistence.AssignedNumber;
+import grondag.fermion.simulator.persistence.AssignedNumbersAuthority.IdentifiedIndex;
 import grondag.fermion.simulator.persistence.IIdentified;
 import grondag.fermion.simulator.persistence.SimulationTopNode;
-import grondag.fermion.simulator.persistence.AssignedNumbersAuthority.IdentifiedIndex;
 import grondag.fermion.varia.NBTDictionary;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.nbt.CompoundTag;
@@ -159,7 +159,7 @@ public class DomainManager extends SimulationTopNode {
 
     @Override
     public void setDirty(boolean isDirty) {
-        this.isDirty = isDirty;
+        makeDirty(isDirty);
     }
 
     @Override
@@ -314,7 +314,7 @@ public class DomainManager extends SimulationTopNode {
     }
 
     @Override
-    public void setDirty() {
+    public void makeDirty() {
         // TODO Auto-generated method stub
 
     }

@@ -17,8 +17,13 @@ package grondag.fermion.simulator.persistence;
 
 import net.minecraft.world.PersistentState;
 
-public abstract class SimulationTopNode extends PersistentState implements ISimulationNode {
+public abstract class SimulationTopNode extends PersistentState implements SimulationNode, DirtKeeper {
     public SimulationTopNode(String tagName) {
         super(tagName);
+    }
+
+    @Override
+    public final void makeDirty(boolean isDirty) {
+        setDirty(isDirty);
     }
 }

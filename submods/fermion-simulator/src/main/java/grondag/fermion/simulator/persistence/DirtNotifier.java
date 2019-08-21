@@ -15,10 +15,6 @@
  ******************************************************************************/
 package grondag.fermion.simulator.persistence;
 
-/**
- * Tracks if the instance needs to be persisted. Used by persistence nodes and
- * some sub nodes.
- */
-public interface IDirtListener {
-    public void setDirty();
+public interface DirtNotifier extends DirtListener {
+    public abstract void setDirtKeeper(DirtKeeper listener);
 }

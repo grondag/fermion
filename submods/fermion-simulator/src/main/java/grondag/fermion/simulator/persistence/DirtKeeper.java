@@ -15,6 +15,15 @@
  ******************************************************************************/
 package grondag.fermion.simulator.persistence;
 
-public interface IDirtListenerProvider {
-    public IDirtListener getDirtListener();
+public interface DirtKeeper extends DirtListener {
+    public abstract boolean isDirty();
+
+    // named differently from vanilla to avoid obfuscation mismatches in prod
+    public abstract void makeDirty(boolean isDirty);
+
+    @Override
+ // named differently from vanilla to avoid obfuscation mismatches in prod
+    public default void makeDirty() {
+        this.makeDirty(true);
+    }
 }
