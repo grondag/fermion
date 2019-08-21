@@ -108,6 +108,9 @@ dependencies {
 		
 	modImplementation "grondag:fermion:${project.fermion_version}.+"
     include "grondag:fermion:${project.fermion_version}.+"
+    
+    modImplementation "grondag:fermion-varia:${project.fermion_varia_version}.+"
+    include "grondag:fermion-varia:${project.fermion_varia_version}.+"
 }
 
 publishing {
