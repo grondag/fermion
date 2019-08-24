@@ -27,4 +27,8 @@ public interface BlockRegion {
 
     /** All positions adjacent to the surface of the region. */
     public Iterable<BlockPos> adjacentPositions();
+    
+    public static BlockRegion of(BlockPos pos) {
+        return new SingleBlockRegion(pos);
+    }
 }

@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class SingleBlockRegion implements BlockRegion {
 
-    public final BlockPos pos;
+    private final BlockPos pos;
 
     public SingleBlockRegion(BlockPos pos) {
         this.pos = pos;
@@ -36,5 +36,4 @@ public class SingleBlockRegion implements BlockRegion {
         return CubicBlockRegion.getAllOnBoxSurfaceMutable(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1,
                 pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
     }
-
 }
