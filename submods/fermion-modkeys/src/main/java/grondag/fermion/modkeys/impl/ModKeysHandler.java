@@ -36,36 +36,31 @@ public class ModKeysHandler {
     @Environment(EnvType.CLIENT)
     private static byte lastFlags = 0;
 
-    @SuppressWarnings("unused")
     @Environment(EnvType.CLIENT)
     public static void update(MinecraftClient client) {
-        // FIXME: put back
-        if(false) {
-            
-            final long handle = client.window.getHandle();
-    
-            byte f = 0;
-            if (InputUtil.isKeyPressed(handle, GLFW.GLFW_MOD_SHIFT)) {
-                f |= ModKeysAccess.SHIFT;
+        final long handle = client.window.getHandle();
+        
+        byte f = 0;
+        if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
+            f |= ModKeysAccess.SHIFT;
+        }
+        if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_CONTROL) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_CONTROL)) {
+            f |= ModKeysAccess.CONTROL;
+        }
+        if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_ALT) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_ALT)) {
+            f |= ModKeysAccess.ALT;
+        }
+        if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SUPER) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SUPER)) {
+            f |= ModKeysAccess.SUPER;
+        }
+
+        if (f != lastFlags) {
+            lastFlags = f;
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            if (player != null) {
+                ((ModKeysAccess) player).mk_flags(f);
             }
-            if (InputUtil.isKeyPressed(handle, GLFW.GLFW_MOD_CONTROL)) {
-                f |= ModKeysAccess.CONTROL;
-            }
-            if (InputUtil.isKeyPressed(handle, GLFW.GLFW_MOD_ALT)) {
-                f |= ModKeysAccess.ALT;
-            }
-            if (InputUtil.isKeyPressed(handle, GLFW.GLFW_MOD_SUPER)) {
-                f |= ModKeysAccess.SUPER;
-            }
-    
-            if (f != lastFlags) {
-                lastFlags = f;
-                ClientPlayerEntity player = MinecraftClient.getInstance().player;
-                if (player != null) {
-                    ((ModKeysAccess) player).mk_flags(f);
-                }
-                sendUpdatePacket(f);
-            }
+            sendUpdatePacket(f);
         }
     }
 
