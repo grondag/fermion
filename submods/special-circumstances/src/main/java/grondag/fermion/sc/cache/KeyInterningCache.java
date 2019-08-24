@@ -31,8 +31,7 @@ public class KeyInterningCache<K> implements ISimpleLoadingCache {
     public int size() { return activeState.size.get(); }
     
     @Override
-    public void clear()
-    {
+    public void clear() {
         this.activeState = new KeyCacheState(this.capacity);
     }
     

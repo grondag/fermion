@@ -26,8 +26,9 @@ class SimpleStream implements IntStream {
                 isCompact = false;
 
                 // if big enough after uncompacting, then we are done
-                if (address < capacity)
+                if (address < capacity) {
                     return;
+                }
             }
 
             int currentBlocks = capacity >> IntStreams.BLOCK_SHIFT;
@@ -40,8 +41,9 @@ class SimpleStream implements IntStream {
                 blocks = newBlocks;
             }
 
-            for (int i = currentBlocks; i < blocksNeeded; i++)
+            for (int i = currentBlocks; i < blocksNeeded; i++) {
                 blocks[i] = IntStreams.claimBlock();
+            }
 
             capacity = blocksNeeded << IntStreams.BLOCK_SHIFT;
             blockCount = blocksNeeded;
@@ -89,10 +91,11 @@ class SimpleStream implements IntStream {
             isCompact = false;
         }
 
-        if (blockCount > 0)
-            for (int i = 0; i < blockCount; i++)
+        if (blockCount > 0) {
+            for (int i = 0; i < blockCount; i++) {
                 System.arraycopy(IntStreams.EMPTY, 0, blocks[i], 0, IntStreams.BLOCK_SIZE);
-
+            }
+        }
     }
 
     @Override
@@ -109,17 +112,19 @@ class SimpleStream implements IntStream {
 
     @Override
     public void compact() {
-        if (isCompact || blockCount == 0)
+        if (isCompact || blockCount == 0) {
             return;
-
+        }
+        
         int targetBlock = blockCount - 1;
 
         while (targetBlock >= 0) {
             int[] block = blocks[targetBlock];
             int i = IntStreams.BLOCK_SIZE - 1;
-            while (i >= 0 && block[i] == 0)
+            while (i >= 0 && block[i] == 0) {
                 i--;
-
+            }
+            
             if (i == -1) {
                 // release empty blocks
                 IntStreams.releaseBlock(block);
