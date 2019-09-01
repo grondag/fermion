@@ -59,6 +59,10 @@ public class WorldHelper {
         }
     }
 
+    public static Direction closestAdjacentFace(Direction hitFace, double hitX, double hitY, double hitZ) {
+        return closestAdjacentFace(hitFace, (float)hitX, (float)hitY, (float)hitZ);
+    }
+    
     /**
      * Returns the closest face adjacent to the hit face that is closest to the hit
      * location on the given face. There is probably a better way to do this. TBH, I
@@ -103,6 +107,10 @@ public class WorldHelper {
             return hitFace.rotateYClockwise();
         }
     }
+    
+    public static Pair<Direction, Direction> closestAdjacentFaces(Direction hitFace, double hitX, double hitY, double hitZ) {
+        return closestAdjacentFaces(hitFace, (float)hitX, (float)hitY, (float)hitZ);
+    }
 
     /**
      * Returns the faces adjacent to the hit face that are closest to the hit
@@ -113,6 +121,7 @@ public class WorldHelper {
      * Logic here is adapted from {@link closestAdjacentFace} except that I was
      * completely sober.
      */
+    // PERF: return a CubeEdge instead of a pair
     public static Pair<Direction, Direction> closestAdjacentFaces(Direction hitFace, float hitX, float hitY,
             float hitZ) {
         switch (hitFace.getAxis()) {
@@ -145,7 +154,7 @@ public class WorldHelper {
         }
         }
     }
-
+    
     /**
      * The direction that would appear as "up" adjusted if looking at an UP or DOWN
      * face. For example, if lookup up at the ceiling and facing North, then South
