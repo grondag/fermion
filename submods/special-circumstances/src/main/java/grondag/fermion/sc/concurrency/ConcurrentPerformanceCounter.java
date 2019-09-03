@@ -3,30 +3,25 @@ package grondag.fermion.sc.concurrency;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ConcurrentPerformanceCounter
-{
+public class ConcurrentPerformanceCounter {
     private AtomicLong runTime = new AtomicLong(0);
     private AtomicInteger runCount = new AtomicInteger(0);
 
-    public void clearStats()
-    {
+    public void clearStats() {
         this.runCount.set(0); 
         this.runTime.set(0);
     }
 
-    public long startRun()
-    {
+    public long startRun() {
         return System.nanoTime();
     }
     
-    public void endRun(long startTime)
-    {
-        this.runTime.addAndGet(System.nanoTime() - startTime);
+    public long endRun(long startTime) {
+        return this.runTime.addAndGet(System.nanoTime() - startTime);
     }
     
-    public void addCount(int howMuch)
-    {
-        this.runCount.addAndGet(howMuch);
+    public int addCount(int howMuch) {
+        return this.runCount.addAndGet(howMuch);
     }
     
     public int runCount() { return this.runCount.get(); }
