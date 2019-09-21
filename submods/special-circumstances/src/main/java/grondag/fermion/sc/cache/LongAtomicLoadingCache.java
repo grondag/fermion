@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import it.unimi.dsi.fastutil.HashCommon;
 
-@SuppressWarnings({"restriction" })
 public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
 {
     private final int capacity;

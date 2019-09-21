@@ -49,7 +49,6 @@ import sun.misc.Unsafe;
  * multiple cores and/or that are meant to be completed asynchronously. For that, the common ForkJoin pool, 
  * a fixed thread pool, dedicated threads, will all be better.
  */
-@SuppressWarnings("restriction")
 public class ScatterGatherThreadPool
 {
     /**
