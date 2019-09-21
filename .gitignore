@@ -1,18 +1,11 @@
-## Windows
-Thumbs.db
+# gradle
 
-## exclude large animated textures
-*_anim.png
-*_anim_low.png
+.gradle/
+build/
+out/
+classes/
 
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
-eclipse
+# idea
 
 ## gradle
 gradlew*
@@ -49,3 +42,16 @@ discarded textures
 notes.txt
 *.csv
 .mixin.out/audit/mixin_implementation_report.txt
+
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# fabric
+
+run/
+
+# eclipse
+*.launch
