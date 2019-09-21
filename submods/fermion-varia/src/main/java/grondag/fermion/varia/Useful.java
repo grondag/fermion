@@ -302,7 +302,7 @@ public class Useful {
         int range = radius * 2 + 1;
 
         for (int i = 0; i < sampleCount; i++) {
-            total += world.getTop(Heightmap.Type.WORLD_SURFACE,
+            total += world.getTopY(Heightmap.Type.WORLD_SURFACE,
                     pos.getX() + ThreadLocalRandom.current().nextInt(range) - radius,
                     pos.getZ() + ThreadLocalRandom.current().nextInt(range) - radius);
         }

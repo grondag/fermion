@@ -1,50 +1,28 @@
-## Windows
-Thumbs.db
+# gradle
 
-## exclude large animated textures
-*_anim.png
-*_anim_low.png
+.gradle/
+build/
+out/
+classes/
 
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
-eclipse
+# idea
 
-## gradle
-gradlew*
-gradle
-.gradle
-build
-run
-
-##idea
+.idea/
 *.iml
 *.ipr
 *.iws
 
-## Jars
-*.jar
+# vscode
 
-### OSX (adds a lot of garbage)###
-.DS_Store
-.AppleDouble
-.LSOverride
+.settings/
+.vscode/
+bin/
+.classpath
+.project
 
-# Thumbnails
-._*
+# fabric
 
-#stuff
-#config
-logs
-.html
-discarded textures
-*.nps
-/.apt_generated/
-notes.txt
-*.csv
-.mixin.out/audit/mixin_implementation_report.txt
-*.xml
+run/
+
+# eclipse
+*.launch
