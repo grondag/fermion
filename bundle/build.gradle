@@ -107,11 +107,6 @@ dependencies {
         exclude group :"net.fabricmc.fabric-api"
 	}
 	
-    include "grondag:fermion-modkeys:${project.fermion_modkeys_version}.+"
-    include "grondag:fermion-varia:${project.fermion_varia_version}.+"
-    include "grondag:fermion-simulator:${project.fermion_simulator_version}.+"
-    include "grondag:special-circumstances:${project.special_circumstances_version}.+"
-    
 	// dev env annotation support
 	compile "org.apiguardian:apiguardian-api:1.0.0"
 	compile "com.google.code.findbugs:jsr305:3.0.2"
