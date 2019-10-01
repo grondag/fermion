@@ -38,7 +38,7 @@ public class ModKeysHandler {
 
     @Environment(EnvType.CLIENT)
     public static void update(MinecraftClient client) {
-        final long handle = client.method_22683().getHandle();
+        final long handle = client.getWindow().getHandle();
         
         byte f = 0;
         if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
