@@ -16,7 +16,9 @@
   "icon": "assets/fermion/fermion_icon.png",
   
   "environment": "*",
-  
+  "entrypoints": {
+    "client": [ "grondag.fermion.client.FermionClient" ]
+  },
   "depends": {
     "fabricloader": ">=0.4.8",
     "fabric": "*"

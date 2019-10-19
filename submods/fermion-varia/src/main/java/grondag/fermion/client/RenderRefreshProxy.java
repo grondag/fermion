@@ -14,12 +14,23 @@
  * the License.
  ******************************************************************************/
 
-package grondag.fermion;
+package grondag.fermion.client;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.function.Consumer;
 
-public class Fermion {
-    public static final String MOD_ID = "fermipn";
-    public static Logger LOG = LogManager.getLogger("Fermion");
+import net.minecraft.util.math.BlockPos;
+
+/**
+ * Server-safe proxy for block entities to call render refresh
+ */
+public class RenderRefreshProxy {
+	private RenderRefreshProxy() {
+
+	}
+
+	static Consumer<BlockPos> RENDER_REFRESH_HANDLER = p -> {};
+
+	public static void refresh(BlockPos pos) {
+		RENDER_REFRESH_HANDLER.accept(pos);
+	}
 }

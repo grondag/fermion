@@ -14,12 +14,30 @@
  * the License.
  ******************************************************************************/
 
-package grondag.fermion;
+package grondag.fermion.registrar;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.List;
 
-public class Fermion {
-    public static final String MOD_ID = "fermipn";
-    public static Logger LOG = LogManager.getLogger("Fermion");
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.util.Identifier;
+
+public abstract class AbstractRegistrar {
+	public final String modId;
+
+	protected AbstractRegistrar(String modId) {
+		this.modId = modId;
+	}
+
+	public Identifier id(String name) {
+		return new Identifier(modId, name);
+	}
+
+	public List<Identifier> idList(String... ids) {
+		final ImmutableList.Builder<Identifier> builder = ImmutableList.builder();
+		for (String id : ids) {
+			builder.add(id(id));
+		}
+		return builder.build();
+	}
 }
