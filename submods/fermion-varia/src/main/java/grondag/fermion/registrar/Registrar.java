@@ -20,6 +20,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
@@ -32,6 +33,9 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
@@ -128,5 +132,13 @@ public class Registrar extends AbstractRegistrar {
 
 	public Tag<Item> itemTag(String id) {
 		return TagRegistry.item(id(id));
+	}
+	
+	public DefaultParticleType particle(String id, boolean alwaysSpawn) {
+		return Registry.register(Registry.PARTICLE_TYPE, id(id), FabricParticleTypes.simple(alwaysSpawn));
+	}
+	
+	public <T extends ParticleEffect> ParticleType<T> particle(String id, boolean alwaysSpawn, ParticleEffect.Factory<T> factory)  {
+		return Registry.register(Registry.PARTICLE_TYPE, id(id), FabricParticleTypes.complex(alwaysSpawn, factory));
 	}
 }
