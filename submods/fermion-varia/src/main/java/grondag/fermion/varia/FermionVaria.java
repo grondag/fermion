@@ -14,12 +14,15 @@
  * the License.
  ******************************************************************************/
 
-package grondag.fermion;
+package grondag.fermion.varia;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import grondag.fermion.block.sign.OpenSignUpdateC2S;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 
-public class Fermion {
-    public static final String MOD_ID = "fermion";
-    public static Logger LOG = LogManager.getLogger("Fermion");
+public class FermionVaria implements ModInitializer {
+	@Override
+	public void onInitialize() {
+		ServerSidePacketRegistry.INSTANCE.register(OpenSignUpdateC2S.C2S_ID, OpenSignUpdateC2S::handleC2S);
+	}
 }

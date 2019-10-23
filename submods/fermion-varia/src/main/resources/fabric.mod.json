@@ -17,7 +17,8 @@
   
   "environment": "*",
   "entrypoints": {
-    "client": [ "grondag.fermion.client.FermionClient" ]
+    "client": [ "grondag.fermion.client.FermionClient" ],
+    "main": [ "grondag.fermion.varia.FermionVaria" ]
   },
   "depends": {
     "fabricloader": ">=0.4.8",
