@@ -1,35 +1,16 @@
 plugins {
-	id 'fabric-loom' version '0.2.5-SNAPSHOT'
-	id 'maven-publish'
+	id "fabric-loom" version "0.2.5-SNAPSHOT"
+	id "eclipse"
+	id "maven-publish"
+	id "com.github.breadmoirai.github-release" version "2.2.9"
 	id "org.ajoberstar.grgit" version "3.1.1"
-}
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-archivesBaseName = 'fermion-varia'
-group = 'grondag'
-def version_tag = 'fermion_varia_version'
-
-if (grgit == null) {
-	version = '99.0.0-nogit'
-} else if (project.hasProperty(version_tag)) {
-	if(grgit.status().isClean()) {
-		version = project.getProperty(version_tag) + '.' + grgit.log().size() + '+' + project.minecraft_version
-	} else {
-		version = project.getProperty(version_tag) + '.' + (grgit.log().size() + 1) + '-snapshot+' + project.minecraft_version
-	}
-} else {
-	version = '99.0.0-local'
-}
-
-minecraft {
+	id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 repositories {
     mavenLocal();
     jcenter();
-    maven { url "https://tehnut.info/maven"}
+    //maven { url "https://tehnut.info/maven"}
     maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
     maven { url "https://minecraft.curseforge.com/api/maven" }
     maven { url "https://maven.fabricmc.net/" }
@@ -45,6 +26,43 @@ repositories {
     }
 }
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+def ENV = System.getenv()
+
+def version_tag = archivesBaseName + '_version'
+
+if (grgit == null) {
+	version = '99.0.0-nogit'
+} else if (project.hasProperty(version_tag)) {
+	if(grgit.status().isClean()) {
+		version = project.getProperty(version_tag) + '.' + grgit.log().size() + '+' + project.minecraft_version
+	} else {
+		version = project.getProperty(version_tag) + '.' + (grgit.log().size() + 1) + '-snapshot+' + project.minecraft_version
+	}
+} else {
+	version = '99.0.0-local'
+}
+
+minecraft {
+	refmapName = archivesBaseName + "-refmap.json"
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${minecraft_version}"
+	mappings "net.fabricmc:yarn:${yarn_mappings}"
+	
+	modApi "net.fabricmc:fabric-loader:${loader_version}"
+	modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+	
+	// dev env annotation support
+	compileOnly "org.apiguardian:apiguardian-api:1.0.0"
+	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+		
+	modImplementation "grondag:fermion:${project.fermion_version}.+" { transitive = false }
+}
+
 processResources {
 	inputs.property "version", version
 	
@@ -55,6 +73,12 @@ processResources {
 	
 	from(sourceSets.main.resources.srcDirs) {
 		exclude "fabric.mod.json"
+	}
+}
+
+eclipse {
+	project {
+		name = archivesBaseName
 	}
 }
 
@@ -75,6 +99,27 @@ tasks.withType(JavaCompile) {
 
 jar {
 	from "LICENSE"
+	manifest
+	{
+		attributes "Implementation-Title": project.archivesBaseName
+		attributes "Implementation-Version": project.version
+		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}"
+		attributes "Built-On-Minecraft": "${project.minecraft_version}"
+		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
+	}
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = "sources"
+	from sourceSets.main.allSource
+	manifest
+	{
+		attributes "Implementation-Title": project.archivesBaseName + "-sources"
+		attributes "Implementation-Version": project.version
+		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:sources"
+		attributes "Built-On-Minecraft": "${project.minecraft_version}"
+		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
+	}
 }
 
 sourceSets {
@@ -96,19 +141,6 @@ sourceSets {
     }
 }
 
-dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
-	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
-	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
-	// dev env annotation support
-	compile "org.apiguardian:apiguardian-api:1.0.0"
-	compile "com.google.code.findbugs:jsr305:3.0.2"
-		
-	modImplementation "grondag:fermion:${project.fermion_version}.+"
-}
-
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
@@ -116,11 +148,12 @@ publishing {
 				builtBy remapJar
 			}
 			artifact(sourcesJar) {
+				classifier = "sources"
 				builtBy remapSourcesJar
 			}
 		}
 	}
-
+	
 	repositories {
 		mavenLocal()
 		maven {
@@ -134,5 +167,87 @@ publishing {
 				}
 			}
         }
+	}
+}
+
+githubRelease {
+	token project.hasProperty("github_releases_token") ? project.github_releases_token : ""
+	if(project.hasProperty("github_repository_owner")) {
+		owner project.github_repository_owner
+	}
+	if(project.hasProperty("github_repository")) {
+		repo project.github_repository
+	}
+	
+	tagName project.version
+	targetCommitish { org.ajoberstar.grgit.Grgit.open(dir: ".").branch.current().name }
+	releaseName project.version
+	
+	FilenameFilter filter = { dir, filename -> filename.contains(project.version) && !filename.contains("-dev.jar") }
+	releaseAssets = jar.destinationDir.listFiles filter
+}
+
+curseforge {
+	if(project.hasProperty("curseforge_api_key")) {
+		apiKey = project.properties.curseforge_api_key
+	}
+	
+	if(project.hasProperty("curseforge_id")) {
+		project {
+			id = project.properties.curseforge_id
+			
+			releaseType = project.release_type
+			addGameVersion project.release_version
+			addGameVersion "Fabric"
+			
+			mainArtifact(remapJar) {
+				displayName = "${archives_base_name}-${project.version}.jar"
+				
+				if(project.hasProperty("required_dep_slugs") || project.hasProperty("embedded_lib_slugs") || project.hasProperty("optional_dep_slugs") || project.hasProperty("compatible_tool_slugs") || project.hasProperty("incompatible_slugs")) {
+					relations {
+						if(project.hasProperty("required_dep_slugs")) {
+							project.required_dep_slugs.split(", ").each { String slug ->
+								requiredDependency slug
+							}
+						}
+						
+						if(project.hasProperty("embedded_lib_slugs")) {
+							project.embedded_lib_slugs.split(", ").each { String slug ->
+								embeddedLibrary slug
+							}
+						}
+						
+						if(project.hasProperty("optional_dep_slugs")) {
+							project.optional_dep_slugs.split(", ").each { String slug ->
+								optionalDependency slug
+							}
+						}
+						
+						if(project.hasProperty("compatible_tool_slugs")) {
+							project.compatible_tool_slugs.split(", ").each { String slug ->
+								tool slug
+							}
+						}
+						
+						if(project.hasProperty("incompatible_slugs")) {
+							project.incompatible_slugs.split(", ").each { String slug ->
+								incompatible slug
+							}
+						}
+					}
+				}
+			}
+			
+			addArtifact(sourcesJar) {
+				displayName = "${archives_base_name}-${minecraft_version}-${project.version}-sources.jar"
+			}
+			
+			afterEvaluate {
+				uploadTask.dependsOn remapSourcesJar
+			}
+		}
+		options {
+			forgeGradleIntegration = false
+		}
 	}
 }
