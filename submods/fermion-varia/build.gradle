@@ -7,31 +7,12 @@ plugins {
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
-repositories {
-    mavenLocal();
-    jcenter();
-    //maven { url "https://tehnut.info/maven"}
-    maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
-    maven { url "https://minecraft.curseforge.com/api/maven" }
-    maven { url "https://maven.fabricmc.net/" }
-    maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
-    
- 	maven {
-    	name = "grondag"
-    	url = "https://grondag-repo.appspot.com"
-    	credentials {
-            username "guest"
-            password ""
-		}
-    }
-}
-
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 def ENV = System.getenv()
 
-def version_tag = archivesBaseName + '_version'
+def version_tag = archivesBaseName.replaceAll('-', '_') + '_version'
 
 if (grgit == null) {
 	version = '99.0.0-nogit'
@@ -47,20 +28,6 @@ if (grgit == null) {
 
 minecraft {
 	refmapName = archivesBaseName + "-refmap.json"
-}
-
-dependencies {
-	minecraft "com.mojang:minecraft:${minecraft_version}"
-	mappings "net.fabricmc:yarn:${yarn_mappings}"
-	
-	modApi "net.fabricmc:fabric-loader:${loader_version}"
-	modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-	
-	// dev env annotation support
-	compileOnly "org.apiguardian:apiguardian-api:1.0.0"
-	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-		
-	modImplementation "grondag:fermion:${project.fermion_version}.+" { transitive = false }
 }
 
 processResources {
@@ -82,14 +49,6 @@ eclipse {
 	}
 }
 
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
-}
-
 // ensure that the encoding is set to UTF-8, no matter what the system default is
 // this fixes some edge cases with special characters not displaying correctly
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
@@ -109,6 +68,9 @@ jar {
 	}
 }
 
+// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+// if it is present.
+// If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = "sources"
 	from sourceSets.main.allSource
@@ -250,4 +212,37 @@ curseforge {
 			forgeGradleIntegration = false
 		}
 	}
+}
+
+repositories {
+    //mavenLocal();
+    jcenter();
+    //maven { url "https://tehnut.info/maven"}
+    //maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
+    //maven { url "https://minecraft.curseforge.com/api/maven" }
+    maven { url "https://maven.fabricmc.net/" }
+    //maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
+    
+ 	maven {
+    	name = "grondag"
+    	url = "https://grondag-repo.appspot.com"
+    	credentials {
+            username "guest"
+            password ""
+		}
+    }
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${minecraft_version}"
+	mappings "net.fabricmc:yarn:${yarn_mappings}"
+	
+	modApi "net.fabricmc:fabric-loader:${loader_version}"
+	modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+	
+	// dev env annotation support
+	compileOnly "org.apiguardian:apiguardian-api:1.0.0"
+	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+		
+	modImplementation ("grondag:fermion:${project.fermion_version}.+") { transitive = false }
 }
