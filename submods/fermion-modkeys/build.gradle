@@ -12,30 +12,32 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 def ENV = System.getenv()
 
-def version_tag = archivesBaseName.replaceAll('-', '_') + '_version'
-
-if (grgit == null) {
-	version = '99.0.0-nogit'
-} else if (project.hasProperty(version_tag)) {
-	if(grgit.status().isClean()) {
-		version = project.getProperty(version_tag) + '.' + grgit.log().size() + '+' + project.minecraft_version
-	} else {
-		version = project.getProperty(version_tag) + '.' + (grgit.log().size() + 1) + '-snapshot+' + project.minecraft_version
-	}
-} else {
-	version = '99.0.0-local'
-}
+def version_tag = project.mod_name.replaceAll('-', '_') + '_version'
 
 minecraft {
-	refmapName = archivesBaseName + "-refmap.json"
+	refmapName = project.mod_name + "-refmap.json"
+}
+
+project.archivesBaseName = project.mod_name + "-" + project.mc_tag
+
+if (grgit == null) {
+	project.version = '99.0.0-nogit'
+} else if (project.hasProperty(version_tag)) {
+	if(grgit.status().isClean()) {
+		project.version = project.getProperty(version_tag) + '.' + grgit.log().size()
+	} else {
+		project.version = project.getProperty(version_tag) + '.' + (grgit.log().size() + 1) + '-snapshot'
+	}
+} else {
+	project.version = '99.0.0-local'
 }
 
 processResources {
-	inputs.property "version", version
+	inputs.property "version", project.version
 	
 	from(sourceSets.main.resources.srcDirs) {
 		include "fabric.mod.json"
-		expand "version": version
+		expand "version": project.version
 	}
 	
 	from(sourceSets.main.resources.srcDirs) {
@@ -43,9 +45,11 @@ processResources {
 	}
 }
 
+def eclipseName =  project.mod_name;
+
 eclipse {
 	project {
-		name = archivesBaseName
+		name = eclipseName;
 	}
 }
 
@@ -62,7 +66,7 @@ jar {
 	{
 		attributes "Implementation-Title": project.archivesBaseName
 		attributes "Implementation-Version": project.version
-		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}"
+		attributes "Maven-Artifact": "${group}:${project.archivesBaseName}:${project.version}"
 		attributes "Built-On-Minecraft": "${project.minecraft_version}"
 		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
 	}
@@ -214,36 +218,4 @@ curseforge {
 	}
 }
 
-
-repositories {
-    //mavenLocal();
-    jcenter();
-    //maven { url "https://tehnut.info/maven"}
-    //maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
-    //maven { url "https://minecraft.curseforge.com/api/maven" }
-    maven { url "https://maven.fabricmc.net/" }
-    //maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
-    
- 	maven {
-    	name = "grondag"
-    	url = "https://grondag-repo.appspot.com"
-    	credentials {
-            username "guest"
-            password ""
-		}
-    }
-}
-
-dependencies {
-	minecraft "com.mojang:minecraft:${minecraft_version}"
-	mappings "net.fabricmc:yarn:${yarn_mappings}"
-	
-	modApi "net.fabricmc:fabric-loader:${loader_version}"
-	modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-	
-	// dev env annotation support
-	compileOnly "org.apiguardian:apiguardian-api:1.0.0"
-	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-		
-	modImplementation ("grondag:fermion:${project.fermion_version}.+") { transitive = false }
-}
+apply from: 'dependencies.gradle'
