@@ -18,7 +18,9 @@ minecraft {
 	refmapName = project.mod_name + "-refmap.json"
 }
 
-project.archivesBaseName = project.mod_name + "-" + project.mc_tag
+def artifact_name = project.mod_name + "-" + project.mc_tag
+
+project.archivesBaseName = artifact_name
 
 if (grgit == null) {
 	project.version = '99.0.0-nogit'
@@ -110,6 +112,7 @@ sourceSets {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
+			artifactId = artifact_name;
 			artifact(remapJar) {
 				builtBy remapJar
 			}
