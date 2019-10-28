@@ -76,6 +76,10 @@ public class PackedBlockPos {
                 | ((long) (z + WORLD_BOUNDARY) & Z_MASK);
     }
 
+    public static final long pack(double x, double y, double z) {
+    	return pack((int) x, (int) y, (int) z);
+    }
+    
     /**
      * Same as version that uses the BlockPos input but with primitive types as
      * inputs. This version includes 4 extra bits of data that can be used in any
