@@ -25,6 +25,7 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ArmorItem;
@@ -132,6 +133,10 @@ public class Registrar extends AbstractRegistrar {
 
 	public Tag<Item> itemTag(String id) {
 		return TagRegistry.item(id(id));
+	}
+	
+	public Tag<EntityType<?>> entityTag(String id) {
+		return TagRegistry.entityType(id(id));
 	}
 	
 	public DefaultParticleType particle(String id, boolean alwaysSpawn) {
