@@ -27,6 +27,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
@@ -145,5 +146,9 @@ public class Registrar extends AbstractRegistrar {
 	
 	public <T extends ParticleEffect> ParticleType<T> particle(String id, boolean alwaysSpawn, ParticleEffect.Factory<T> factory)  {
 		return Registry.register(Registry.PARTICLE_TYPE, id(id), FabricParticleTypes.complex(alwaysSpawn, factory));
+	}
+	
+	public StatusEffect statusEffect(String id, StatusEffect effect) {
+		return Registry.register(Registry.STATUS_EFFECT, id(id), effect);
 	}
 }
