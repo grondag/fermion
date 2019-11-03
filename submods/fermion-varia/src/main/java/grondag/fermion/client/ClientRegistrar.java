@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -34,8 +34,8 @@ public class ClientRegistrar extends AbstractRegistrar {
 		super(modId);
 	}
 
-	public void fluidRenderHandler(Fluid fluid, int color, String stillSprite, String flowingSprite) {
-		SimpleFluidRenderRegistry.register(fluid, color, stillSprite, flowingSprite);
+	public void fluidRenderHandler(Fluid stillFluid, Fluid flowingFluid, int color, String stillSprite, String flowingSprite) {
+		SimpleFluidRenderRegistry.register(stillFluid, flowingFluid, color, stillSprite, flowingSprite);
 	}
 
 	public void modelVariant(String id, UnbakedModel unbakedModel) {
@@ -45,7 +45,7 @@ public class ClientRegistrar extends AbstractRegistrar {
 	public void simpleRandomModel(String id, String... textures) {
 		final ImmutableList.Builder<Identifier> builder = ImmutableList.builder();
 
-		for (String tex : textures) {
+		for (final String tex : textures) {
 			builder.add(id(tex));
 		}
 
