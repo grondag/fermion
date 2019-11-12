@@ -24,8 +24,8 @@ import com.google.common.collect.ImmutableList;
 import grondag.fermion.Fermion;
 import grondag.fermion.simulator.Simulator;
 import grondag.fermion.simulator.persistence.AssignedNumber;
-import grondag.fermion.simulator.persistence.Identified;
-import grondag.fermion.simulator.persistence.IdentifiedIndex;
+import grondag.fermion.simulator.persistence.Numbered;
+import grondag.fermion.simulator.persistence.NumberedIndex;
 import grondag.fermion.simulator.persistence.SimulationTopNode;
 import grondag.fermion.varia.NBTDictionary;
 import net.minecraft.client.resource.language.I18n;
@@ -111,7 +111,7 @@ public class DomainManager extends SimulationTopNode {
 			if (defaultDomain == null) {
 				defaultDomain = new Domain(this);
 				defaultDomain.setSecurityEnabled(false);
-				defaultDomain.setId(Identified.DEFAULT_ID);
+				defaultDomain.setAssignedNumber(Numbered.DEFAULT_NUM);
 				defaultDomain.setName("Public");
 
 				Simulator.instance().assignedNumbersAuthority().register(defaultDomain);
@@ -123,7 +123,7 @@ public class DomainManager extends SimulationTopNode {
 	public List<IDomain> getAllDomains() {
 		checkLoaded();
 		final ImmutableList.Builder<IDomain> builder = ImmutableList.builder();
-		for (final Identified domain : Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN).values()) {
+		for (final Numbered domain : Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN).values()) {
 			builder.add((Domain) domain);
 		}
 		return builder.build();
@@ -209,10 +209,10 @@ public class DomainManager extends SimulationTopNode {
 	public CompoundTag toTag(CompoundTag tag) {
 		final ListTag nbtDomains = new ListTag();
 
-		final IdentifiedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
+		final NumberedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
 
 		if (!domains.isEmpty()) {
-			for (final Identified domain : domains.values()) {
+			for (final Numbered domain : domains.values()) {
 				nbtDomains.add(((Domain) domain).toTag());
 			}
 		}
@@ -221,7 +221,7 @@ public class DomainManager extends SimulationTopNode {
 		if (!playerIntrinsicDomains.isEmpty()) {
 			final CompoundTag nbtPlayerDomains = new CompoundTag();
 			for (final Entry<String, IDomain> entry : playerIntrinsicDomains.entrySet()) {
-				nbtPlayerDomains.putInt(entry.getKey(), entry.getValue().getId());
+				nbtPlayerDomains.putInt(entry.getKey(), entry.getValue().getAssignedNumber());
 			}
 			tag.put(NBT_DOMAIN_PLAYER_DOMAINS, nbtPlayerDomains);
 		}
@@ -229,7 +229,7 @@ public class DomainManager extends SimulationTopNode {
 		if (!playerActiveDomains.isEmpty()) {
 			final CompoundTag nbtActiveDomains = new CompoundTag();
 			for (final Entry<String, IDomain> entry : playerActiveDomains.entrySet()) {
-				nbtActiveDomains.putInt(entry.getKey(), entry.getValue().getId());
+				nbtActiveDomains.putInt(entry.getKey(), entry.getValue().getAssignedNumber());
 			}
 			tag.put(NBT_DOMAIN_ACTIVE_DOMAINS, nbtActiveDomains);
 		}
@@ -306,10 +306,10 @@ public class DomainManager extends SimulationTopNode {
 
 	@Override
 	public void afterDeserialization() {
-		final IdentifiedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
+		final NumberedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
 
 		if (!domains.isEmpty()) {
-			for (final Identified domain : domains.values()) {
+			for (final Numbered domain : domains.values()) {
 				((Domain) domain).afterDeserialization();
 			}
 		}

@@ -22,11 +22,11 @@ import javax.annotation.Nullable;
 import com.google.common.eventbus.EventBus;
 
 import grondag.fermion.simulator.persistence.DirtListenerProvider;
-import grondag.fermion.simulator.persistence.Identified;
+import grondag.fermion.simulator.persistence.Numbered;
 import grondag.fermion.simulator.persistence.SimulationNode;
 import net.minecraft.entity.player.PlayerEntity;
 
-public interface IDomain extends SimulationNode, DirtListenerProvider, Identified {
+public interface IDomain extends SimulationNode, DirtListenerProvider, Numbered {
 
 	EventBus eventBus();
 

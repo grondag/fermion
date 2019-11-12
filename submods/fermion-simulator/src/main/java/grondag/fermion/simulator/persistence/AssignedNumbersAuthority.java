@@ -15,14 +15,11 @@
  ******************************************************************************/
 package grondag.fermion.simulator.persistence;
 
-import java.util.Arrays;
-
 import javax.annotation.Nullable;
 
-import grondag.fermion.Fermion;
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
-import me.zeroeightsix.fiber.Identifier;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 
 public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
@@ -30,70 +27,77 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 	private static final String NBT_TAG = NBTDictionary.claim("assignedNumAuth");
 
 	private DirtListener dirtKeeper = NullDirtListener.INSTANCE;
+	private final Object2ObjectOpenHashMap<String, NumberedIndex> indexes = new Object2ObjectOpenHashMap<>();
 
 	public AssignedNumbersAuthority() {
-		indexes = new IdentifiedIndex[AssignedNumber.values().length];
-		for (int i = 0; i < AssignedNumber.values().length; i++) {
-			indexes[i] = createIndex(AssignedNumber.values()[i]);
-		}
 		clear();
 	}
 
-	public IdentifiedIndex getIndex(Identifier numberType) {
-		return new IdentifiedIndex(numberType);
+	public NumberedIndex getIndex(String numberType) {
+		return indexes.computeIfAbsent(numberType, nt -> new NumberedIndex(nt, this));
 	}
 
-	public void register(Identified registrant) {
-		indexes[registrant.idType().ordinal()].register(registrant);
+	/**
+	 * @deprecated Use method on index directly.
+	 */
+	@Deprecated
+	public void register(Numbered registrant) {
+		getIndex(registrant.numberType()).register(registrant);
 	}
 
-	public void unregister(Identified registrant) {
-		indexes[registrant.idType().ordinal()].unregister(registrant);
+	/**
+	 * @deprecated Use method on index directly.
+	 */
+	@Deprecated
+	public void unregister(Numbered registrant) {
+		getIndex(registrant.numberType()).unregister(registrant);
 	}
 
+	/**
+	 * @deprecated Use method on index directly.
+	 */
+	@Deprecated
 	@Nullable
-	public Identified get(int id, AssignedNumber idType) {
-		return indexes[idType.ordinal()].get(id);
+	public Numbered get(int id, String numberType) {
+		return getIndex(numberType).get(id);
 	}
 
 	public void clear() {
-		lastID = new int[AssignedNumber.values().length];
-		Arrays.fill(lastID, 999);
-		for (int i = 0; i < AssignedNumber.values().length; i++) {
-			indexes[i].clear();
-		}
+		indexes.values().forEach(i -> i.clear());
 	}
 
 	/**
 	 * First ID returned for each type is 1000 to allow room for system IDs. System
 	 * ID's should start at 1 to distinguish from missing/unset ID.
+	 * @deprecated Use method on index directly.
 	 */
-	public synchronized int newNumber(AssignedNumber numberType) {
+	@Deprecated
+	public synchronized int newNumber(String numberType) {
 		dirtKeeper.makeDirty();
-
-		return ++lastID[numberType.ordinal()];
+		return getIndex(numberType).newNumber();
 	}
 
 	@Override
-	public synchronized void writeTag(@Nullable CompoundTag tag) {
-		final int input[] = tag.getIntArray(NBT_TAG);
-		if (input.length == 0) {
-			clear();
-		} else {
-			if (input.length == lastID.length) {
-				lastID = Arrays.copyOf(input, input.length);
-			} else {
-				Fermion.LOG.warn("Simulation assigned numbers save data appears to be corrupt.  World may be borked.");
-				clear();
-				final int commonLength = Math.min(lastID.length, input.length);
-				System.arraycopy(input, 0, lastID, 0, commonLength);
-			}
-		}
+	public synchronized void writeTag(CompoundTag tag) {
+		final CompoundTag myTag = new CompoundTag();
+
+		indexes.forEach((id, idx) -> {
+			myTag.putInt(id, idx.lastId);
+		});
+
+		tag.put(NBT_TAG, myTag);
 	}
 
 	@Override
 	public synchronized void readTag(CompoundTag tag) {
-		tag.putIntArray(NBT_TAG, Arrays.copyOf(lastID, lastID.length));
+		clear();
+		final CompoundTag myTag = tag.getCompound(NBT_TAG);
+
+		if (myTag == null || myTag.isEmpty()) return;
+
+		myTag.getKeys().forEach(k -> {
+			getIndex(k).reset(myTag.getInt(k));
+		});
 	}
 
 	@Override
@@ -105,9 +109,4 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 	public void setDirtKeeper(DirtKeeper keeper) {
 		dirtKeeper = keeper;
 	}
-
-	public IdentifiedIndex getIndex(AssignedNumber idType) {
-		return indexes[idType.ordinal()];
-	}
-
 }

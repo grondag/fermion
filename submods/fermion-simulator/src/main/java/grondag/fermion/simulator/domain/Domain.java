@@ -29,14 +29,14 @@ import grondag.fermion.Fermion;
 import grondag.fermion.simulator.persistence.AssignedNumber;
 import grondag.fermion.simulator.persistence.DirtListener;
 import grondag.fermion.simulator.persistence.DirtListenerProvider;
-import grondag.fermion.simulator.persistence.Identified;
+import grondag.fermion.simulator.persistence.Numbered;
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
-public class Domain implements ReadWriteNBT, DirtListenerProvider, Identified, IDomain {
+public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDomain {
 	private static final String NBT_DOMAIN_SECURITY_ENABLED = NBTDictionary.claim("domSecOn");
 	private static final String NBT_DOMAIN_NAME = NBTDictionary.claim("domName");
 	private static final String NBT_DOMAIN_USERS = NBTDictionary.claim("domUsers");
@@ -130,17 +130,17 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Identified, I
 	}
 
 	@Override
-	public int getIdRaw() {
+	public int getRawNumber() {
 		return id;
 	}
 
 	@Override
-	public void setId(int id) {
+	public void setAssignedNumber(int id) {
 		this.id = id;
 	}
 
 	@Override
-	public AssignedNumber idType() {
+	public String numberType() {
 		return AssignedNumber.DOMAIN;
 	}
 
@@ -173,7 +173,7 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Identified, I
 
 	@Override
 	public void readTag(CompoundTag tag) {
-		serializeID(tag);
+		serializeNumber(tag);
 		tag.putBoolean(NBT_DOMAIN_SECURITY_ENABLED, isSecurityEnabled);
 		tag.putString(NBT_DOMAIN_NAME, name);
 
@@ -189,7 +189,7 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Identified, I
 
 	@Override
 	public void writeTag(@Nullable CompoundTag tag) {
-		deserializeID(tag);
+		deserializeNumber(tag);
 		isSecurityEnabled = tag.getBoolean(NBT_DOMAIN_SECURITY_ENABLED);
 		name = tag.getString(NBT_DOMAIN_NAME);
 

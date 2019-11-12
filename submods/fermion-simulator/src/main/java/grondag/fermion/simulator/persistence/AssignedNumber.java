@@ -15,13 +15,14 @@
  ******************************************************************************/
 package grondag.fermion.simulator.persistence;
 
+import grondag.fermion.varia.NBTDictionary;
+
 public enum AssignedNumber {
-	DOMAIN, DEVICE, JOB, TASK, BUILD;
+	;
 
-	public final String tagName;
-
-	private AssignedNumber() {
-		tagName = "hsanum" + ordinal();
-	}
-
+	public static String DOMAIN = NBTDictionary.claim("anDom");
+	public static String JOB = NBTDictionary.claim("anJob");
+	public static String TASK = NBTDictionary.claim("anTsk");
+	public static String BUILD = NBTDictionary.claim("anBld");
+	public static String DEVICE = NBTDictionary.claim("anDev");
 }
