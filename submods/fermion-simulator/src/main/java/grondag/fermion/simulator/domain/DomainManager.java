@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -24,8 +24,8 @@ import com.google.common.collect.ImmutableList;
 import grondag.fermion.Fermion;
 import grondag.fermion.simulator.Simulator;
 import grondag.fermion.simulator.persistence.AssignedNumber;
-import grondag.fermion.simulator.persistence.AssignedNumbersAuthority.IdentifiedIndex;
-import grondag.fermion.simulator.persistence.IIdentified;
+import grondag.fermion.simulator.persistence.Identified;
+import grondag.fermion.simulator.persistence.IdentifiedIndex;
 import grondag.fermion.simulator.persistence.SimulationTopNode;
 import grondag.fermion.varia.NBTDictionary;
 import net.minecraft.client.resource.language.I18n;
@@ -34,288 +34,290 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class DomainManager extends SimulationTopNode {
-    private static final String NBT_DOMAIN_MANAGER = NBTDictionary.claim("domMgr");
-    private static final String NBT_DOMAIN_MANAGER_DOMAINS = NBTDictionary.claim("domMgrAll");
-    private static final String NBT_DOMAIN_PLAYER_DOMAINS = NBTDictionary.claim("domMgrPlayer");
-    private static final String NBT_DOMAIN_ACTIVE_DOMAINS = NBTDictionary.claim("domMgrActive");
+	private static final String NBT_DOMAIN_MANAGER = NBTDictionary.claim("domMgr");
+	private static final String NBT_DOMAIN_MANAGER_DOMAINS = NBTDictionary.claim("domMgrAll");
+	private static final String NBT_DOMAIN_PLAYER_DOMAINS = NBTDictionary.claim("domMgrPlayer");
+	private static final String NBT_DOMAIN_ACTIVE_DOMAINS = NBTDictionary.claim("domMgrActive");
 
-    /**
-     * Set to null when Simulator creates singleton and when it shuts down to force
-     * retrieval of current instance.
-     */
-    private static DomainManager instance;
+	/**
+	 * Set to null when Simulator creates singleton and when it shuts down to force
+	 * retrieval of current instance.
+	 */
+	private static DomainManager instance;
 
-    public static DomainManager instance() {
-        return instance;
-    }
+	public static DomainManager instance() {
+		return instance;
+	}
 
-    private boolean isDeserializationInProgress = false;
+	private boolean isDeserializationInProgress = false;
 
-    boolean isDirty = false;
+	boolean isDirty = false;
 
-    private boolean isLoaded = false;
+	private boolean isLoaded = false;
 
-    private IDomain defaultDomain;
+	private IDomain defaultDomain;
 
-    /**
-     * Each player has a domain that is automatically created for them and which
-     * they always own. This will be their initially active domain.
-     */
-    private HashMap<String, IDomain> playerIntrinsicDomains = new HashMap<>();
+	/**
+	 * Each player has a domain that is automatically created for them and which
+	 * they always own. This will be their initially active domain.
+	 */
+	private final HashMap<String, IDomain> playerIntrinsicDomains = new HashMap<>();
 
-    /**
-     * Each player has a currently active domain. This will initially be their
-     * intrinsic domain.
-     */
-    private HashMap<String, IDomain> playerActiveDomains = new HashMap<>();
+	/**
+	 * Each player has a currently active domain. This will initially be their
+	 * intrinsic domain.
+	 */
+	private final HashMap<String, IDomain> playerActiveDomains = new HashMap<>();
 
-    /**
-     * If isNew=true then won't wait for a deserialize to become loaded.
-     */
-    public DomainManager() {
-        super(NBT_DOMAIN_MANAGER);
-        // force refresh of singleton reference
-        instance = null;
+	/**
+	 * If isNew=true then won't wait for a deserialize to become loaded.
+	 */
+	public DomainManager() {
+		super(NBT_DOMAIN_MANAGER);
+		// force refresh of singleton reference
+		instance = null;
 
-    }
+	}
 
-    /**
-     * Called at shutdown
-     */
-    @Override
-    public void unload() {
-        this.playerActiveDomains.clear();
-        this.playerIntrinsicDomains.clear();
-        this.defaultDomain = null;
-        this.isLoaded = false;
-    }
+	/**
+	 * Called at shutdown
+	 */
+	@Override
+	public void unload() {
+		playerActiveDomains.clear();
+		playerIntrinsicDomains.clear();
+		defaultDomain = null;
+		isLoaded = false;
+	}
 
-    @Override
-    public void afterCreated(Simulator sim) {
-        instance = this;
-    }
+	@Override
+	public void afterCreated(Simulator sim) {
+		instance = this;
+	}
 
-    @Override
-    public void loadNew() {
-        this.unload();
-        this.isLoaded = true;
-    }
+	@Override
+	public void loadNew() {
+		unload();
+		isLoaded = true;
+	}
 
-    /**
-     * Domain for unmanaged objects.
-     */
-    public IDomain defaultDomain() {
-        this.checkLoaded();
-        if (this.defaultDomain == null) {
-            defaultDomain = domainFromId(1);
-            if (defaultDomain == null) {
-                this.defaultDomain = new Domain(this);
-                this.defaultDomain.setSecurityEnabled(false);
-                this.defaultDomain.setId(IIdentified.DEFAULT_ID);
-                this.defaultDomain.setName("Public");
-                ;
-                Simulator.instance().assignedNumbersAuthority().register(defaultDomain);
-            }
-        }
-        return this.defaultDomain;
-    }
+	/**
+	 * Domain for unmanaged objects.
+	 */
+	public IDomain defaultDomain() {
+		checkLoaded();
+		if (defaultDomain == null) {
+			defaultDomain = domainFromId(1);
+			if (defaultDomain == null) {
+				defaultDomain = new Domain(this);
+				defaultDomain.setSecurityEnabled(false);
+				defaultDomain.setId(Identified.DEFAULT_ID);
+				defaultDomain.setName("Public");
 
-    public List<IDomain> getAllDomains() {
-        this.checkLoaded();
-        ImmutableList.Builder<IDomain> builder = ImmutableList.builder();
-        for (IIdentified domain : Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN).values()) {
-            builder.add((Domain) domain);
-        }
-        return builder.build();
-    }
+				Simulator.instance().assignedNumbersAuthority().register(defaultDomain);
+			}
+		}
+		return defaultDomain;
+	}
 
-    public IDomain getDomain(int id) {
-        this.checkLoaded();
-        return domainFromId(id);
-    }
+	public List<IDomain> getAllDomains() {
+		checkLoaded();
+		final ImmutableList.Builder<IDomain> builder = ImmutableList.builder();
+		for (final Identified domain : Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN).values()) {
+			builder.add((Domain) domain);
+		}
+		return builder.build();
+	}
 
-    public synchronized IDomain createDomain() {
-        this.checkLoaded();
-        Domain result = new Domain(this);
-        Simulator.instance().assignedNumbersAuthority().register(result);
-        result.name = "Domain " + result.id;
-        this.isDirty = true;
-        return result;
-    }
+	public IDomain getDomain(int id) {
+		checkLoaded();
+		return domainFromId(id);
+	}
 
-    /**
-     * Does NOT destroy any of the contained objects in the domain!
-     */
-    public synchronized void removeDomain(IDomain domain) {
-        this.checkLoaded();
-        Simulator.instance().assignedNumbersAuthority().unregister(domain);
-        this.isDirty = true;
-    }
+	public synchronized IDomain createDomain() {
+		checkLoaded();
+		final Domain result = new Domain(this);
+		Simulator.instance().assignedNumbersAuthority().register(result);
+		result.name = "Domain " + result.id;
+		isDirty = true;
+		return result;
+	}
 
-    @Override
-    public boolean isDirty() {
-        return this.isDirty;
-    }
+	/**
+	 * Does NOT destroy any of the contained objects in the domain!
+	 */
+	public synchronized void removeDomain(IDomain domain) {
+		checkLoaded();
+		Simulator.instance().assignedNumbersAuthority().unregister(domain);
+		isDirty = true;
+	}
 
-    @Override
-    public void setDirty(boolean isDirty) {
-        makeDirty(isDirty);
-    }
+	@Override
+	public boolean isDirty() {
+		return isDirty;
+	}
 
-    @Override
-    public void fromTag(CompoundTag tag) {
-        this.isDeserializationInProgress = true;
+	@Override
+	public void setDirty(boolean isDirty) {
+		makeDirty(isDirty);
+	}
 
-        this.unload();
+	@Override
+	public void fromTag(CompoundTag tag) {
+		isDeserializationInProgress = true;
 
-        // need to do this before loading domains, otherwise they will cause complaints
-        this.isLoaded = true;
+		unload();
 
-        if (tag == null)
-            return;
+		// need to do this before loading domains, otherwise they will cause complaints
+		isLoaded = true;
 
-        ListTag nbtDomains = tag.getList(NBT_DOMAIN_MANAGER_DOMAINS, 10);
-        if (nbtDomains != null && !nbtDomains.isEmpty()) {
-            for (int i = 0; i < nbtDomains.size(); ++i) {
-                Domain domain = new Domain(this, nbtDomains.getCompoundTag(i));
-                Simulator.instance().assignedNumbersAuthority().register(domain);
-            }
-        }
+		if (tag == null)
+			return;
 
-        CompoundTag nbtPlayerDomains = tag.getCompound(NBT_DOMAIN_PLAYER_DOMAINS);
-        if (nbtPlayerDomains != null && !nbtPlayerDomains.isEmpty()) {
-            for (String playerName : nbtPlayerDomains.getKeys()) {
-                IDomain d = domainFromId(nbtPlayerDomains.getInt(playerName));
-                if (d != null)
-                    this.playerIntrinsicDomains.put(playerName, d);
-            }
-        }
+		final ListTag nbtDomains = tag.getList(NBT_DOMAIN_MANAGER_DOMAINS, 10);
+		if (nbtDomains != null && !nbtDomains.isEmpty()) {
+			for (int i = 0; i < nbtDomains.size(); ++i) {
+				final Domain domain = new Domain(this, nbtDomains.getCompoundTag(i));
+				Simulator.instance().assignedNumbersAuthority().register(domain);
+			}
+		}
 
-        CompoundTag nbtActiveDomains = tag.getCompound(NBT_DOMAIN_ACTIVE_DOMAINS);
-        if (nbtActiveDomains != null && !nbtActiveDomains.isEmpty()) {
-            for (String playerName : nbtActiveDomains.getKeys()) {
-                IDomain d = domainFromId(nbtActiveDomains.getInt(playerName));
-                if (d != null)
-                    this.playerActiveDomains.put(playerName, d);
-            }
-        }
+		final CompoundTag nbtPlayerDomains = tag.getCompound(NBT_DOMAIN_PLAYER_DOMAINS);
+		if (nbtPlayerDomains != null && !nbtPlayerDomains.isEmpty()) {
+			for (final String playerName : nbtPlayerDomains.getKeys()) {
+				final IDomain d = domainFromId(nbtPlayerDomains.getInt(playerName));
+				if (d != null) {
+					playerIntrinsicDomains.put(playerName, d);
+				}
+			}
+		}
 
-        this.isDeserializationInProgress = false;
-    }
+		final CompoundTag nbtActiveDomains = tag.getCompound(NBT_DOMAIN_ACTIVE_DOMAINS);
+		if (nbtActiveDomains != null && !nbtActiveDomains.isEmpty()) {
+			for (final String playerName : nbtActiveDomains.getKeys()) {
+				final IDomain d = domainFromId(nbtActiveDomains.getInt(playerName));
+				if (d != null) {
+					playerActiveDomains.put(playerName, d);
+				}
+			}
+		}
 
-    @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        ListTag nbtDomains = new ListTag();
+		isDeserializationInProgress = false;
+	}
 
-        IdentifiedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
+	@Override
+	public CompoundTag toTag(CompoundTag tag) {
+		final ListTag nbtDomains = new ListTag();
 
-        if (!domains.isEmpty()) {
-            for (IIdentified domain : domains.values()) {
-                nbtDomains.add(((Domain) domain).toTag());
-            }
-        }
-        tag.put(NBT_DOMAIN_MANAGER_DOMAINS, nbtDomains);
+		final IdentifiedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
 
-        if (!this.playerIntrinsicDomains.isEmpty()) {
-            CompoundTag nbtPlayerDomains = new CompoundTag();
-            for (Entry<String, IDomain> entry : this.playerIntrinsicDomains.entrySet()) {
-                nbtPlayerDomains.putInt(entry.getKey(), entry.getValue().getId());
-            }
-            tag.put(NBT_DOMAIN_PLAYER_DOMAINS, nbtPlayerDomains);
-        }
+		if (!domains.isEmpty()) {
+			for (final Identified domain : domains.values()) {
+				nbtDomains.add(((Domain) domain).toTag());
+			}
+		}
+		tag.put(NBT_DOMAIN_MANAGER_DOMAINS, nbtDomains);
 
-        if (!this.playerActiveDomains.isEmpty()) {
-            CompoundTag nbtActiveDomains = new CompoundTag();
-            for (Entry<String, IDomain> entry : this.playerActiveDomains.entrySet()) {
-                nbtActiveDomains.putInt(entry.getKey(), entry.getValue().getId());
-            }
-            tag.put(NBT_DOMAIN_ACTIVE_DOMAINS, nbtActiveDomains);
-        }
-        return tag;
-    }
+		if (!playerIntrinsicDomains.isEmpty()) {
+			final CompoundTag nbtPlayerDomains = new CompoundTag();
+			for (final Entry<String, IDomain> entry : playerIntrinsicDomains.entrySet()) {
+				nbtPlayerDomains.putInt(entry.getKey(), entry.getValue().getId());
+			}
+			tag.put(NBT_DOMAIN_PLAYER_DOMAINS, nbtPlayerDomains);
+		}
 
-    private boolean checkLoaded() {
-        if (!this.isLoaded) {
-            Fermion.LOG.warn("Domain manager accessed before it was loaded.  This is a bug and probably means simulation state has been lost.");
-        }
-        return this.isLoaded;
-    }
+		if (!playerActiveDomains.isEmpty()) {
+			final CompoundTag nbtActiveDomains = new CompoundTag();
+			for (final Entry<String, IDomain> entry : playerActiveDomains.entrySet()) {
+				nbtActiveDomains.putInt(entry.getKey(), entry.getValue().getId());
+			}
+			tag.put(NBT_DOMAIN_ACTIVE_DOMAINS, nbtActiveDomains);
+		}
+		return tag;
+	}
 
-    /**
-     * The player's currently active domain. If player has never specified, will be
-     * the player's intrinsic domain.
-     */
-    public IDomain getActiveDomain(ServerPlayerEntity player) {
-        IDomain result = this.playerActiveDomains.get(player.getUuidAsString());
-        if (result == null) {
-            synchronized (this.playerActiveDomains) {
-                result = this.playerActiveDomains.get(player.getUuidAsString());
-                if (result == null) {
-                    result = this.getIntrinsicDomain(player);
-                    this.playerActiveDomains.put(player.getUuidAsString(), result);
-                }
-            }
-        }
-        return result;
-    }
+	private boolean checkLoaded() {
+		if (!isLoaded) {
+			Fermion.LOG.warn("Domain manager accessed before it was loaded.  This is a bug and probably means simulation state has been lost.");
+		}
+		return isLoaded;
+	}
 
-    /**
-     * Set the player's currently active domain.<br>
-     * Posts an event so that anything dependent on active domain can react.
-     */
-    public void setActiveDomain(ServerPlayerEntity player, IDomain domain) {
-        synchronized (this.playerActiveDomains) {
-            IDomain result = this.playerActiveDomains.put(player.getUuidAsString(), domain);
-            if (result == null || result != domain) {
-                PlayerDomainChangeCallback.EVENT.invoker().onDomainChange(player, result, domain);
-            }
-        }
-    }
+	/**
+	 * The player's currently active domain. If player has never specified, will be
+	 * the player's intrinsic domain.
+	 */
+	public IDomain getActiveDomain(ServerPlayerEntity player) {
+		IDomain result = playerActiveDomains.get(player.getUuidAsString());
+		if (result == null) {
+			synchronized (playerActiveDomains) {
+				result = playerActiveDomains.get(player.getUuidAsString());
+				if (result == null) {
+					result = getIntrinsicDomain(player);
+					playerActiveDomains.put(player.getUuidAsString(), result);
+				}
+			}
+		}
+		return result;
+	}
 
-    /**
-     * The player's private, default domain. Created if does not already exist.
-     */
-    public IDomain getIntrinsicDomain(ServerPlayerEntity player) {
-        IDomain result = this.playerIntrinsicDomains.get(player.getUuidAsString());
-        if (result == null) {
-            synchronized (this.playerIntrinsicDomains) {
-                result = this.playerIntrinsicDomains.get(player.getUuidAsString());
-                if (result == null) {
-                    result = this.createDomain();
-                    result.setSecurityEnabled(true);
-                    result.setName(I18n.translate("misc.default_domain_template", player.getName()));
-                    DomainUser user = result.addPlayer(player);
-                    user.setPrivileges(Privilege.ADMIN);
-                    this.playerIntrinsicDomains.put(player.getUuidAsString(), result);
-                }
-            }
-        }
-        return result;
-    }
+	/**
+	 * Set the player's currently active domain.<br>
+	 * Posts an event so that anything dependent on active domain can react.
+	 */
+	public void setActiveDomain(ServerPlayerEntity player, IDomain domain) {
+		synchronized (playerActiveDomains) {
+			final IDomain result = playerActiveDomains.put(player.getUuidAsString(), domain);
+			if (result == null || result != domain) {
+				PlayerDomainChangeCallback.EVENT.invoker().onDomainChange(player, result, domain);
+			}
+		}
+	}
 
-    public boolean isDeserializationInProgress() {
-        return this.isDeserializationInProgress;
-    }
+	/**
+	 * The player's private, default domain. Created if does not already exist.
+	 */
+	public IDomain getIntrinsicDomain(ServerPlayerEntity player) {
+		IDomain result = playerIntrinsicDomains.get(player.getUuidAsString());
+		if (result == null) {
+			synchronized (playerIntrinsicDomains) {
+				result = playerIntrinsicDomains.get(player.getUuidAsString());
+				if (result == null) {
+					result = createDomain();
+					result.setSecurityEnabled(true);
+					result.setName(I18n.translate("misc.default_domain_template", player.getName()));
+					final DomainUser user = result.addPlayer(player);
+					user.setPrivileges(Privilege.ADMIN);
+					playerIntrinsicDomains.put(player.getUuidAsString(), result);
+				}
+			}
+		}
+		return result;
+	}
 
-    // convenience object lookup methods
-    public static IDomain domainFromId(int id) {
-        return (Domain) Simulator.instance().assignedNumbersAuthority().get(id, AssignedNumber.DOMAIN);
-    }
+	public boolean isDeserializationInProgress() {
+		return isDeserializationInProgress;
+	}
 
-    @Override
-    public void afterDeserialization() {
-        IdentifiedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
+	// convenience object lookup methods
+	public static IDomain domainFromId(int id) {
+		return (Domain) Simulator.instance().assignedNumbersAuthority().get(id, AssignedNumber.DOMAIN);
+	}
 
-        if (!domains.isEmpty()) {
-            for (IIdentified domain : domains.values()) {
-                ((Domain) domain).afterDeserialization();
-            }
-        }
-    }
+	@Override
+	public void afterDeserialization() {
+		final IdentifiedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
 
-    @Override
-    public void makeDirty() {
-        // TODO Auto-generated method stub
+		if (!domains.isEmpty()) {
+			for (final Identified domain : domains.values()) {
+				((Domain) domain).afterDeserialization();
+			}
+		}
+	}
 
-    }
+	@Override
+	public void makeDirty() {
+		// TODO Auto-generated method stub
+
+	}
 }

@@ -22,51 +22,14 @@ import javax.annotation.Nullable;
 import grondag.fermion.Fermion;
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import me.zeroeightsix.fiber.Identifier;
 import net.minecraft.nbt.CompoundTag;
 
 public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 
 	private static final String NBT_TAG = NBTDictionary.claim("assignedNumAuth");
 
-	public IdentifiedIndex createIndex(AssignedNumber numberType) {
-		return new IdentifiedIndex(numberType);
-	}
-
-	@SuppressWarnings("serial")
-	public class IdentifiedIndex extends Int2ObjectOpenHashMap<IIdentified> {
-		public final AssignedNumber numberType;
-
-		private IdentifiedIndex(AssignedNumber numberType) {
-			this.numberType = numberType;
-		}
-
-		public synchronized void register(IIdentified thing) {
-			final IIdentified prior = this.put(thing.getId(), thing);
-
-			if (prior != null && !prior.equals(thing)) {
-				Fermion.LOG.warn("Assigned number index overwrote registered object due to index collision.  This is a bug.");
-			}
-		}
-
-		public synchronized void unregister(IIdentified thing) {
-			final IIdentified prior = this.remove(thing.getId());
-			if (prior == null || !prior.equals(thing)) {
-				Fermion.LOG.warn("Assigned number index unregistered wrong object due to index collision.  This is a bug.");
-			}
-		}
-
-		@Override
-		public synchronized IIdentified get(int index) {
-			return super.get(index);
-		}
-	}
-
-	private int[] lastID = new int[AssignedNumber.values().length];
-
 	private DirtListener dirtKeeper = NullDirtListener.INSTANCE;
-
-	private final IdentifiedIndex[] indexes;
 
 	public AssignedNumbersAuthority() {
 		indexes = new IdentifiedIndex[AssignedNumber.values().length];
@@ -76,16 +39,20 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 		clear();
 	}
 
-	public void register(IIdentified registrant) {
+	public IdentifiedIndex getIndex(Identifier numberType) {
+		return new IdentifiedIndex(numberType);
+	}
+
+	public void register(Identified registrant) {
 		indexes[registrant.idType().ordinal()].register(registrant);
 	}
 
-	public void unregister(IIdentified registrant) {
+	public void unregister(Identified registrant) {
 		indexes[registrant.idType().ordinal()].unregister(registrant);
 	}
 
 	@Nullable
-	public IIdentified get(int id, AssignedNumber idType) {
+	public Identified get(int id, AssignedNumber idType) {
 		return indexes[idType.ordinal()].get(id);
 	}
 

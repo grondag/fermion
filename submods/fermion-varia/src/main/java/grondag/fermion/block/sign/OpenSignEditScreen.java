@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -40,11 +40,11 @@ public class OpenSignEditScreen extends Screen {
 	@Override
 	protected void init() {
 		minecraft.keyboard.enableRepeatEvents(true);
-		
+
 		addButton(new ButtonWidget(width / 2 - 100, height / 4 + 120, 200, 20, I18n.translate("gui.done"), (widget) -> {
 			finishEditing();
 		}));
-		
+
 		sign.setEditable(false);
 		selectionManager = new SelectionManager(minecraft, () -> {
 			return sign.getTextOnRow(currentRow).getString();
@@ -63,7 +63,7 @@ public class OpenSignEditScreen extends Screen {
 	@Override
 	public void tick() {
 		++ticksSinceOpened;
-		
+
 		if (!sign.getType().supports(sign.getCachedState().getBlock())) {
 			finishEditing();
 		}
@@ -92,9 +92,9 @@ public class OpenSignEditScreen extends Screen {
 			currentRow = currentRow - 1 & 3;
 			selectionManager.moveCaretToEnd();
 			return true;
-		} else if (key != 264 && key != 257 && key != 335) {
+		} else if (key != 264 && key != 257 && key != 335)
 			return selectionManager.handleSpecialKey(key) ? true : super.keyPressed(key, x, y);
-		} else {
+		else {
 			currentRow = currentRow + 1 & 3;
 			selectionManager.moveCaretToEnd();
 			return true;
@@ -105,17 +105,17 @@ public class OpenSignEditScreen extends Screen {
 	public void render(int x, int y, float tickDelta) {
 		renderBackground();
 		super.render(x, y, tickDelta);
-		
+
 		drawCenteredString(font, title.asFormattedString(), width / 2, 40, 16777215);
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.pushMatrix();
 		GlStateManager.translatef((width / 2), 0.0F, 50.0F);
 		GlStateManager.scalef(-93.75F, -93.75F, -93.75F);
 		GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
-		
+
 		final BlockState blockState = sign.getCachedState();
 		float rot;
-		
+
 		if (blockState.getBlock() instanceof OpenSignBlock) {
 			rot = blockState.get(OpenSignBlock.ROTATION) * 360 / 16.0F;
 		} else {

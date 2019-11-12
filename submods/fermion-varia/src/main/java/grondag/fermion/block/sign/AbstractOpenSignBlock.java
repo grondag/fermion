@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -45,7 +45,7 @@ import net.minecraft.world.World;
 public abstract class AbstractOpenSignBlock extends BlockWithEntity implements Waterloggable {
 	public static final BooleanProperty WATERLOGGED;
 	public static final VoxelShape SHAPE;
-	
+
 	protected Supplier<BlockEntity> beSupplier;
 
 	protected AbstractOpenSignBlock(Block.Settings settings, Supplier<BlockEntity> beSupplier) {
@@ -85,9 +85,9 @@ public abstract class AbstractOpenSignBlock extends BlockWithEntity implements W
 
 	@Override
 	public boolean activate(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (world.isClient) {
+		if (world.isClient)
 			return true;
-		} else {
+		else {
 			final BlockEntity be = world.getBlockEntity(pos);
 
 			if (be instanceof OpenSignBlockEntity) {
@@ -103,9 +103,8 @@ public abstract class AbstractOpenSignBlock extends BlockWithEntity implements W
 				}
 
 				return myBe.onActivate(player);
-			} else {
+			} else
 				return false;
-			}
 		}
 	}
 

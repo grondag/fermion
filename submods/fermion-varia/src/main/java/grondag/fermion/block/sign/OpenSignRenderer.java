@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -54,7 +54,7 @@ public class OpenSignRenderer extends BlockEntityRenderer<OpenSignBlockEntity> {
 
 		if (blockState.getBlock() instanceof OpenSignBlock) {
 			GlStateManager.translatef((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
-			GlStateManager.rotatef(-((float)(blockState.get(OpenSignBlock.ROTATION) * 360) / 16.0F), 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotatef(-(blockState.get(OpenSignBlock.ROTATION) * 360 / 16.0F), 0.0F, 1.0F, 0.0F);
 			model.getSignpostModel().visible = true;
 		} else {
 			GlStateManager.translatef((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
@@ -79,7 +79,7 @@ public class OpenSignRenderer extends BlockEntityRenderer<OpenSignBlockEntity> {
 		GlStateManager.scalef(0.6666667F, -0.6666667F, -0.6666667F);
 		model.render();
 		GlStateManager.popMatrix();
-		TextRenderer textRenderer = getFontRenderer();
+		final TextRenderer textRenderer = getFontRenderer();
 		GlStateManager.translatef(0.0F, 0.33333334F, 0.046666667F);
 		GlStateManager.scalef(0.010416667F, -0.010416667F, 0.010416667F);
 		GlStateManager.normal3f(0.0F, 0.0F, -0.010416667F);
@@ -93,8 +93,8 @@ public class OpenSignRenderer extends BlockEntityRenderer<OpenSignBlockEntity> {
 			}
 
 			for(int i = 0; i < 4; ++i) {
-				String str = be.getTextBeingEditedOnRow(i, (text) -> {
-					List<Text> lines = TextComponentUtil.wrapLines(text, 90, textRenderer, false, true);
+				final String str = be.getTextBeingEditedOnRow(i, (text) -> {
+					final List<Text> lines = TextComponentUtil.wrapLines(text, 90, textRenderer, false, true);
 					return lines.isEmpty() ? "" : lines.get(0).asFormattedString();
 				});
 
@@ -150,8 +150,8 @@ public class OpenSignRenderer extends BlockEntityRenderer<OpenSignBlockEntity> {
 	}
 
 	private void drawSelection(int left, int top, int right, int bottom) {
-		Tessellator tess = Tessellator.getInstance();
-		BufferBuilder buff = tess.getBufferBuilder();
+		final Tessellator tess = Tessellator.getInstance();
+		final BufferBuilder buff = tess.getBufferBuilder();
 		GlStateManager.color4f(0.0F, 0.0F, 255.0F, 255.0F);
 		GlStateManager.disableTexture();
 		GlStateManager.enableColorLogicOp();

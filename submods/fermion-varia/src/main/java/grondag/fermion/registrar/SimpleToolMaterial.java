@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -37,37 +37,37 @@ public class SimpleToolMaterial implements ToolMaterial {
 		this.miningSpeed = miningSpeed;
 		this.attackDamage = attackDamage;
 		this.enchantability = enchantability;
-		this.repairIngredient = new Lazy<>(ingredientSupplier);
+		repairIngredient = new Lazy<>(ingredientSupplier);
 	}
 
 	@Override
 	public int getDurability() {
-		return this.itemDurability;
+		return itemDurability;
 	}
 
 	@Override
 	public float getMiningSpeed() {
-		return this.miningSpeed;
+		return miningSpeed;
 	}
 
 	@Override
 	public float getAttackDamage() {
-		return this.attackDamage;
+		return attackDamage;
 	}
 
 	@Override
 	public int getMiningLevel() {
-		return this.miningLevel;
+		return miningLevel;
 	}
 
 	@Override
 	public int getEnchantability() {
-		return this.enchantability;
+		return enchantability;
 	}
 
 	@Override
 	public Ingredient getRepairIngredient() {
-		return (Ingredient)this.repairIngredient.get();
+		return repairIngredient.get();
 	}
 
 	public static ToolMaterial of(int miningLevel, int itemDurability, float miningSpeed, float attackDamage, int enchantability, Supplier<Ingredient> ingredientSupplier) {

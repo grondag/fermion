@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -57,7 +57,7 @@ public enum OpenSignUpdateS2C {
 		final String tex1 = buffer.readString();
 		final String tex2 = buffer.readString();
 		final String tex3 = buffer.readString();
-		
+
 		context.getTaskQueue().execute(() -> {
 			BlockEntity be = context.getPlayer().world.getBlockEntity(pos);
 			if (!(be instanceof OpenSignBlockEntity)) {
@@ -65,11 +65,11 @@ public enum OpenSignUpdateS2C {
 				be.setWorld(context.getPlayer().world);
 				be.setPos(pos);
 			}
-			
+
 			((OpenSignBlockEntity) be).setText(tex0, tex1, tex2, tex3);
-			
+
 			System.out.println("handleS2C getText0: " + ((OpenSignBlockEntity) be).getTextOnRow(0).getString());
-			
+
 			MinecraftClient.getInstance().openScreen(new OpenSignEditScreen((OpenSignBlockEntity) be));
 		});
 	}

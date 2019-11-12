@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -59,7 +59,7 @@ public class OpenSignBlockEntity extends BlockEntity implements BlockEntityClien
 
 	public <T extends OpenSignBlockEntity> OpenSignBlockEntity(BlockEntityType<T> beTyoe) {
 		super(beTyoe);
-		this.textColor = DyeColor.BLACK;
+		textColor = DyeColor.BLACK;
 	}
 
 	@Override
@@ -87,26 +87,26 @@ public class OpenSignBlockEntity extends BlockEntity implements BlockEntityClien
 
 			if (world instanceof ServerWorld) {
 				try {
-					text[i] = Texts.parse(this.getCommandSource((ServerPlayerEntity)null), t, (Entity)null, 0);
-				} catch (CommandSyntaxException e) {
+					text[i] = Texts.parse(getCommandSource((ServerPlayerEntity)null), t, (Entity)null, 0);
+				} catch (final CommandSyntaxException e) {
 					text[i] = t;
 				}
 			} else {
-				this.text[i] = t;
+				text[i] = t;
 			}
 
-			this.textBeingEdited[i] = null;
+			textBeingEdited[i] = null;
 		}
 	}
 
 	@Environment(EnvType.CLIENT)
 	public Text getTextOnRow(int row) {
-		return this.text[row];
+		return text[row];
 	}
 
 	public void setTextOnRow(int row, Text text) {
 		this.text[row] = text;
-		this.textBeingEdited[row] = null;
+		textBeingEdited[row] = null;
 	}
 
 	public void setText(String text0, String text1, String text2, String text3) {
@@ -120,11 +120,11 @@ public class OpenSignBlockEntity extends BlockEntity implements BlockEntityClien
 	@Nullable
 	@Environment(EnvType.CLIENT)
 	public String getTextBeingEditedOnRow(int row, Function<Text, String> textFunc) {
-		if (this.textBeingEdited[row] == null && this.text[row] != null) {
-			this.textBeingEdited[row] = textFunc.apply(this.text[row]);
+		if (textBeingEdited[row] == null && text[row] != null) {
+			textBeingEdited[row] = textFunc.apply(text[row]);
 		}
 
-		return this.textBeingEdited[row];
+		return textBeingEdited[row];
 	}
 
 	@Override
@@ -171,16 +171,16 @@ public class OpenSignBlockEntity extends BlockEntity implements BlockEntityClien
 			edit((ServerPlayerEntity) player);
 			return true;
 		}
-		
+
 		final Text[] text = this.text;
 		final int limit = text.length;
 
 		for(int i = 0; i < limit; ++i) {
-			Text t = text[i];
-			Style style = t == null ? null : t.getStyle();
+			final Text t = text[i];
+			final Style style = t == null ? null : t.getStyle();
 
 			if (style != null && style.getClickEvent() != null) {
-				ClickEvent click = style.getClickEvent();
+				final ClickEvent click = style.getClickEvent();
 
 				if (click.getAction() == ClickEvent.Action.RUN_COMMAND) {
 					player.getServer().getCommandManager().execute(getCommandSource((ServerPlayerEntity) player), click.getValue());
@@ -192,64 +192,63 @@ public class OpenSignBlockEntity extends BlockEntity implements BlockEntityClien
 	}
 
 	public ServerCommandSource getCommandSource(@Nullable ServerPlayerEntity player) {
-		String src = player == null ? "Sign" : player.getName().getString();
-		Text txt = player == null ? new LiteralText("Sign") : player.getDisplayName();
+		final String src = player == null ? "Sign" : player.getName().getString();
+		final Text txt = player == null ? new LiteralText("Sign") : player.getDisplayName();
 		return new ServerCommandSource(CommandOutput.DUMMY, new Vec3d(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D), Vec2f.ZERO, (ServerWorld) world, 2, src, txt, world.getServer(), player);
 	}
 
 	public DyeColor getTextColor() {
-		return this.textColor;
+		return textColor;
 	}
 
 	public boolean setTextColor(DyeColor dyeColor) {
-		if (dyeColor != this.textColor) {
-			this.textColor = dyeColor;
-			this.markDirty();
-			
-			if (this.world != null) {
-				this.world.updateListeners(this.getPos(), this.getCachedState(), this.getCachedState(), 3);
+		if (dyeColor != textColor) {
+			textColor = dyeColor;
+			markDirty();
+
+			if (world != null) {
+				world.updateListeners(getPos(), getCachedState(), getCachedState(), 3);
 			}
-			
+
 			return true;
-		} else {
+		} else
 			return false;
-		}
 	}
 
 	@Environment(EnvType.CLIENT)
 	public void setSelectionState(int row, int start, int end, boolean showCaret) {
-		this.currentRow = row;
-		this.selectionStart = start;
-		this.selectionEnd = end;
-		this.caretVisible = showCaret;
+		currentRow = row;
+		selectionStart = start;
+		selectionEnd = end;
+		caretVisible = showCaret;
 	}
 
 	@Environment(EnvType.CLIENT)
 	public void resetSelectionState() {
-		this.currentRow = -1;
-		this.selectionStart = -1;
-		this.selectionEnd = -1;
-		this.caretVisible = false;
+		currentRow = -1;
+		selectionStart = -1;
+		selectionEnd = -1;
+		caretVisible = false;
 	}
 
 	@Environment(EnvType.CLIENT)
 	public boolean isCaretVisible() {
-		return this.caretVisible;
+		return caretVisible;
 	}
 
 	@Environment(EnvType.CLIENT)
 	public int getCurrentRow() {
-		return this.currentRow;
+		return currentRow;
 	}
 
 	@Environment(EnvType.CLIENT)
 	public int getSelectionStart() {
-		return this.selectionStart;
+		return selectionStart;
 	}
 
 	@Environment(EnvType.CLIENT)
 	public int getSelectionEnd() {
-		return this.selectionEnd;
+		return selectionEnd;
 	}
 
 	@Override

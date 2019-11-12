@@ -29,14 +29,14 @@ import grondag.fermion.Fermion;
 import grondag.fermion.simulator.persistence.AssignedNumber;
 import grondag.fermion.simulator.persistence.DirtListener;
 import grondag.fermion.simulator.persistence.DirtListenerProvider;
-import grondag.fermion.simulator.persistence.IIdentified;
+import grondag.fermion.simulator.persistence.Identified;
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
-public class Domain implements ReadWriteNBT, DirtListenerProvider, IIdentified, IDomain {
+public class Domain implements ReadWriteNBT, DirtListenerProvider, Identified, IDomain {
 	private static final String NBT_DOMAIN_SECURITY_ENABLED = NBTDictionary.claim("domSecOn");
 	private static final String NBT_DOMAIN_NAME = NBTDictionary.claim("domName");
 	private static final String NBT_DOMAIN_USERS = NBTDictionary.claim("domUsers");

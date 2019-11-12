@@ -4,12 +4,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class KeyCacheState {
-    protected final AtomicInteger size = new AtomicInteger(0);
+	protected final AtomicInteger size = new AtomicInteger(0);
 
-    final Object[] data;
+	final Object[] data;
 
-    KeyCacheState(int capacityIn)
-    {
-        this.data = new Object[capacityIn];
-    }
+	KeyCacheState(int capacityIn)
+	{
+		data = new Object[capacityIn];
+	}
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -53,7 +53,7 @@ public enum OpenSignUpdateC2S {
 		final String tex2 = buffer.readString();
 		final String tex3 = buffer.readString();
 
-		context.getTaskQueue().execute(() -> {		
+		context.getTaskQueue().execute(() -> {
 			final MinecraftServer server = player.server;
 			final ServerWorld world = server.getWorld(player.dimension);
 			player.updateLastActionTime();
@@ -61,9 +61,8 @@ public enum OpenSignUpdateC2S {
 			if (world.isBlockLoaded(pos)) {
 				final BlockEntity be = world.getBlockEntity(pos);
 
-				if (!(be instanceof OpenSignBlockEntity)) {
+				if (!(be instanceof OpenSignBlockEntity))
 					return;
-				}
 
 				final OpenSignBlockEntity myBe = (OpenSignBlockEntity)be;
 

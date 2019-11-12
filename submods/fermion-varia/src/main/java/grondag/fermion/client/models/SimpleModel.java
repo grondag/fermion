@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -49,8 +49,8 @@ public abstract class SimpleModel extends AbstractModel {
 	protected final ItemProxy itemProxy = new ItemProxy();
 
 	public SimpleModel(
-			Sprite sprite,
-			ModelTransformation transformation) {
+		Sprite sprite,
+		ModelTransformation transformation) {
 		super(sprite, transformation);
 	}
 
@@ -79,7 +79,7 @@ public abstract class SimpleModel extends AbstractModel {
 			lists = ModelHelper.toQuadLists(mesh());
 			quadLists = new WeakReference<>(lists);
 		}
-		List<BakedQuad> result = lists[face == null ? 6 : face.getId()];
+		final List<BakedQuad> result = lists[face == null ? 6 : face.getId()];
 		return result == null ? ImmutableList.of() : result;
 	}
 

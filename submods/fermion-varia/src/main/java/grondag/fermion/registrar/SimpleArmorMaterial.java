@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -38,49 +38,49 @@ public class SimpleArmorMaterial implements ArmorMaterial {
 	private final Lazy<Ingredient> repairIngredientSupplier;
 
 	public SimpleArmorMaterial(String id, int durability, int[] protection, int enchantability, SoundEvent soundEvent, float toughness, Supplier<Ingredient> supplier) {
-		this.name = id;
-		this.durabilityMultiplier = durability;
-		this.protectionAmounts = protection;
+		name = id;
+		durabilityMultiplier = durability;
+		protectionAmounts = protection;
 		this.enchantability = enchantability;
-		this.equipSound = soundEvent;
+		equipSound = soundEvent;
 		this.toughness = toughness;
-		this.repairIngredientSupplier = new Lazy<>(supplier);
+		repairIngredientSupplier = new Lazy<>(supplier);
 	}
 
 	@Override
 	public int getDurability(EquipmentSlot equipmentSlot) {
-		return BASE_DURABILITY[equipmentSlot.getEntitySlotId()] * this.durabilityMultiplier;
+		return BASE_DURABILITY[equipmentSlot.getEntitySlotId()] * durabilityMultiplier;
 	}
 
 	@Override
 	public int getProtectionAmount(EquipmentSlot equipmentSlot) {
-		return this.protectionAmounts[equipmentSlot.getEntitySlotId()];
+		return protectionAmounts[equipmentSlot.getEntitySlotId()];
 	}
 
 	@Override
 	public int getEnchantability() {
-		return this.enchantability;
+		return enchantability;
 	}
 
 	@Override
 	public SoundEvent getEquipSound() {
-		return this.equipSound;
+		return equipSound;
 	}
 
 	@Override
 	public Ingredient getRepairIngredient() {
-		return (Ingredient)this.repairIngredientSupplier.get();
+		return repairIngredientSupplier.get();
 	}
 
 	@Override
 	@Environment(EnvType.CLIENT)
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	@Override
 	public float getToughness() {
-		return this.toughness;
+		return toughness;
 	}
 
 	public static ArmorMaterial of(String id, int durability, int[] protection, int enchantability, SoundEvent soundEvent, float toughness, Supplier<Ingredient> supplier) {

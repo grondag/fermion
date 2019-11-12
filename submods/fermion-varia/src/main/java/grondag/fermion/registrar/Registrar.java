@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -72,7 +72,7 @@ public class Registrar extends AbstractRegistrar {
 	}
 
 	public <T extends Fluid> T fluid(String name, T fluid) {
-		T b = Registry.register(Registry.FLUID, id(name), fluid);
+		final T b = Registry.register(Registry.FLUID, id(name), fluid);
 		return b;
 	}
 
@@ -89,16 +89,16 @@ public class Registrar extends AbstractRegistrar {
 	}
 
 	public <T extends Block> T block(String name, T block, BlockItem item) {
-		T b = Registry.register(Registry.BLOCK, id(name), block);
+		final T b = Registry.register(Registry.BLOCK, id(name), block);
 		if (item != null) {
-			BlockItem bi = item(name, item);
+			final BlockItem bi = item(name, item);
 			bi.appendBlocks(BlockItem.BLOCK_ITEMS, bi);
 		}
 		return b;
 	}
 
 	public <T extends Block> T blockNoItem(String name, T block) {
-		T b = Registry.register(Registry.BLOCK, id(name), block);
+		final T b = Registry.register(Registry.BLOCK, id(name), block);
 		return b;
 	}
 
@@ -135,19 +135,19 @@ public class Registrar extends AbstractRegistrar {
 	public Tag<Item> itemTag(String id) {
 		return TagRegistry.item(id(id));
 	}
-	
+
 	public Tag<EntityType<?>> entityTag(String id) {
 		return TagRegistry.entityType(id(id));
 	}
-	
+
 	public DefaultParticleType particle(String id, boolean alwaysSpawn) {
 		return Registry.register(Registry.PARTICLE_TYPE, id(id), FabricParticleTypes.simple(alwaysSpawn));
 	}
-	
+
 	public <T extends ParticleEffect> ParticleType<T> particle(String id, boolean alwaysSpawn, ParticleEffect.Factory<T> factory)  {
 		return Registry.register(Registry.PARTICLE_TYPE, id(id), FabricParticleTypes.complex(alwaysSpawn, factory));
 	}
-	
+
 	public StatusEffect statusEffect(String id, StatusEffect effect) {
 		return Registry.register(Registry.STATUS_EFFECT, id(id), effect);
 	}

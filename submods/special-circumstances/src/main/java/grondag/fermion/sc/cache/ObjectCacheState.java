@@ -4,12 +4,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class ObjectCacheState {
-    protected AtomicInteger size = new AtomicInteger(0);
+	protected AtomicInteger size = new AtomicInteger(0);
 
-    final Object[] kv;
+	final Object[] kv;
 
-    ObjectCacheState(int capacityIn)
-    {
-        this.kv = new Object[capacityIn * 2];
-    }
+	ObjectCacheState(int capacityIn)
+	{
+		kv = new Object[capacityIn * 2];
+	}
 }

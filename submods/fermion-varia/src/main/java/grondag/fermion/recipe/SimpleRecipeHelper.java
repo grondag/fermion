@@ -19,14 +19,14 @@ import net.minecraft.util.Identifier;
 
 public class SimpleRecipeHelper implements SimpleSynchronousResourceReloadListener {
 	private final ImmutableSet<RecipeType<?>> recipeTypes;
-	
+
 	private MinecraftServer server;
 
 	private final IdentityHashMap<RecipeType<?>, ArrayList<SimpleRecipe<?>>> recipes = new IdentityHashMap<>();
 
 	private final Collection<Identifier> RELOAD_DEPS = Collections.singletonList(ResourceReloadListenerKeys.RECIPES);
 
-	private Identifier id;
+	private final Identifier id;
 
 	public SimpleRecipeHelper(Identifier id, RecipeType<?>... recipeTypes) {
 		this.id = id;
@@ -51,9 +51,9 @@ public class SimpleRecipeHelper implements SimpleSynchronousResourceReloadListen
 
 	private void reload() {
 		if (server != null) {
-			RecipeManager rm = server.getRecipeManager();
+			final RecipeManager rm = server.getRecipeManager();
 
-			for (Recipe<?> r : rm.values()) {
+			for (final Recipe<?> r : rm.values()) {
 				if (recipeTypes.contains(r.getType())) {
 					recipes.computeIfAbsent(r.getType(), k -> new ArrayList<SimpleRecipe<?>>()).add((SimpleRecipe<?>) r);
 				}
@@ -69,20 +69,19 @@ public class SimpleRecipeHelper implements SimpleSynchronousResourceReloadListen
 	public void stop(MinecraftServer serverIn) {
 		server = null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <T extends SimpleRecipe<?>> T get(RecipeType<?> recipeType, ItemStack stack) {
 		if (recipes != null) {
-			ArrayList<SimpleRecipe<?>> list = recipes.get(recipeType);
+			final ArrayList<SimpleRecipe<?>> list = recipes.get(recipeType);
 			if (list != null && !list.isEmpty()) {
-				for (SimpleRecipe<?> r : list) {
-					if (r.matches(stack)) {
+				for (final SimpleRecipe<?> r : list) {
+					if (r.matches(stack))
 						return (T) r;
-					}
 				}
 			}
 		}
-		
+
 		return null;
 	}
 }

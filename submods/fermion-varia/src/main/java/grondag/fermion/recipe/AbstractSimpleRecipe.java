@@ -28,7 +28,7 @@ public abstract class AbstractSimpleRecipe implements SimpleRecipe<Inventory> {
 	public Identifier getId() {
 		return id;
 	}
-	
+
 	@Override
 	public boolean matches(Inventory inventory, World world) {
 		return ingredient.method_8093(inventory.getInvStack(0));
@@ -38,7 +38,7 @@ public abstract class AbstractSimpleRecipe implements SimpleRecipe<Inventory> {
 	public boolean matches(ItemStack stack) {
 		return ingredient.method_8093(stack);
 	}
-	
+
 	@Override
 	@Environment(EnvType.CLIENT)
 	public String getGroup() {
@@ -52,8 +52,8 @@ public abstract class AbstractSimpleRecipe implements SimpleRecipe<Inventory> {
 
 	@Override
 	public DefaultedList<Ingredient> getPreviewInputs() {
-		DefaultedList<Ingredient> defaultedList = DefaultedList.of();
-		defaultedList.add(this.ingredient);
+		final DefaultedList<Ingredient> defaultedList = DefaultedList.of();
+		defaultedList.add(ingredient);
 		return defaultedList;
 	}
 
@@ -67,9 +67,9 @@ public abstract class AbstractSimpleRecipe implements SimpleRecipe<Inventory> {
 	public ItemStack craft(Inventory inventory) {
 		return result.copy();
 	}
-	
+
 	@FunctionalInterface
-	public static interface Factory<T extends AbstractSimpleRecipe> {
+	public interface Factory<T extends AbstractSimpleRecipe> {
 		T create(Identifier id, String group, Ingredient ingredient, int cost, ItemStack result);
 	}
 }
