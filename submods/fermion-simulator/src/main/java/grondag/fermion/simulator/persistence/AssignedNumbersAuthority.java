@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2019 grondag
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -27,120 +27,120 @@ import net.minecraft.nbt.CompoundTag;
 
 public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 
-    private static final String NBT_TAG = NBTDictionary.claim("assignedNumAuth");
+	private static final String NBT_TAG = NBTDictionary.claim("assignedNumAuth");
 
-    public IdentifiedIndex createIndex(AssignedNumber numberType) {
-        return new IdentifiedIndex(numberType);
-    }
+	public IdentifiedIndex createIndex(AssignedNumber numberType) {
+		return new IdentifiedIndex(numberType);
+	}
 
-    @SuppressWarnings("serial")
-    public class IdentifiedIndex extends Int2ObjectOpenHashMap<IIdentified> {
-        public final AssignedNumber numberType;
+	@SuppressWarnings("serial")
+	public class IdentifiedIndex extends Int2ObjectOpenHashMap<IIdentified> {
+		public final AssignedNumber numberType;
 
-        private IdentifiedIndex(AssignedNumber numberType) {
-            this.numberType = numberType;
-        }
+		private IdentifiedIndex(AssignedNumber numberType) {
+			this.numberType = numberType;
+		}
 
-        public synchronized void register(IIdentified thing) {
-            IIdentified prior = this.put(thing.getId(), thing);
+		public synchronized void register(IIdentified thing) {
+			final IIdentified prior = this.put(thing.getId(), thing);
 
-            if (prior != null && !prior.equals(thing)) {
-                Fermion.LOG.warn("Assigned number index overwrote registered object due to index collision.  This is a bug.");
-            }
-        }
+			if (prior != null && !prior.equals(thing)) {
+				Fermion.LOG.warn("Assigned number index overwrote registered object due to index collision.  This is a bug.");
+			}
+		}
 
-        public synchronized void unregister(IIdentified thing) {
-            IIdentified prior = this.remove(thing.getId());
-            if (prior == null || !prior.equals(thing)) {
-                Fermion.LOG.warn("Assigned number index unregistered wrong object due to index collision.  This is a bug.");
-            }
-        }
+		public synchronized void unregister(IIdentified thing) {
+			final IIdentified prior = this.remove(thing.getId());
+			if (prior == null || !prior.equals(thing)) {
+				Fermion.LOG.warn("Assigned number index unregistered wrong object due to index collision.  This is a bug.");
+			}
+		}
 
-        @Override
-        public synchronized IIdentified get(int index) {
-            return super.get(index);
-        }
-    }
+		@Override
+		public synchronized IIdentified get(int index) {
+			return super.get(index);
+		}
+	}
 
-    private int[] lastID = new int[AssignedNumber.values().length];
+	private int[] lastID = new int[AssignedNumber.values().length];
 
-    private DirtListener dirtKeeper = NullDirtListener.INSTANCE;
+	private DirtListener dirtKeeper = NullDirtListener.INSTANCE;
 
-    private final IdentifiedIndex[] indexes;
+	private final IdentifiedIndex[] indexes;
 
-    public AssignedNumbersAuthority() {
-        this.indexes = new IdentifiedIndex[AssignedNumber.values().length];
-        for (int i = 0; i < AssignedNumber.values().length; i++) {
-            this.indexes[i] = createIndex(AssignedNumber.values()[i]);
-        }
-        this.clear();
-    }
+	public AssignedNumbersAuthority() {
+		indexes = new IdentifiedIndex[AssignedNumber.values().length];
+		for (int i = 0; i < AssignedNumber.values().length; i++) {
+			indexes[i] = createIndex(AssignedNumber.values()[i]);
+		}
+		clear();
+	}
 
-    public void register(IIdentified registrant) {
-        this.indexes[registrant.idType().ordinal()].register(registrant);
-    }
+	public void register(IIdentified registrant) {
+		indexes[registrant.idType().ordinal()].register(registrant);
+	}
 
-    public void unregister(IIdentified registrant) {
-        this.indexes[registrant.idType().ordinal()].unregister(registrant);
-    }
+	public void unregister(IIdentified registrant) {
+		indexes[registrant.idType().ordinal()].unregister(registrant);
+	}
 
-    @Nullable
-    public IIdentified get(int id, AssignedNumber idType) {
-        return this.indexes[idType.ordinal()].get(id);
-    }
+	@Nullable
+	public IIdentified get(int id, AssignedNumber idType) {
+		return indexes[idType.ordinal()].get(id);
+	}
 
-    public void clear() {
-        lastID = new int[AssignedNumber.values().length];
-        Arrays.fill(lastID, 999);
-        for (int i = 0; i < AssignedNumber.values().length; i++) {
-            this.indexes[i].clear();
-        }
-    }
+	public void clear() {
+		lastID = new int[AssignedNumber.values().length];
+		Arrays.fill(lastID, 999);
+		for (int i = 0; i < AssignedNumber.values().length; i++) {
+			indexes[i].clear();
+		}
+	}
 
-    /**
-     * First ID returned for each type is 1000 to allow room for system IDs. System
-     * ID's should start at 1 to distinguish from missing/unset ID.
-     */
-    public synchronized int newNumber(AssignedNumber numberType) {
-        dirtKeeper.makeDirty();
-        ;
-        return ++this.lastID[numberType.ordinal()];
-    }
+	/**
+	 * First ID returned for each type is 1000 to allow room for system IDs. System
+	 * ID's should start at 1 to distinguish from missing/unset ID.
+	 */
+	public synchronized int newNumber(AssignedNumber numberType) {
+		dirtKeeper.makeDirty();
 
-    @Override
-    public synchronized void writeTag(@Nullable CompoundTag tag) {
-        int input[] = tag.getIntArray(NBT_TAG);
-        if (input.length == 0) {
-            this.clear();
-        } else {
-            if (input.length == lastID.length) {
-                lastID = Arrays.copyOf(input, input.length);
-            } else {
-                Fermion.LOG.warn("Simulation assigned numbers save data appears to be corrupt.  World may be borked.");
-                this.clear();
-                int commonLength = Math.min(lastID.length, input.length);
-                System.arraycopy(input, 0, lastID, 0, commonLength);
-            }
-        }
-    }
+		return ++lastID[numberType.ordinal()];
+	}
 
-    @Override
-    public synchronized void readTag(CompoundTag tag) {
-        tag.putIntArray(NBT_TAG, Arrays.copyOf(lastID, lastID.length));
-    }
+	@Override
+	public synchronized void writeTag(@Nullable CompoundTag tag) {
+		final int input[] = tag.getIntArray(NBT_TAG);
+		if (input.length == 0) {
+			clear();
+		} else {
+			if (input.length == lastID.length) {
+				lastID = Arrays.copyOf(input, input.length);
+			} else {
+				Fermion.LOG.warn("Simulation assigned numbers save data appears to be corrupt.  World may be borked.");
+				clear();
+				final int commonLength = Math.min(lastID.length, input.length);
+				System.arraycopy(input, 0, lastID, 0, commonLength);
+			}
+		}
+	}
 
-    @Override
-    public void makeDirty() {
-        this.dirtKeeper.makeDirty();
-    }
+	@Override
+	public synchronized void readTag(CompoundTag tag) {
+		tag.putIntArray(NBT_TAG, Arrays.copyOf(lastID, lastID.length));
+	}
 
-    @Override
-    public void setDirtKeeper(DirtKeeper keeper) {
-        this.dirtKeeper = keeper;
-    }
+	@Override
+	public void markDirty() {
+		dirtKeeper.markDirty();
+	}
 
-    public IdentifiedIndex getIndex(AssignedNumber idType) {
-        return this.indexes[idType.ordinal()];
-    }
+	@Override
+	public void setDirtKeeper(DirtKeeper keeper) {
+		dirtKeeper = keeper;
+	}
+
+	public IdentifiedIndex getIndex(AssignedNumber idType) {
+		return indexes[idType.ordinal()];
+	}
 
 }
