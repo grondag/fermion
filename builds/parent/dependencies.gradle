@@ -1,0 +1,36 @@
+repositories {
+    //mavenLocal();
+    jcenter();
+    //maven { url "https://tehnut.info/maven"}
+    //maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
+    //maven { url "https://minecraft.curseforge.com/api/maven" }
+    maven { url "https://maven.fabricmc.net/" }
+    //maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
+    
+ 	maven {
+    	name = "grondag"
+    	url = "https://grondag-repo.appspot.com"
+    	credentials {
+            username "guest"
+            password ""
+		}
+    }
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${minecraft_version}"
+	mappings "net.fabricmc:yarn:${yarn_mappings}"
+	
+	modApi "net.fabricmc:fabric-loader:${loader_version}"
+	
+	// dev env annotation support
+	compileOnly "org.apiguardian:apiguardian-api:1.0.0"
+	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+	
+	if (!(gradle.startParameter.taskNames.contains("publish") || gradle.startParameter.taskNames.contains("publishToMavenLocal"))) {
+		include "grondag:fermion-modkeys-${project.mc_tag}:${project.fermion_modkeys_version}.+"
+	    include "grondag:fermion-varia-${project.mc_tag}:${project.fermion_varia_version}.+"
+	    include "grondag:fermion-simulator-${project.mc_tag}:${project.fermion_simulator_version}.+"
+	    include "grondag:special-circumstances-${project.mc_tag}:${project.special_circumstances_version}.+"
+ 	} 
+}
