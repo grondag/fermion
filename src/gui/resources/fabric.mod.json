@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "fermion-gui",
+  "version": "${version}",
+  "name": "Fermion GUI",
+  "description": "Grondag core utility library - Graphical User Interfaces",
+  "authors": [
+    "Grondag"
+  ],
+  "contact": {
+    "homepage": "https://minecraft.curseforge.com/projects/fermion",
+    "issues": "https://github.com/grondag/fermion/issues",
+    "sources": "https://github.com/grondag/fermion"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/fermion/fermion_icon.png",
+  
+  "environment": "*",
+  "entrypoints": {
+    "client": [ "grondag.fermion.gui.FermionGuiClient" ],
+    "main": [ "grondag.fermion.gui.FermionGui" ]
+  },
+  "depends": {
+    "fabricloader": ">=0.4.8",
+    "fabric": "*"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:clientsideOnly": false,
+    "modmenu:parent": "fermion"
+  }
+}
