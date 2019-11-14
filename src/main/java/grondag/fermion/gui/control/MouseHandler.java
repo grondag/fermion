@@ -13,15 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package grondag.fermion.gui;
+package grondag.fermion.gui.control;
 
-import grondag.fermion.gui.container.OpenContainerStorageInteractionC2S;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 
-public class FermionGui implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		ServerSidePacketRegistry.INSTANCE.register(OpenContainerStorageInteractionC2S.ID, OpenContainerStorageInteractionC2S::accept);
-	}
+/**
+ * Callback to handle mouse input on items within the control.
+ */
+@Environment(EnvType.CLIENT)
+@FunctionalInterface
+public interface MouseHandler<T> {
+	void handle(MinecraftClient mc, int mouseButton, T target);
+
+	MouseHandler<?> IGNORE = (mc, mouseButton, target) -> {};
 }

@@ -15,13 +15,28 @@
  ******************************************************************************/
 package grondag.fermion.gui;
 
-import grondag.fermion.gui.container.OpenContainerStorageInteractionC2S;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+public class ContainerLayout {
 
-public class FermionGui implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		ServerSidePacketRegistry.INSTANCE.register(OpenContainerStorageInteractionC2S.ID, OpenContainerStorageInteractionC2S::accept);
-	}
+	/**
+	 * Number of pixels between each slot corner for slots. MC default is 18, which
+	 * leaves 2px border between slots.
+	 */
+	public int slotSpacing = 18;
+
+	public int externalMargin = 6;
+
+	public int expectedTextHeight = 12;
+
+	public int playerInventoryWidth = slotSpacing * 8 + 16;
+
+	public int dialogWidth = externalMargin * 2 + playerInventoryWidth;
+
+	public int dialogHeight = externalMargin * 3 + slotSpacing * 10 + expectedTextHeight * 2;
+
+	/** distance from edge of dialog to start of player inventory area */
+	public int playerInventoryLeft = externalMargin;
+
+	/** distance from top of dialog to start of player inventory area */
+	public int playerInventoryTop = dialogHeight - externalMargin - slotSpacing * 4;
+
 }
