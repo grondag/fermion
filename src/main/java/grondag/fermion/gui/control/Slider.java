@@ -15,9 +15,9 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import grondag.fermion.gui.GuiRenderContext;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.Layout;
+import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.spatial.HorizontalAlignment;
 import grondag.fermion.spatial.VerticalAlignment;
 import net.fabricmc.api.EnvType;
@@ -27,7 +27,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class Slider extends GuiControl<Slider> {
+public class Slider extends AbstractControl<Slider> {
 	public static final int TAB_MARGIN = 2;
 	public static final int TAB_WIDTH = 8;
 	public static final int ITEM_SPACING = 4;
@@ -76,11 +76,12 @@ public class Slider extends GuiControl<Slider> {
 	 * needed to set height to font height. labelWidth is in range 0-1 and allows
 	 * for alignment of stacked controls.
 	 */
-	public Slider(MinecraftClient mc, int size, String label, double labelWidthFactor) {
+	public Slider(ScreenRenderContext renderContext, int size, String label, double labelWidthFactor) {
+		super(renderContext);
 		this.size = size;
 		this.label = label;
 		this.labelWidthFactor = labelWidthFactor;
-		setHeight(Math.max(TAB_WIDTH, mc.textRenderer.fontHeight + CONTROL_INTERNAL_MARGIN));
+		setHeight(Math.max(TAB_WIDTH, renderContext.fontRenderer().fontHeight + CONTROL_INTERNAL_MARGIN));
 		setVerticalLayout(Layout.FIXED);
 	}
 
@@ -93,7 +94,7 @@ public class Slider extends GuiControl<Slider> {
 	}
 
 	@Override
-	protected void drawContent(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
 		if (size == 0)
 			return;
 
@@ -178,9 +179,8 @@ public class Slider extends GuiControl<Slider> {
 	}
 
 	@Override
-	public boolean handleMouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton) {
-		if (size == 0)
-			return true;
+	public void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
+		if (size == 0) return;
 
 		updateMouseLocation(mouseX, mouseY);
 		switch (currentMouseLocation) {
@@ -188,14 +188,14 @@ public class Slider extends GuiControl<Slider> {
 			if (selectedTabIndex > 0) {
 				selectedTabIndex--;
 			}
-			GuiUtil.playPressedSound(mc);
+			GuiUtil.playPressedSound();
 			break;
 
 		case RIGHT_ARROW:
 			if (selectedTabIndex < size - 1) {
 				selectedTabIndex++;
 			}
-			GuiUtil.playPressedSound(mc);
+			GuiUtil.playPressedSound();
 			break;
 
 		case TAB:
@@ -207,12 +207,10 @@ public class Slider extends GuiControl<Slider> {
 			break;
 
 		}
-
-		return true;
 	}
 
 	@Override
-	protected void handleMouseDrag(MinecraftClient mc, int mouseX, int mouseY, int clickedMouseButton) {
+	protected void handleMouseDrag(double mouseX, double mouseY, int clickedMouseButton, double dx, double dy) {
 		if (size == 0)
 			return;
 
@@ -223,7 +221,7 @@ public class Slider extends GuiControl<Slider> {
 	}
 
 	@Override
-	protected void handleMouseScroll(int mouseX, int mouseY, int scrollDelta) {
+	protected void handleMouseScroll(double mouseX, double mouseY, double scrollDelta) {
 		if (size == 0)
 			return;
 
@@ -243,7 +241,7 @@ public class Slider extends GuiControl<Slider> {
 	}
 
 	@Override
-	public void drawToolTip(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

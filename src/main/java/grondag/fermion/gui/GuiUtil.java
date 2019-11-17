@@ -62,26 +62,23 @@ public class GuiUtil {
 			bottom = j;
 		}
 
-		final float f3 = (color >> 24 & 255) / 255.0F;
-		final float f = (color >> 16 & 255) / 255.0F;
-		final float f1 = (color >> 8 & 255) / 255.0F;
-		final float f2 = (color & 255) / 255.0F;
+		final float alpha = (color >> 24 & 255) / 255.0F;
+		final float red = (color >> 16 & 255) / 255.0F;
+		final float green = (color >> 8 & 255) / 255.0F;
+		final float blue = (color & 255) / 255.0F;
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexbuffer = tessellator.getBufferBuilder();
 
-		//        GlStateManager.enableBlend();
-		//        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.disableTexture();
-		GlStateManager.color4f(f, f1, f2, f3);
+		GlStateManager.color4f(red, green, blue, alpha);
 		vertexbuffer.begin(7, VertexFormats.POSITION);
-		vertexbuffer.vertex(left, bottom, 0.0D).end();
-		vertexbuffer.vertex(right, bottom, 0.0D).end();
-		vertexbuffer.vertex(right, top, 0.0D).end();
-		vertexbuffer.vertex(left, top, 0.0D).end();
+		vertexbuffer.vertex(left, bottom, 0.0D).next();
+		vertexbuffer.vertex(right, bottom, 0.0D).next();
+		vertexbuffer.vertex(right, top, 0.0D).next();
+		vertexbuffer.vertex(left, top, 0.0D).next();
 		tessellator.draw();
 		GlStateManager.color4f(1, 1, 1, 1);
 		GlStateManager.enableTexture();
-		//      GlStateManager.disableBlend();
 	}
 
 	/**
@@ -268,11 +265,11 @@ public class GuiUtil {
 
 	}
 
-	public static void playPressedSound(MinecraftClient mc) {
-		mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+	public static void playPressedSound() {
+		MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 
-	public static boolean renderItemAndEffectIntoGui(GuiRenderContext renderContext, ItemStack itm, double x, double y, double contentSize) {
+	public static boolean renderItemAndEffectIntoGui(ScreenRenderContext renderContext, ItemStack itm, double x, double y, double contentSize) {
 		return renderItemAndEffectIntoGui(renderContext.minecraft(), renderContext.renderItem(), itm, x, y, contentSize);
 	}
 

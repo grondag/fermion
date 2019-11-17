@@ -15,15 +15,18 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import grondag.fermion.gui.GuiRenderContext;
 import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
-public class ItemPreview extends GuiControl<ItemPreview> {
+public class ItemPreview extends AbstractControl<ItemPreview> {
+	public ItemPreview(ScreenRenderContext renderContext) {
+		super(renderContext);
+	}
+
 	public ItemStack previewItem;
 
 	private double contentLeft;
@@ -31,7 +34,7 @@ public class ItemPreview extends GuiControl<ItemPreview> {
 	private double contentSize;
 
 	@Override
-	public void drawContent(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	public void drawContent(int mouseX, int mouseY, float partialTicks) {
 		if (previewItem != null) {
 			GuiUtil.renderItemAndEffectIntoGui(renderContext, previewItem, contentLeft, contentTop, contentSize);
 		}
@@ -45,23 +48,7 @@ public class ItemPreview extends GuiControl<ItemPreview> {
 	}
 
 	@Override
-	public boolean handleMouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton) {
-		// nothing privileged
-		return true;
-	}
-
-	@Override
-	public void handleMouseDrag(MinecraftClient mc, int mouseX, int mouseY, int clickedMouseButton) {
-		// nothing privileged
-	}
-
-	@Override
-	protected void handleMouseScroll(int mouseX, int mouseY, int scrollDelta) {
-		// ignore
-	}
-
-	@Override
-	public void drawToolTip(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

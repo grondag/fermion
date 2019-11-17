@@ -15,8 +15,8 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import grondag.fermion.gui.GuiRenderContext;
 import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.spatial.HorizontalAlignment;
 import grondag.fermion.spatial.VerticalAlignment;
 import net.fabricmc.api.EnvType;
@@ -24,7 +24,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 
 @Environment(EnvType.CLIENT)
-public class Toggle extends GuiControl<Toggle> {
+public class Toggle extends AbstractControl<Toggle> {
+	public Toggle(ScreenRenderContext renderContext) {
+		super(renderContext);
+	}
 
 	protected boolean isOn = false;
 	protected String label = "unlabedl toggle";
@@ -35,7 +38,7 @@ public class Toggle extends GuiControl<Toggle> {
 	protected int labelHeight;
 
 	@Override
-	protected void drawContent(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
 		final float boxRight = (float) (left + labelHeight);
 
 		GuiUtil.drawBoxRightBottom(left, targetAreaTop, boxRight, targetAreaBottom, 1,
@@ -59,31 +62,19 @@ public class Toggle extends GuiControl<Toggle> {
 	}
 
 	@Override
-	protected boolean isMouseOver(double mouseX, double mouseY) {
+	public boolean isMouseOver(double mouseX, double mouseY) {
 		return !(mouseX < left || mouseX > left + labelHeight + CONTROL_INTERNAL_MARGIN + labelWidth || mouseY < targetAreaTop
 			|| mouseY > targetAreaBottom);
 	}
 
 	@Override
-	public boolean handleMouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton) {
+	public void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
 		if (isMouseOver(mouseX, mouseY)) {
 			isOn = !isOn;
-			GuiUtil.playPressedSound(mc);
+			GuiUtil.playPressedSound();
 		}
-
-		return true;
 	}
 
-	@Override
-	protected void handleMouseDrag(MinecraftClient mc, int mouseX, int mouseY, int clickedMouseButton) {
-		// ignore
-
-	}
-
-	@Override
-	protected void handleMouseScroll(int mouseX, int mouseY, int scrollDelta) {
-		// ignore
-	}
 
 	public boolean isOn() {
 		return isOn;
@@ -105,7 +96,7 @@ public class Toggle extends GuiControl<Toggle> {
 	}
 
 	@Override
-	public void drawToolTip(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

@@ -16,6 +16,7 @@
 package grondag.fermion.gui.control;
 
 import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.spatial.HorizontalAlignment;
 import grondag.fermion.spatial.VerticalAlignment;
 import net.fabricmc.api.EnvType;
@@ -27,8 +28,8 @@ import net.minecraft.client.render.item.ItemRenderer;
 public class BrightnessSlider extends Slider {
 	private static final String LABEL = "Brightness";
 
-	public BrightnessSlider(MinecraftClient mc) {
-		super(mc, 16, LABEL, 0.22);
+	public BrightnessSlider(ScreenRenderContext renderContext) {
+		super(renderContext, 16, LABEL, 0.22);
 		choiceWidthFactor = 0.1;
 	}
 

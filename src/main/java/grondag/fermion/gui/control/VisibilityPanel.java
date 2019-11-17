@@ -18,20 +18,21 @@ package grondag.fermion.gui.control;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import grondag.fermion.gui.ScreenRenderContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class VisibilityPanel extends Panel {
 
-	private final ArrayList<ArrayList<GuiControl<?>>> groups = new ArrayList<ArrayList<GuiControl<?>>>();
+	private final ArrayList<ArrayList<AbstractControl<?>>> groups = new ArrayList<ArrayList<AbstractControl<?>>>();
 
 	private final ArrayList<String> labels = new ArrayList<String>();
 
 	private int visiblityIndex = VisiblitySelector.NO_SELECTION;
 
-	public VisibilityPanel(boolean isVertical) {
-		super(isVertical);
+	public VisibilityPanel(ScreenRenderContext renderContext, boolean isVertical) {
+		super(renderContext, isVertical);
 	}
 
 	public int getVisiblityIndex() {
@@ -51,17 +52,17 @@ public class VisibilityPanel extends Panel {
 	 */
 	public int createVisiblityGroup(String label) {
 		labels.add(label);
-		groups.add(new ArrayList<GuiControl<?>>());
+		groups.add(new ArrayList<AbstractControl<?>>());
 		return labels.size() - 1;
 	}
 
-	public VisibilityPanel addAll(int visibilityIndex, GuiControl<?>... controls) {
+	public VisibilityPanel addAll(int visibilityIndex, AbstractControl<?>... controls) {
 		groups.get(visibilityIndex).addAll(Arrays.asList(controls));
 		isDirty = true;
 		return this;
 	}
 
-	public VisibilityPanel add(int visibilityIndex, GuiControl<?> control) {
+	public VisibilityPanel add(int visibilityIndex, AbstractControl<?> control) {
 		groups.get(visibilityIndex).add(control);
 		isDirty = true;
 		return this;

@@ -18,7 +18,7 @@ package grondag.fermion.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import grondag.fermion.gui.control.GuiControl;
+import grondag.fermion.gui.control.AbstractControl;
 import grondag.fermion.gui.control.Panel;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -27,7 +27,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
 
-public interface GuiRenderContext {
+public interface ScreenRenderContext {
 	int CAPACITY_BAR_WIDTH = 4;
 
 	MinecraftClient minecraft();
@@ -44,7 +44,7 @@ public interface GuiRenderContext {
 	 * controls that are being hovered over while rendering should call this to
 	 * receive a callback after all controls have been rendered to draw a tooltip.
 	 */
-	void setHoverControl(GuiControl<?> control);
+	void setHoverControl(AbstractControl<?> control);
 
 	/**
 	 * Draws the given text as a tooltip.
@@ -77,55 +77,23 @@ public interface GuiRenderContext {
 		this.drawToolTip(I18n.translate(bool ? true_key : false_key), mouseX, mouseY);
 	}
 
-	/**
-	 * used by {@link #initGuiContext()} for layout. For containers, set by
-	 * container layout. For simple gui, is dynamic to screen size.
-	 */
-	int mainPanelLeft();
+	int screenLeft();
 
-	/**
-	 * used by {@link #initGuiContext()} for layout. For containers, set by
-	 * container layout. For simple gui, is dynamic to screen size.
-	 */
-	int mainPanelTop();
+	int screenWidth();
 
-	/**
-	 * used by {@link #initGuiContext()} for layout. For containers, set by
-	 * container layout. For simple gui, is dynamic to screen size.
-	 */
-	int mainPanelSize();
+	int screenTop();
 
-	//    /**
-	//     * Call from initializer to set up main panel and other shared stuff
-	//     */
-	//    public default Panel initGuiContextAndCreateMainPanel(MachineBlockEntity tileEntity)
-	//    {
-	//        Panel mainPanel = new Panel(true);
-	//        mainPanel.setLayoutDisabled(true);
-	//        mainPanel.setLeft(this.mainPanelLeft());
-	//        mainPanel.setTop(this.mainPanelTop());
-	//        mainPanel.setSquareSize(this.mainPanelSize());
-	//        mainPanel.setBackgroundColor(0xFF101010);
-	//
-	//
-	//        mainPanel.add(sizeControl(mainPanel, new MachineName(tileEntity, RenderBounds.BOUNDS_NAME), RenderBounds.BOUNDS_NAME));
-	//        mainPanel.add(sizeControl(mainPanel,  new MachineSymbol(tileEntity, RenderBounds.BOUNDS_SYMBOL), RenderBounds.BOUNDS_SYMBOL));
-	//
-	//
-	//        if(tileEntity.clientState().hasOnOff)
-	//        {
-	//            mainPanel.add(sizeControl(mainPanel, new MachineOnOff(tileEntity, RenderBounds.BOUNDS_ON_OFF), RenderBounds.BOUNDS_ON_OFF));
-	//        }
-	//
-	//        if(tileEntity.clientState().hasRedstoneControl)
-	//        {
-	//            mainPanel.add(sizeControl(mainPanel, new MachineRedstone(tileEntity, RenderBounds.BOUNDS_REDSTONE), RenderBounds.BOUNDS_REDSTONE));
-	//        }
-	//
-	//        this.addControls(mainPanel, tileEntity);
-	//
-	//        return mainPanel;
-	//    }
+	int screenHeight();
+
+	default Panel createMainPanel() {
+		final Panel mainPanel = new Panel(this, true);
+		mainPanel.setLeft(screenLeft() + AbstractControl.CONTROL_EXTERNAL_MARGIN);
+		mainPanel.setTop(screenTop() + AbstractControl.CONTROL_EXTERNAL_MARGIN);
+		mainPanel.setWidth(screenWidth() - AbstractControl.CONTROL_EXTERNAL_MARGIN * 2);
+		mainPanel.setHeight(screenHeight() - AbstractControl.CONTROL_EXTERNAL_MARGIN * 2);
+		mainPanel.setBackgroundColor(0x00FFFFFF);
+		return mainPanel;
+	}
 
 	//    public default AbstractMachineControl<?, ?> sizeControl(Panel mainPanel, AbstractMachineControl<?, ?> control, AbstractRectRenderBounds bounds)
 	//    {

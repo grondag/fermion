@@ -1,37 +1,37 @@
 package grondag.fermion.gui;
 
-import java.io.IOException;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import grondag.fermion.gui.control.GuiControl;
+import grondag.fermion.gui.control.AbstractControl;
 import grondag.fermion.gui.control.Panel;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.container.Container;
 import net.minecraft.container.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class AbstractContainerGui extends GuiContainer implements GuiRenderContext
+public abstract class AbstractContainerGui extends GuiContainer implements ScreenRenderContext
 {
 	protected final ContainerLayout layout;
 
 	public static final ContainerLayout LAYOUT;
 
-
 	protected @Nullable Panel mainPanel;
-	protected @Nullable GuiControl<?> hoverControl;
+	protected @Nullable AbstractControl<?> hoverControl;
 
 	static
 	{
 		LAYOUT = new ContainerLayout();
 
-		LAYOUT.dialogHeight = LAYOUT.externalMargin * 3 + LAYOUT.slotSpacing * 4 + LAYOUT.playerInventoryWidth + GuiControl.CONTROL_INTERNAL_MARGIN;
+		LAYOUT.dialogHeight = LAYOUT.externalMargin * 3 + LAYOUT.slotSpacing * 4 + LAYOUT.playerInventoryWidth + AbstractControl.CONTROL_INTERNAL_MARGIN;
 
 		/** distance from top of dialog to start of player inventory area */
-		LAYOUT.playerInventoryTop = LAYOUT.dialogHeight - LAYOUT.externalMargin - LAYOUT.slotSpacing * 4 - GuiControl.CONTROL_INTERNAL_MARGIN;
+		LAYOUT.playerInventoryTop = LAYOUT.dialogHeight - LAYOUT.externalMargin - LAYOUT.slotSpacing * 4 - AbstractControl.CONTROL_INTERNAL_MARGIN;
 	}
 
 	public AbstractContainerGui(ContainerLayout layout, Container container)
@@ -53,7 +53,7 @@ public abstract class AbstractContainerGui extends GuiContainer implements GuiRe
 		//            this.guiLeft = ((this.width * 2 / 3) - this.xSize) / 2;
 		//        }
 
-		mainPanel = this.initGuiContextAndCreateMainPanel();
+		mainPanel = this.initScreenContextAndCreateMainPanel();
 
 	}
 
@@ -81,7 +81,7 @@ public abstract class AbstractContainerGui extends GuiContainer implements GuiRe
 		// And can't draw after super.drawScreen() because would potentially render on top of things.
 
 		//		MachineControlRenderer.setupMachineRendering();
-		mainPanel.drawControl(this, mouseX, mouseY, partialTicks);
+		mainPanel.drawControl(mouseX, mouseY, partialTicks);
 		//		MachineControlRenderer.restoreGUIRendering();
 
 
@@ -96,22 +96,8 @@ public abstract class AbstractContainerGui extends GuiContainer implements GuiRe
 		super.renderHoveredToolTip(mouseX, mouseY);
 		if(hoverControl != null)
 		{
-			hoverControl.drawToolTip(this, mouseX, mouseY, partialTicks);
+			hoverControl.drawToolTip(mouseX, mouseY, partialTicks);
 		}
-	}
-
-	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int clickedMouseButton) throws IOException
-	{
-		super.mouseClicked(mouseX, mouseY, clickedMouseButton);
-		mainPanel.mouseClick(mc, mouseX, mouseY, clickedMouseButton);
-	}
-
-	@Override
-	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
-	{
-		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-		mainPanel.mouseDrag(mc, mouseX, mouseY, clickedMouseButton);
 	}
 
 	@Override
@@ -139,7 +125,7 @@ public abstract class AbstractContainerGui extends GuiContainer implements GuiRe
 	}
 
 	@Override
-	public void setHoverControl(GuiControl<?> control)
+	public void setHoverControl(AbstractControl<?> control)
 	{
 		hoverControl = control;
 	}
@@ -152,20 +138,24 @@ public abstract class AbstractContainerGui extends GuiContainer implements GuiRe
 	}
 
 	@Override
-	public int mainPanelLeft()
-	{
-		return guiLeft + layout.playerInventoryLeft;
+	public Optional<Element> hoveredElement(double double_1, double double_2) {
+		return Optional.ofNullable(hoverControl);
 	}
-
-	@Override
-	public int mainPanelTop()
-	{
-		return guiTop + layout.externalMargin;
-	}
-
-	@Override
-	public int mainPanelSize()
-	{
-		return layout.playerInventoryWidth;
-	}
+	//	@Override
+	//	public int mainPanelLeft()
+	//	{
+	//		return guiLeft + layout.playerInventoryLeft;
+	//	}
+	//
+	//	@Override
+	//	public int mainPanelTop()
+	//	{
+	//		return guiTop + layout.externalMargin;
+	//	}
+	//
+	//	@Override
+	//	public int mainPanelSize()
+	//	{
+	//		return layout.playerInventoryWidth;
+	//	}
 }

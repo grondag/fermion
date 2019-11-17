@@ -20,5 +20,6 @@ import net.fabricmc.api.ClientModInitializer;
 public class FermionGuiClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+
 	}
 }

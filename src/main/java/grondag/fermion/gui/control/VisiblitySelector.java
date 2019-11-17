@@ -18,24 +18,24 @@ package grondag.fermion.gui.control;
 import static grondag.fermion.spatial.HorizontalAlignment.CENTER;
 import static grondag.fermion.spatial.VerticalAlignment.MIDDLE;
 
-import grondag.fermion.gui.GuiRenderContext;
 import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 
 @Environment(EnvType.CLIENT)
-public class VisiblitySelector extends GuiControl<VisiblitySelector> {
+public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 	private final VisibilityPanel target;
 
 	private double buttonHeight;
 
-	public VisiblitySelector(VisibilityPanel target) {
+	public VisiblitySelector(ScreenRenderContext renderContext, VisibilityPanel target) {
+		super(renderContext);
 		this.target = target;
 	}
 
 	@Override
-	protected void drawContent(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
 		double y = top;
 
 		final int hoverIndex = getButtonIndex(mouseX, mouseY);
@@ -74,29 +74,17 @@ public class VisiblitySelector extends GuiControl<VisiblitySelector> {
 	}
 
 	@Override
-	public boolean handleMouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton) {
+	public void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
 		final int clickIndex = getButtonIndex(mouseX, mouseY);
 
 		if (clickIndex != NO_SELECTION && clickIndex != target.getVisiblityIndex()) {
 			target.setVisiblityIndex(clickIndex);
-			GuiUtil.playPressedSound(mc);
+			GuiUtil.playPressedSound();
 		}
-
-		return true;
 	}
 
 	@Override
-	protected void handleMouseDrag(MinecraftClient mc, int mouseX, int mouseY, int clickedMouseButton) {
-		// ignore
-	}
-
-	@Override
-	protected void handleMouseScroll(int mouseX, int mouseY, int scrollDelta) {
-		// ignore
-	}
-
-	@Override
-	public void drawToolTip(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

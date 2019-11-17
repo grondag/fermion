@@ -19,8 +19,8 @@ import java.util.List;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import grondag.fermion.gui.GuiRenderContext;
 import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.gui.container.ItemDisplayDelegate;
 import grondag.fermion.spatial.HorizontalAlignment;
 import grondag.fermion.spatial.VerticalAlignment;
@@ -36,8 +36,8 @@ public class ItemStackPicker extends TabBar<ItemDisplayDelegate> {
 	protected final TextRenderer fontRenderer;
 	protected final MouseHandler<ItemDisplayDelegate> clickHandler;
 
-	public ItemStackPicker(List<ItemDisplayDelegate> items, TextRenderer fontRenderer, MouseHandler<ItemDisplayDelegate> clickHandler) {
-		super(items);
+	public ItemStackPicker(ScreenRenderContext renderContext, List<ItemDisplayDelegate> items, TextRenderer fontRenderer, MouseHandler<ItemDisplayDelegate> clickHandler) {
+		super(renderContext, items);
 		this.fontRenderer = fontRenderer;
 		this.clickHandler = clickHandler;
 		setItemsPerRow(9);
@@ -48,8 +48,8 @@ public class ItemStackPicker extends TabBar<ItemDisplayDelegate> {
 	}
 
 	@Override
-	protected void drawContent(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
-		super.drawContent(renderContext, mouseX, mouseY, partialTicks);
+	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
+		super.drawContent(mouseX, mouseY, partialTicks);
 	}
 
 	private String getQuantityLabel(long qty) {
@@ -123,13 +123,12 @@ public class ItemStackPicker extends TabBar<ItemDisplayDelegate> {
 	}
 
 	@Override
-	public boolean handleMouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton) {
+	public void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
 
 		if (clickHandler != null && currentMouseLocation == MouseLocation.ITEM) {
-			clickHandler.handle(mc, clickedMouseButton, resourceForClickHandler());
-			return true;
+			clickHandler.handle(MinecraftClient.getInstance(), clickedMouseButton, resourceForClickHandler());
 		} else {
-			return super.handleMouseClick(mc, mouseX, mouseY, clickedMouseButton);
+			super.handleMouseClick(mouseX, mouseY, clickedMouseButton);
 		}
 	}
 
@@ -139,7 +138,7 @@ public class ItemStackPicker extends TabBar<ItemDisplayDelegate> {
 	}
 
 	@Override
-	protected void drawToolTip(ItemDisplayDelegate item, GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	protected void drawToolTip(ItemDisplayDelegate item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
 		renderContext.drawToolTip(item.displayStack(), mouseX, mouseY);
 
 	}

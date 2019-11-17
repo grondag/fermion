@@ -15,10 +15,10 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import static grondag.fermion.gui.control.GuiControl.BUTTON_COLOR_ACTIVE;
-import static grondag.fermion.gui.control.GuiControl.BUTTON_COLOR_FOCUS;
-import static grondag.fermion.gui.control.GuiControl.BUTTON_COLOR_INACTIVE;
-import static grondag.fermion.gui.control.GuiControl.TEXT_COLOR_ACTIVE;
+import static grondag.fermion.gui.control.AbstractControl.BUTTON_COLOR_ACTIVE;
+import static grondag.fermion.gui.control.AbstractControl.BUTTON_COLOR_FOCUS;
+import static grondag.fermion.gui.control.AbstractControl.BUTTON_COLOR_INACTIVE;
+import static grondag.fermion.gui.control.AbstractControl.TEXT_COLOR_ACTIVE;
 import static grondag.fermion.spatial.HorizontalAlignment.CENTER;
 import static grondag.fermion.spatial.VerticalAlignment.MIDDLE;
 

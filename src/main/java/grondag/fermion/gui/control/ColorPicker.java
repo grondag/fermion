@@ -22,14 +22,13 @@ import grondag.fermion.color.ColorSet;
 import grondag.fermion.color.ColorSet.Tone;
 import grondag.fermion.color.Hue;
 import grondag.fermion.color.Luminance;
-import grondag.fermion.gui.GuiRenderContext;
 import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 
 @Environment(EnvType.CLIENT)
-public class ColorPicker extends GuiControl<ColorPicker> {
+public class ColorPicker extends AbstractControl<ColorPicker> {
 	private Hue selectedHue = Hue.AZURE;
 	private Chroma selectedChroma = null;
 
@@ -66,12 +65,13 @@ public class ColorPicker extends GuiControl<ColorPicker> {
 		selectedChroma = ColorAtlas.INSTANCE.getColorMap(colorMapID).chroma;
 	}
 
-	public ColorPicker() {
+	public ColorPicker(ScreenRenderContext renderContext) {
+		super(renderContext);
 		setAspectRatio(height(1.0));
 	}
 
 	@Override
-	protected void drawContent(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
 		for (int h = 0; h < Hue.COUNT; h++) {
 			final double radius = (h == selectedHue.ordinal()) ? radiusOuter : radiusInner;
 			final double arcStart = Math.toRadians(arc * h);
@@ -142,7 +142,7 @@ public class ColorPicker extends GuiControl<ColorPicker> {
 	}
 
 	@Override
-	public boolean handleMouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton) {
+	public void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
 		final double distance = Math.sqrt((Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2)));
 
 		if (distance < radiusOuter + 2) {
@@ -171,17 +171,15 @@ public class ColorPicker extends GuiControl<ColorPicker> {
 				}
 			}
 		}
-
-		return true;
 	}
 
 	@Override
-	protected void handleMouseDrag(MinecraftClient mc, int mouseX, int mouseY, int clickedMouseButton) {
-		handleMouseClick(mc, mouseX, mouseY, clickedMouseButton);
+	protected void handleMouseDrag(double mouseX, double mouseY, int clickedMouseButton, double dx, double dy) {
+		//handleMouseClick(mc, mouseX, mouseY, clickedMouseButton);
 	}
 
 	@Override
-	protected void handleMouseScroll(int mouseX, int mouseY, int scrollDelta) {
+	protected void handleMouseScroll(double mouseX, double mouseY, double scrollDelta) {
 		final int inc = mouseIncrementDelta();
 		if (inc != 0) {
 			int ord = selectedHue.ordinal() + inc;
@@ -235,7 +233,7 @@ public class ColorPicker extends GuiControl<ColorPicker> {
 	}
 
 	@Override
-	public void drawToolTip(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

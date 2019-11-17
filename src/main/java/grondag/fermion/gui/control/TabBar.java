@@ -20,8 +20,8 @@ import java.util.List;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import grondag.fermion.gui.GuiRenderContext;
 import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.varia.Useful;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,7 +30,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public abstract class TabBar<T> extends GuiControl<TabBar<T>> {
+public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	@SuppressWarnings("hiding")
 	public static final int NO_SELECTION = -1;
 
@@ -72,7 +72,8 @@ public abstract class TabBar<T> extends GuiControl<TabBar<T>> {
 	protected MouseLocation currentMouseLocation;
 	protected int currentMouseIndex;
 
-	public TabBar(List<T> items) {
+	public TabBar(ScreenRenderContext renderContext, List<T> items) {
+		super(renderContext);
 		this.items = items;
 	}
 
@@ -89,7 +90,7 @@ public abstract class TabBar<T> extends GuiControl<TabBar<T>> {
 	}
 
 	@Override
-	protected void drawContent(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
 		if (items == null)
 			return;
 
@@ -166,7 +167,7 @@ public abstract class TabBar<T> extends GuiControl<TabBar<T>> {
 	}
 
 	@Override
-	public final void drawToolTip(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	public final void drawToolTip(int mouseX, int mouseY, float partialTicks) {
 		if (this.items == null)
 			return;
 
@@ -182,7 +183,7 @@ public abstract class TabBar<T> extends GuiControl<TabBar<T>> {
 		}
 	}
 
-	protected abstract void drawToolTip(T item, GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks);
+	protected abstract void drawToolTip(T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks);
 
 	/**
 	 *
@@ -283,9 +284,8 @@ public abstract class TabBar<T> extends GuiControl<TabBar<T>> {
 	}
 
 	@Override
-	protected boolean handleMouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton) {
-		if (items == null)
-			return true;
+	protected void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
+		if (items == null) return;
 
 		this.updateMouseLocation(mouseX, mouseY);
 		switch (this.currentMouseLocation) {
@@ -299,14 +299,14 @@ public abstract class TabBar<T> extends GuiControl<TabBar<T>> {
 			if (this.selectedTabIndex > 0) {
 				this.selectedTabIndex--;
 			}
-			GuiUtil.playPressedSound(mc);
+			GuiUtil.playPressedSound();
 			break;
 
 		case BOTTOM_ARROW:
 			if (this.selectedTabIndex < this.tabCount - 1) {
 				this.selectedTabIndex++;
 			}
-			GuiUtil.playPressedSound(mc);
+			GuiUtil.playPressedSound();
 			break;
 
 		case TAB:
@@ -318,12 +318,10 @@ public abstract class TabBar<T> extends GuiControl<TabBar<T>> {
 			break;
 
 		}
-
-		return true;
 	}
 
 	@Override
-	protected void handleMouseDrag(MinecraftClient mc, int mouseX, int mouseY, int clickedMouseButton) {
+	protected void handleMouseDrag(double mouseX, double mouseY, int clickedMouseButton, double dx, double dy) {
 		if (items == null)
 			return;
 
@@ -352,7 +350,7 @@ public abstract class TabBar<T> extends GuiControl<TabBar<T>> {
 	}
 
 	@Override
-	protected void handleMouseScroll(int mouseX, int mouseY, int scrollDelta) {
+	protected void handleMouseScroll(double mouseX, double mouseY, double scrollDelta) {
 		if (items == null)
 			return;
 

@@ -15,15 +15,15 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import grondag.fermion.gui.GuiRenderContext;
 import grondag.fermion.gui.Layout;
+import grondag.fermion.gui.ScreenRenderContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.Element;
 
 @Environment(EnvType.CLIENT)
-public abstract class GuiControl<T extends GuiControl<T>> extends DrawableHelper {
+public abstract class AbstractControl<T extends AbstractControl<T>> extends DrawableHelper implements Element {
 	public static final int BUTTON_COLOR_ACTIVE = 0x9AFFFFFF;
 	public static final int BUTTON_COLOR_INACTIVE = 0x2AFFFFFF;
 	public static final int BUTTON_COLOR_FOCUS = 0xFFBAF6FF;
@@ -35,7 +35,10 @@ public abstract class GuiControl<T extends GuiControl<T>> extends DrawableHelper
 	public static final int CONTROL_INTERNAL_MARGIN = 5;
 	public static final int CONTROL_EXTERNAL_MARGIN = 5;
 	public static final int CONTROL_BACKGROUND = 0x4AFFFFFF;
-	protected static final int NO_SELECTION = -1;
+
+	public static final int SCROLLBAR_WIDTH = 10;
+
+	public static final int NO_SELECTION = -1;
 
 	protected double top;
 	protected double left;
@@ -70,7 +73,13 @@ public abstract class GuiControl<T extends GuiControl<T>> extends DrawableHelper
 	 */
 	protected double aspectRatio = 1.0;
 
-	public GuiControl<T> resize(double left, double top, double width, double height) {
+	protected final ScreenRenderContext renderContext;
+
+	public AbstractControl(ScreenRenderContext renderContext) {
+		this.renderContext = renderContext;
+	}
+
+	public AbstractControl<T> resize(double left, double top, double width, double height) {
 		this.left = left;
 		this.top = top;
 		this.width = width;
@@ -79,57 +88,80 @@ public abstract class GuiControl<T extends GuiControl<T>> extends DrawableHelper
 		return this;
 	}
 
-	public void drawControl(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	public final void drawControl(int mouseX, int mouseY, float partialTicks) {
 		this.refreshContentCoordinatesIfNeeded();
+
 		if (this.isVisible) {
 			// set hover start, so that controls further down the stack can overwrite
 			if (this.isMouseOver(mouseX, mouseY)) {
 				renderContext.setHoverControl(this);
 			}
 
-			this.drawContent(renderContext, mouseX, mouseY, partialTicks);
+			this.drawContent(mouseX, mouseY, partialTicks);
 		}
 	}
 
-	public abstract void drawToolTip(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks);
+	public abstract void drawToolTip(int mouseX, int mouseY, float partialTicks);
 
-	protected abstract void drawContent(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks);
+	protected abstract void drawContent(int mouseX, int mouseY, float partialTicks);
 
 	/** called after any coordinate-related input changes */
-	protected abstract void handleCoordinateUpdate();
+	protected void handleCoordinateUpdate() {
 
-	protected abstract boolean handleMouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton);
+	}
 
-	protected abstract void handleMouseDrag(MinecraftClient mc, int mouseX, int mouseY, int clickedMouseButton);
+	protected void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
 
-	protected abstract void handleMouseScroll(int mouseX, int mouseY, int scrollDelta);
+	}
 
-	public boolean mouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton) {
+	protected void handleMouseDrag(double mouseX, double mouseY, int clickedMouseButton, double dx, double dy) {
+
+	}
+
+	protected void handleMouseScroll(double mouseX, double mouseY, double scrollDelta) {
+
+	}
+
+	@Override
+	public final boolean mouseScrolled(double mouseX, double mouseY, double scrollDelta) {
 		if (this.isVisible) {
-			this.refreshContentCoordinatesIfNeeded();
-			if (mouseX < this.left || mouseX > this.right || mouseY < this.top || mouseY > this.bottom)
+			if (mouseX < this.left || mouseX > this.right || mouseY < this.top || mouseY > this.bottom) {
 				return false;
-			return this.handleMouseClick(mc, mouseX, mouseY, clickedMouseButton);
-		}
-		return false;
-	}
+			}
 
-	public void mouseDrag(MinecraftClient mc, int mouseX, int mouseY, int clickedMouseButton) {
-		if (this.isVisible) {
-			this.refreshContentCoordinatesIfNeeded();
-			if (mouseX < this.left || mouseX > this.right || mouseY < this.top || mouseY > this.bottom)
-				return;
-			this.handleMouseDrag(mc, mouseX, mouseY, clickedMouseButton);
-		}
-	}
-
-	public void mouseScroll(int mouseX, int mouseY, int scrollDelta) {
-		if (this.isVisible) {
-			this.refreshContentCoordinatesIfNeeded();
-			if (mouseX < this.left || mouseX > this.right || mouseY < this.top || mouseY > this.bottom)
-				return;
 			this.scrollDistance += scrollDelta;
 			this.handleMouseScroll(mouseX, mouseY, scrollDelta);
+			return true;
+		}  else {
+			return false;
+		}
+	}
+
+	@Override
+	public final boolean mouseClicked(double mouseX, double mouseY, int clickedMouseButton) {
+		if (this.isVisible) {
+			if (mouseX < this.left || mouseX > this.right || mouseY < this.top || mouseY > this.bottom) {
+				return false;
+			}
+
+			this.handleMouseClick(mouseX, mouseY, clickedMouseButton);
+			return true;
+		}  else {
+			return false;
+		}
+	}
+
+	@Override
+	public final boolean mouseDragged(double mouseX, double mouseY, int clickedMouseButton, double dx, double dy) {
+		if (this.isVisible) {
+			if (mouseX < this.left || mouseX > this.right || mouseY < this.top || mouseY > this.bottom) {
+				return false;
+			}
+
+			this.handleMouseDrag(mouseX, mouseY, clickedMouseButton, dx, dy);
+			return true;
+		}  else {
+			return false;
 		}
 	}
 
@@ -156,13 +188,6 @@ public abstract class GuiControl<T extends GuiControl<T>> extends DrawableHelper
 		return top;
 	}
 
-	@SuppressWarnings("unchecked")
-	public T setTop(double top) {
-		this.top = top;
-		this.isDirty = true;
-		return (T) this;
-	}
-
 	public double getBottom() {
 		this.refreshContentCoordinatesIfNeeded();
 		return this.bottom;
@@ -172,13 +197,6 @@ public abstract class GuiControl<T extends GuiControl<T>> extends DrawableHelper
 		return left;
 	}
 
-	@SuppressWarnings("unchecked")
-	public T setLeft(double left) {
-		this.left = left;
-		this.isDirty = true;
-		return (T) this;
-	}
-
 	public double getRight() {
 		this.refreshContentCoordinatesIfNeeded();
 		return this.right;
@@ -186,6 +204,20 @@ public abstract class GuiControl<T extends GuiControl<T>> extends DrawableHelper
 
 	public double getHeight() {
 		return height;
+	}
+
+	@SuppressWarnings("unchecked")
+	public T setTop(double top) {
+		this.top = top;
+		this.isDirty = true;
+		return (T) this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public T setLeft(double left) {
+		this.left = left;
+		this.isDirty = true;
+		return (T) this;
 	}
 
 	/**
@@ -278,7 +310,8 @@ public abstract class GuiControl<T extends GuiControl<T>> extends DrawableHelper
 		return (T) this;
 	}
 
-	protected boolean isMouseOver(double mouseX, double mouseY) {
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
 		return !(mouseX < this.left || mouseX > this.right || mouseY < this.top || mouseY > this.bottom);
 	}
 

@@ -39,7 +39,7 @@ public abstract class GuiContainer extends Screen {
 
 	}
 
-	protected <T> Panel initGuiContextAndCreateMainPanel() {
+	protected <T> Panel initScreenContextAndCreateMainPanel() {
 		// TODO Auto-generated method stub
 		return null;
 	}

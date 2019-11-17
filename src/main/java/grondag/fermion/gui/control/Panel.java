@@ -18,15 +18,14 @@ package grondag.fermion.gui.control;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import grondag.fermion.gui.GuiRenderContext;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.Layout;
+import grondag.fermion.gui.ScreenRenderContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 
 @Environment(EnvType.CLIENT)
-public class Panel extends GuiControl<Panel> {
+public class Panel extends AbstractControl<Panel> {
 	/** if false is horizontal */
 	public final boolean isVertical;
 
@@ -39,37 +38,37 @@ public class Panel extends GuiControl<Panel> {
 	 */
 	private boolean isLayoutDisabled = false;
 
-	protected ArrayList<GuiControl<?>> children = new ArrayList<GuiControl<?>>();
+	protected ArrayList<AbstractControl<?>> children = new ArrayList<AbstractControl<?>>();
 
-	public Panel(boolean isVertical) {
-		super();
+	public Panel(ScreenRenderContext renderContext, boolean isVertical) {
+		super(renderContext);
 		this.isVertical = isVertical;
 	}
 
-	public Panel addAll(GuiControl<?>... controls) {
+	public Panel addAll(AbstractControl<?>... controls) {
 		children.addAll(Arrays.asList(controls));
 		isDirty = true;
 		return this;
 	}
 
-	public Panel add(GuiControl<?> control) {
+	public Panel add(AbstractControl<?> control) {
 		children.add(control);
 		isDirty = true;
 		return this;
 	}
 
-	public GuiControl<?> get(int i) {
+	public AbstractControl<?> get(int i) {
 		return children.get(i);
 	}
 
 	@Override
-	protected void drawContent(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
 		if (getBackgroundColor() != 0) {
 			GuiUtil.drawRect(left, top, right, bottom, getBackgroundColor());
 		}
 
-		for (final GuiControl<?> control : children) {
-			control.drawControl(renderContext, mouseX, mouseY, partialTicks);
+		for (final AbstractControl<?> control : children) {
+			control.drawControl(mouseX, mouseY, partialTicks);
 		}
 	}
 
@@ -85,7 +84,7 @@ public class Panel extends GuiControl<Panel> {
 		final double fixedSpace = (isVertical ? width : height) - outerMarginWidth * 2;
 
 		// on start pass, gather the size/weights for the expanding dimension
-		for (final GuiControl<?> control : children) {
+		for (final AbstractControl<?> control : children) {
 			if (isVertical) {
 				switch (control.getVerticalLayout()) {
 				case FIXED:
@@ -127,7 +126,7 @@ public class Panel extends GuiControl<Panel> {
 		final double fixedSize = (isVertical ? width : height) - outerMarginWidth * 2;
 
 		// on second pass rescale
-		for (final GuiControl<?> control : children) {
+		for (final AbstractControl<?> control : children) {
 			//            double variableSize;
 
 			double controlHeight;
@@ -185,27 +184,29 @@ public class Panel extends GuiControl<Panel> {
 		}
 	}
 
-	@Override
-	public boolean handleMouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton) {
-		for (final GuiControl<?> child : children) {
-			child.mouseClick(mc, mouseX, mouseY, clickedMouseButton);
-		}
-		return true;
-	}
+	//TODO: remove - should not longer be needed because events always go to hovered element
 
-	@Override
-	public void handleMouseDrag(MinecraftClient mc, int mouseX, int mouseY, int clickedMouseButton) {
-		for (final GuiControl<?> child : children) {
-			child.mouseDrag(mc, mouseX, mouseY, clickedMouseButton);
-		}
-	}
-
-	@Override
-	protected void handleMouseScroll(int mouseX, int mouseY, int scrollDelta) {
-		for (final GuiControl<?> child : children) {
-			child.mouseScroll(mouseX, mouseY, scrollDelta);
-		}
-	}
+	//	@Override
+	//	public boolean handleMouseClick(MinecraftClient mc, double mouseX, double mouseY, int clickedMouseButton) {
+	//		for (final AbstractControl<?> child : children) {
+	//			child.mouseClick(mc, mouseX, mouseY, clickedMouseButton);
+	//		}
+	//		return true;
+	//	}
+	//
+	//	@Override
+	//	public void handleMouseDrag(MinecraftClient mc, int mouseX, int mouseY, int clickedMouseButton) {
+	//		for (final AbstractControl<?> child : children) {
+	//			child.mouseDrag(mc, mouseX, mouseY, clickedMouseButton);
+	//		}
+	//	}
+	//
+	//	@Override
+	//	protected void handleMouseScroll(int mouseX, int mouseY, int scrollDelta) {
+	//		for (final AbstractControl<?> child : children) {
+	//			child.mouseScroll(mouseX, mouseY, scrollDelta);
+	//		}
+	//	}
 
 	/** the pixelWidth of the background from the edge of child controls */
 	public int getOuterMarginWidth() {
@@ -245,7 +246,7 @@ public class Panel extends GuiControl<Panel> {
 	}
 
 	@Override
-	public void drawToolTip(GuiRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}
