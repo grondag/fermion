@@ -21,10 +21,12 @@ import java.util.List;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.ScreenRenderContext;
 import grondag.mcmd.McMdRenderer;
+import grondag.mcmd.McMdStyle;
 import grondag.mcmd.node.Node;
 import grondag.mcmd.renderer.mc.McMdContentRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
@@ -42,11 +44,11 @@ public class MarkdownControl extends AbstractControl<MarkdownControl> {
 	protected Slider slider;
 	Node markdown;
 	final McMdRenderer mcmd;
-	public MarkdownControl(ScreenRenderContext renderContext, Node document) {
+	public MarkdownControl(ScreenRenderContext renderContext, Node document, TextRenderer baseFont) {
 		super(renderContext);
 		markdown = document;
 		isDirty = true;
-		mcmd = new McMdRenderer(renderContext.fontRenderer(),renderContext.fontRenderer(), renderContext.fontRenderer(), renderContext.fontRenderer());
+		mcmd = new McMdRenderer(new McMdStyle(), baseFont);
 	}
 
 
@@ -75,7 +77,7 @@ public class MarkdownControl extends AbstractControl<MarkdownControl> {
 			lines.clear();
 		}
 
-		mcmd.wrapMarkdownToWidthAsList(text, width, lines);
+		mcmd.wrapMarkdownToWidth(text, width, lines);
 	}
 
 	@Override
