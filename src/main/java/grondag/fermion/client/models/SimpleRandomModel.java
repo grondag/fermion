@@ -32,11 +32,11 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.SpriteIdentifier;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 public class SimpleRandomModel extends SimpleModel {
 	protected final Sprite[] sprites;
@@ -44,7 +44,7 @@ public class SimpleRandomModel extends SimpleModel {
 	protected final RenderMaterial material = renderer.materialFinder().find();
 	protected final int maxTextureIndex;
 
-	public SimpleRandomModel(Function<Identifier, Sprite> spriteMap, List<Identifier> textures) {
+	public SimpleRandomModel(Function<SpriteIdentifier, Sprite> spriteMap, List<SpriteIdentifier> textures) {
 		super(spriteMap.apply(textures.get(0)), ModelHelper.MODEL_TRANSFORM_BLOCK);
 		final int textureCount = textures.size();
 		maxTextureIndex = textureCount - 1;
@@ -55,7 +55,7 @@ public class SimpleRandomModel extends SimpleModel {
 	}
 
 	@Override
-	public final void emitBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+	public final void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
 		final QuadEmitter qe = context.getEmitter();
 		final long bits = HashCommon.mix(pos.asLong());
 		emitQuads(qe, bits);

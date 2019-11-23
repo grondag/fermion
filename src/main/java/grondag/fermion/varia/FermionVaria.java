@@ -16,13 +16,12 @@
 
 package grondag.fermion.varia;
 
-import grondag.fermion.block.sign.OpenSignUpdateC2S;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 
 public class FermionVaria implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ServerSidePacketRegistry.INSTANCE.register(OpenSignUpdateC2S.C2S_ID, OpenSignUpdateC2S::handleC2S);
+		//TODO: put back
+		//ServerSidePacketRegistry.INSTANCE.register(OpenSignUpdateC2S.C2S_ID, OpenSignUpdateC2S::handleC2S);
 	}
 }

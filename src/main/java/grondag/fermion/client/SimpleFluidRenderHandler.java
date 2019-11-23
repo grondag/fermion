@@ -16,39 +16,42 @@
 
 package grondag.fermion.client;
 
+import java.util.function.Function;
+
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 class SimpleFluidRenderHandler implements FluidRenderHandler {
 	private final int color;
-	private final String stillSpriteName;
-	private final String flowingSpriteName;
+	private final Identifier stillSpriteName;
+	private final Identifier flowingSpriteName;
 	private final Sprite[] sprites = new Sprite[2];
 
 	SimpleFluidRenderHandler(int color, String stillSpriteName, String flowingSpriteName) {
 		this.color = color;
-		this.stillSpriteName = stillSpriteName;
-		this.flowingSpriteName = flowingSpriteName;
+		this.stillSpriteName = new Identifier(stillSpriteName);
+		this.flowingSpriteName = new Identifier(flowingSpriteName);
 	}
 
 	@Override
-	public int getFluidColor(ExtendedBlockView view, BlockPos pos, FluidState state) {
+	public int getFluidColor(BlockRenderView view, BlockPos pos, FluidState state) {
 		return color;
 	}
 
 	@Override
-	public Sprite[] getFluidSprites(ExtendedBlockView view, BlockPos pos, FluidState state) {
+	public Sprite[] getFluidSprites(BlockRenderView view, BlockPos pos, FluidState state) {
 		return sprites;
 	}
 
 	public void reload() {
-		final SpriteAtlasTexture atlas = MinecraftClient.getInstance().getSpriteAtlas();
-		sprites[0] = atlas.getSprite(stillSpriteName);
-		sprites[1] = atlas.getSprite(flowingSpriteName);
+		final Function<Identifier, Sprite> atlas = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		sprites[0] = atlas.apply(stillSpriteName);
+		sprites[1] = atlas.apply(flowingSpriteName);
 	}
 }

@@ -32,7 +32,7 @@ import net.minecraft.entity.EntityContext;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -41,7 +41,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.ViewableWorld;
+import net.minecraft.world.WorldView;
 
 /** open and extensible implementation of vanilla signs */
 public class OpenWallSignBlock extends AbstractOpenSignBlock {
@@ -50,7 +50,7 @@ public class OpenWallSignBlock extends AbstractOpenSignBlock {
 
 	public OpenWallSignBlock(Block.Settings settings, Supplier<BlockEntity> beSupplier) {
 		super(settings, beSupplier);
-		setDefaultState(stateFactory.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+		setDefaultState(stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class OpenWallSignBlock extends AbstractOpenSignBlock {
 	}
 
 	@Override
-	public boolean canPlaceAt(BlockState blockState, ViewableWorld world, BlockPos pos) {
+	public boolean canPlaceAt(BlockState blockState, WorldView world, BlockPos pos) {
 		return world.getBlockState(pos.offset(blockState.get(FACING).getOpposite())).getMaterial().isSolid();
 	}
 
@@ -73,7 +73,7 @@ public class OpenWallSignBlock extends AbstractOpenSignBlock {
 	public BlockState getPlacementState(ItemPlacementContext context) {
 		BlockState blockState = getDefaultState();
 		final FluidState fluidState = context.getWorld().getFluidState(context.getBlockPos());
-		final ViewableWorld world = context.getWorld();
+		final WorldView world = context.getWorld();
 		final BlockPos pos = context.getBlockPos();
 		final Direction[] faces = context.getPlacementDirections();
 		final int limit = faces.length;
@@ -85,8 +85,9 @@ public class OpenWallSignBlock extends AbstractOpenSignBlock {
 				final Direction opposite = face.getOpposite();
 				blockState = blockState.with(FACING, opposite);
 
-				if (blockState.canPlaceAt(world, pos))
+				if (blockState.canPlaceAt(world, pos)) {
 					return blockState.with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+				}
 			}
 		}
 
@@ -109,7 +110,7 @@ public class OpenWallSignBlock extends AbstractOpenSignBlock {
 	}
 
 	@Override
-	protected void appendProperties(StateFactory.Builder<Block, BlockState> builder) {
+	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		builder.add(FACING, WATERLOGGED);
 	}
 

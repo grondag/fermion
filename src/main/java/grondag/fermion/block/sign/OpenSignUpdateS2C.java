@@ -62,13 +62,10 @@ public enum OpenSignUpdateS2C {
 			BlockEntity be = context.getPlayer().world.getBlockEntity(pos);
 			if (!(be instanceof OpenSignBlockEntity)) {
 				be = new OpenSignBlockEntity((BlockEntityType<OpenSignBlockEntity>) Registry.BLOCK_ENTITY.get(id));
-				be.setWorld(context.getPlayer().world);
-				be.setPos(pos);
+				be.setWorld(context.getPlayer().world, pos);
 			}
 
 			((OpenSignBlockEntity) be).setText(tex0, tex1, tex2, tex3);
-
-			System.out.println("handleS2C getText0: " + ((OpenSignBlockEntity) be).getTextOnRow(0).getString());
 
 			MinecraftClient.getInstance().openScreen(new OpenSignEditScreen((OpenSignBlockEntity) be));
 		});

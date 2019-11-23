@@ -87,7 +87,7 @@ public class DomainUser implements ReadWriteNBT, IDomainMember {
 	 */
 	public boolean hasPrivilege(Privilege p) {
 		return !domain.isSecurityEnabled() || Privilege.PRIVILEGE_FLAG_SET.isFlagSetForValue(Privilege.ADMIN, privilegeFlags)
-			|| Privilege.PRIVILEGE_FLAG_SET.isFlagSetForValue(p, privilegeFlags);
+				|| Privilege.PRIVILEGE_FLAG_SET.isFlagSetForValue(p, privilegeFlags);
 	}
 
 	public void grantPrivilege(Privilege p, boolean hasPrivilege) {
@@ -126,7 +126,7 @@ public class DomainUser implements ReadWriteNBT, IDomainMember {
 
 		if (!capabilities.isEmpty()) {
 			for (final IUserCapability cap : capabilities.values()) {
-				if (nbt.containsKey(cap.tagName())) {
+				if (nbt.contains(cap.tagName())) {
 					cap.writeTag(nbt.getCompound(cap.tagName()));
 				}
 			}

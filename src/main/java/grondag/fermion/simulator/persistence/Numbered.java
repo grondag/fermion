@@ -96,6 +96,6 @@ public interface Numbered {
 	 * Use this in deserializeNBT of implementing class.
 	 */
 	default void deserializeNumber(CompoundTag tag) {
-		setAssignedNumber(tag.containsKey(numberType()) ? tag.getInt(numberType()) : UNASSIGNED_NUM);
+		setAssignedNumber(tag.contains(numberType()) ? tag.getInt(numberType()) : UNASSIGNED_NUM);
 	}
 }

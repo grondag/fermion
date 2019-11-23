@@ -22,6 +22,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import javax.annotation.Nullable;
+
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.client.render.SpriteIdentifier;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
@@ -31,11 +36,11 @@ import net.minecraft.util.Identifier;
 
 /** Can be used for multiple blocks - will return same baked model for each */
 public class SimpleUnbakedModel implements UnbakedModel {
-	final Function<Function<Identifier, Sprite>, BakedModel> baker;
-	final List<Identifier> sprites;
+	final Function<Function<SpriteIdentifier, Sprite>, BakedModel> baker;
+	final List<SpriteIdentifier> sprites;
 	BakedModel baked = null;
 
-	public SimpleUnbakedModel(Function<Function<Identifier, Sprite>, BakedModel> baker, List<Identifier> sprites) {
+	public SimpleUnbakedModel(Function<Function<SpriteIdentifier, Sprite>, BakedModel> baker, List<SpriteIdentifier> sprites) {
 		this.baker = baker;
 		this.sprites = sprites;
 	}
@@ -46,12 +51,13 @@ public class SimpleUnbakedModel implements UnbakedModel {
 	}
 
 	@Override
-	public Collection<Identifier> getTextureDependencies(Function<Identifier, UnbakedModel> modelLoader, Set<String> errors) {
+	public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> function, Set<Pair<String, String>> errors) {
 		return sprites;
 	}
 
 	@Override
-	public BakedModel bake(ModelLoader modelLoader, Function<Identifier, Sprite> spriteLoader, ModelBakeSettings bakeSettings) {
+	@Nullable
+	public BakedModel bake(ModelLoader modelLoader, Function<SpriteIdentifier, Sprite> spriteLoader, ModelBakeSettings modelBakeSettings, Identifier identifier) {
 		BakedModel result = baked;
 		if (result == null) {
 			result = baker.apply(spriteLoader);

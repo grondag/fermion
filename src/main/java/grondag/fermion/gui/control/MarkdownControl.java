@@ -27,6 +27,9 @@ import grondag.mcmd.renderer.mc.McMdContentRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.Rotation3;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
@@ -54,7 +57,9 @@ public class MarkdownControl extends AbstractControl<MarkdownControl> {
 
 	@Override
 	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
-		mcmd.drawMarkdown(lines, (float) left, (float) top, 0, (float) renderStart, (float) height);
+		final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+		mcmd.drawMarkdown(Rotation3.identity().getMatrix(), immediate, lines, (float) left, (float) top, 0, (float) renderStart, (float) height, mouseY);
+		immediate.draw();
 		drawScrollIfNeeded();
 	}
 

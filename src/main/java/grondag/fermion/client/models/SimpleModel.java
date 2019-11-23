@@ -37,7 +37,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.World;
 
 /**
@@ -49,8 +49,8 @@ public abstract class SimpleModel extends AbstractModel {
 	protected final ItemProxy itemProxy = new ItemProxy();
 
 	public SimpleModel(
-		Sprite sprite,
-		ModelTransformation transformation) {
+			Sprite sprite,
+			ModelTransformation transformation) {
 		super(sprite, transformation);
 	}
 
@@ -84,7 +84,7 @@ public abstract class SimpleModel extends AbstractModel {
 	}
 
 	@Override
-	public void emitBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
 		context.meshConsumer().accept(mesh());
 	}
 

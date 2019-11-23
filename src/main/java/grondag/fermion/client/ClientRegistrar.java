@@ -24,6 +24,7 @@ import grondag.fermion.client.models.SimpleModels;
 import grondag.fermion.client.models.SimpleRandomModel;
 import grondag.fermion.client.models.SimpleUnbakedModel;
 import grondag.fermion.registrar.AbstractRegistrar;
+import net.minecraft.client.render.SpriteIdentifier;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Identifier;
@@ -42,14 +43,14 @@ public class ClientRegistrar extends AbstractRegistrar {
 		SimpleModels.register(id(id), unbakedModel);
 	}
 
-	public void simpleRandomModel(String id, String... textures) {
-		final ImmutableList.Builder<Identifier> builder = ImmutableList.builder();
+	public void simpleRandomModel(String id, Identifier atlasId, String... textures) {
+		final ImmutableList.Builder<SpriteIdentifier> builder = ImmutableList.builder();
 
 		for (final String tex : textures) {
-			builder.add(id(tex));
+			builder.add(new SpriteIdentifier(atlasId, id(tex)));
 		}
 
-		final List<Identifier> list = builder.build();
+		final List<SpriteIdentifier> list = builder.build();
 
 		SimpleModels.register(id(id), new SimpleUnbakedModel(spriteMap -> new SimpleRandomModel(spriteMap, list), list));
 	}

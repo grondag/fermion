@@ -17,8 +17,6 @@ package grondag.fermion.block.sign;
 
 import java.util.function.Supplier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
@@ -32,6 +30,7 @@ import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -68,12 +67,6 @@ public abstract class AbstractOpenSignBlock extends BlockWithEntity implements W
 	}
 
 	@Override
-	@Environment(EnvType.CLIENT)
-	public boolean hasBlockEntityBreakingRender(BlockState blockState) {
-		return true;
-	}
-
-	@Override
 	public boolean canMobSpawnInside() {
 		return true;
 	}
@@ -84,15 +77,17 @@ public abstract class AbstractOpenSignBlock extends BlockWithEntity implements W
 	}
 
 	@Override
-	public boolean activate(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (world.isClient)
-			return true;
-		else {
+	public ActionResult onUse(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		final ItemStack stack = player.getStackInHand(hand);
+		final boolean isRecolor = stack.getItem() instanceof DyeItem && player.abilities.allowModifyWorld;
+
+		if (world.isClient) {
+			return isRecolor ? ActionResult.SUCCESS : ActionResult.CONSUME;
+		} else {
 			final BlockEntity be = world.getBlockEntity(pos);
 
 			if (be instanceof OpenSignBlockEntity) {
 				final OpenSignBlockEntity myBe = (OpenSignBlockEntity)be;
-				final ItemStack stack = player.getStackInHand(hand);
 
 				if (stack.getItem() instanceof DyeItem && player.abilities.allowModifyWorld) {
 					final boolean canDye = myBe.setTextColor(((DyeItem)stack.getItem()).getColor());
@@ -102,9 +97,10 @@ public abstract class AbstractOpenSignBlock extends BlockWithEntity implements W
 					}
 				}
 
-				return myBe.onActivate(player);
-			} else
-				return false;
+				return myBe.onActivate(player) ? ActionResult.SUCCESS : ActionResult.PASS;
+			} else {
+				return ActionResult.PASS;
+			}
 		}
 	}
 

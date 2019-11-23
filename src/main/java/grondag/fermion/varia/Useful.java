@@ -52,7 +52,7 @@ public class Useful {
 
 	static {
 		// need to use a hash bc fill2dCircleInPlaneXZ does not guarantee uniqueness.
-		final HashSet<Vec3i> offsets = new HashSet<Vec3i>();
+		final HashSet<Vec3i> offsets = new HashSet<>();
 
 		for (final long packed : Useful.fill2dCircleInPlaneXZ(DISTANCE_SORTED_CIRCULAR_OFFSETS_MAX_RADIUS).toLongArray()) {
 			final int x = PackedBlockPos.getX(packed);
@@ -60,7 +60,7 @@ public class Useful {
 			offsets.add(new Vec3i(x, Math.sqrt(x * x + z * z), z));
 		}
 
-		final ArrayList<Vec3i> offsetList = new ArrayList<Vec3i>(offsets);
+		final ArrayList<Vec3i> offsetList = new ArrayList<>(offsets);
 		offsetList.sort(new Comparator<Vec3i>() {
 
 			@Override
@@ -97,8 +97,9 @@ public class Useful {
 		int result = 0;
 
 		while (++result < DISTANCE_SORTED_CIRCULAR_OFFSETS.length) {
-			if (DISTANCE_SORTED_CIRCULAR_OFFSETS[result].getY() > radius)
+			if (DISTANCE_SORTED_CIRCULAR_OFFSETS[result].getY() > radius) {
 				return result;
+			}
 		}
 
 		return result;
@@ -115,10 +116,11 @@ public class Useful {
 	}
 
 	public static int min(int a, int b, int c) {
-		if (a < b)
+		if (a < b) {
 			return a < c ? a : c;
-		else
+		} else {
 			return b < c ? b : c;
+		}
 	}
 
 	public static int max(int... input) {
@@ -132,10 +134,11 @@ public class Useful {
 	}
 
 	public static int max(int a, int b, int c) {
-		if (a > b)
+		if (a > b) {
 			return a > c ? a : c;
-			else
-				return b > c ? b : c;
+		} else {
+			return b > c ? b : c;
+		}
 	}
 
 	public static float min(float a, float b, float c, float d) {
@@ -303,9 +306,9 @@ public class Useful {
 		final int range = radius * 2 + 1;
 
 		for (int i = 0; i < sampleCount; i++) {
-			total += world.getTop(Heightmap.Type.WORLD_SURFACE,
-				pos.getX() + ThreadLocalRandom.current().nextInt(range) - radius,
-				pos.getZ() + ThreadLocalRandom.current().nextInt(range) - radius);
+			total += world.getTopY(Heightmap.Type.WORLD_SURFACE,
+					pos.getX() + ThreadLocalRandom.current().nextInt(range) - radius,
+					pos.getZ() + ThreadLocalRandom.current().nextInt(range) - radius);
 		}
 
 		return total / sampleCount;
@@ -327,7 +330,7 @@ public class Useful {
 	 * Returns volume of given AABB
 	 */
 	public static double volumeAABB(Box box) {
-		return (box.maxX - box.minX) * (box.maxY - box.minY) * (box.maxZ - box.minZ);
+		return (box.x2 - box.x1) * (box.y2 - box.y1) * (box.z2 - box.z1);
 	}
 
 	/**
@@ -352,28 +355,31 @@ public class Useful {
 		double t1, t2;
 
 		if (direction.x != 0) {
-			t1 = (box.minX - origin.x) / direction.x;
-			t2 = (box.maxX - origin.x) / direction.x;
+			t1 = (box.x1 - origin.x) / direction.x;
+			t2 = (box.x2 - origin.x) / direction.x;
 			tmin = Math.max(tmin, Math.min(t1, t2));
 			tmax = Math.min(tmax, Math.max(t1, t2));
-		} else if (origin.x <= box.minX || origin.x >= box.maxX)
+		} else if (origin.x <= box.x1 || origin.x >= box.x2) {
 			return false;
+		}
 
 		if (direction.y != 0) {
-			t1 = (box.minY - origin.y) / direction.y;
-			t2 = (box.maxY - origin.y) / direction.y;
+			t1 = (box.y1 - origin.y) / direction.y;
+			t2 = (box.y2 - origin.y) / direction.y;
 			tmin = Math.max(tmin, Math.min(t1, t2));
 			tmax = Math.min(tmax, Math.max(t1, t2));
-		} else if (origin.y <= box.minY || origin.y >= box.maxY)
+		} else if (origin.y <= box.y1 || origin.y >= box.y2) {
 			return false;
+		}
 
 		if (direction.z != 0) {
-			t1 = (box.minZ - origin.z) / direction.z;
-			t2 = (box.maxZ - origin.z) / direction.z;
+			t1 = (box.z1 - origin.z) / direction.z;
+			t2 = (box.z1 - origin.z) / direction.z;
 			tmin = Math.max(tmin, Math.min(t1, t2));
 			tmax = Math.min(tmax, Math.max(t1, t2));
-		} else if (origin.z <= box.minZ || origin.z >= box.maxZ)
+		} else if (origin.z <= box.z1 || origin.z >= box.z2) {
 			return false;
+		}
 
 		return tmax > tmin && tmax > 0.0;
 	}
@@ -404,8 +410,9 @@ public class Useful {
 	 * Bit length needed to contain the given value. Intended for unsigned values.
 	 */
 	public static int bitLength(int maxValue) {
-		if (maxValue == 0)
+		if (maxValue == 0) {
 			return 0;
+		}
 		return Integer.SIZE - Integer.numberOfLeadingZeros(maxValue - 1);
 	}
 
@@ -468,8 +475,9 @@ public class Useful {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Enum<?>> T safeEnumFromOrdinal(int ord, T defaultValue) {
-		if (ord < 0 || ord >= defaultValue.getClass().getEnumConstants().length)
+		if (ord < 0 || ord >= defaultValue.getClass().getEnumConstants().length) {
 			return defaultValue;
+		}
 		return (T) defaultValue.getClass().getEnumConstants()[ord];
 	}
 

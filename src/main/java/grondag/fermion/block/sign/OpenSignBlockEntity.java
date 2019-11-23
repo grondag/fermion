@@ -27,6 +27,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.render.SpriteIdentifier;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -211,8 +212,9 @@ public class OpenSignBlockEntity extends BlockEntity implements BlockEntityClien
 			}
 
 			return true;
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -265,5 +267,9 @@ public class OpenSignBlockEntity extends BlockEntity implements BlockEntityClien
 	public void edit(ServerPlayerEntity player) {
 		setEditor(player);
 		OpenSignUpdateS2C.updateSignS2C(player, this);
+	}
+
+	public SpriteIdentifier getModelTexture() {
+		return null;
 	}
 }

@@ -16,12 +16,10 @@
 
 package grondag.fermion.client;
 
-import grondag.fermion.block.sign.OpenSignUpdateS2C;
 import grondag.fermion.client.models.SimpleModels;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.render.InvalidateRenderStateCallback;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -42,6 +40,7 @@ public final class FermionClient implements ClientModInitializer  {
 
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider(r -> SimpleModels.MODEL_VARIANT_PROVIER);
 
-		ClientSidePacketRegistry.INSTANCE.register(OpenSignUpdateS2C.S2C_ID, OpenSignUpdateS2C::handleS2C);
+		// TODO: put back
+		//		ClientSidePacketRegistry.INSTANCE.register(OpenSignUpdateS2C.S2C_ID, OpenSignUpdateS2C::handleS2C);
 	}
 }

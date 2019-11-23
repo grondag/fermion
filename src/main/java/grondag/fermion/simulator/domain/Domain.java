@@ -55,7 +55,7 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 
 	private final EventBus eventBus = new EventBus();
 
-	private final HashMap<String, DomainUser> users = new HashMap<String, DomainUser>();
+	private final HashMap<String, DomainUser> users = new HashMap<>();
 
 	// private constructor
 	Domain(DomainManager domainManager) {
@@ -196,7 +196,7 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 		final ListTag nbtUsers = tag.getList(NBT_DOMAIN_USERS, 10);
 		if (nbtUsers != null && !nbtUsers.isEmpty()) {
 			for (int i = 0; i < nbtUsers.size(); ++i) {
-				final DomainUser user = new DomainUser(this, nbtUsers.getCompoundTag(i));
+				final DomainUser user = new DomainUser(this, nbtUsers.getCompound(i));
 				users.put(user.userName, user);
 			}
 		}

@@ -17,152 +17,86 @@ package grondag.fermion.block.sign;
 
 import java.util.List;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-
+import grondag.mcmd.node.Text;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.entity.model.SignBlockEntityModel;
-import net.minecraft.client.util.TextComponentUtil;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
+import net.minecraft.client.util.Texts;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 
 /** open and extensible implementation of vanilla signs */
 @Environment(EnvType.CLIENT)
 public class OpenSignRenderer extends BlockEntityRenderer<OpenSignBlockEntity> {
-	protected final Identifier texture;
-	protected final SignBlockEntityModel model;
+	private final SignBlockEntityRenderer.class_4702 model = new SignBlockEntityRenderer.class_4702();
 
 	public static boolean isScreen = false;
 
-	public OpenSignRenderer(Identifier texture, SignBlockEntityModel model) {
-		this.texture = texture;
-		this.model = model;
+	public OpenSignRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
+		super(blockEntityRenderDispatcher);
 	}
 
 	@Override
-	public void render(OpenSignBlockEntity be, double x, double y, double z, float tickDelta, int destroyStage) {
+	public void render(OpenSignBlockEntity be, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
 		final BlockState blockState = be.getCachedState();
-		GlStateManager.pushMatrix();
+		matrixStack.push();
+		float h;
 
 		if (blockState.getBlock() instanceof OpenSignBlock) {
-			GlStateManager.translatef((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
-			GlStateManager.rotatef(-(blockState.get(OpenSignBlock.ROTATION) * 360 / 16.0F), 0.0F, 1.0F, 0.0F);
-			model.getSignpostModel().visible = true;
+			matrixStack.translate(0.5D, 0.5D, 0.5D);
+			h = -(blockState.get(OpenSignBlock.ROTATION) * 360 / 16.0F);
+			matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(h));
+			model.field_21531.visible = true;
 		} else {
-			GlStateManager.translatef((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
-			GlStateManager.rotatef(-blockState.get(OpenWallSignBlock.FACING).asRotation(), 0.0F, 1.0F, 0.0F);
-			GlStateManager.translatef(0.0F, -0.3125F, -0.4375F);
-			model.getSignpostModel().visible = false;
+			matrixStack.translate(0.5D, 0.5D, 0.5D);
+			h = -blockState.get(OpenWallSignBlock.FACING).asRotation();
+			matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(h));
+			matrixStack.translate(0.0D, -0.3125D, -0.4375D);
+			model.field_21531.visible = false;
 		}
 
-		if (destroyStage >= 0) {
-			bindTexture(DESTROY_STAGE_TEXTURES[destroyStage]);
-			GlStateManager.matrixMode(5890);
-			GlStateManager.pushMatrix();
-			GlStateManager.scalef(4.0F, 2.0F, 1.0F);
-			GlStateManager.translatef(0.0625F, 0.0625F, 0.0625F);
-			GlStateManager.matrixMode(5888);
-		} else {
-			bindTexture(getModelTexture(blockState.getBlock()));
-		}
+		matrixStack.push();
+		matrixStack.scale(0.6666667F, -0.6666667F, -0.6666667F);
+		final class_4730 lv = getModelTexture(blockState.getBlock());
+		final SignBlockEntityRenderer.class_4702 var10002 = model;
+		var10002.getClass();
+		final VertexConsumer vertexConsumer = lv.method_24145(vertexConsumerProvider, var10002::getLayer);
+		model.field_21530.render(matrixStack, vertexConsumer, i, j);
+		model.field_21531.render(matrixStack, vertexConsumer, i, j);
+		matrixStack.pop();
+		final TextRenderer textRenderer = blockEntityRenderDispatcher.getTextRenderer();
+		matrixStack.translate(0.0D, 0.3333333432674408D, 0.046666666865348816D);
+		matrixStack.scale(0.010416667F, -0.010416667F, 0.010416667F);
+		final int m = be.getTextColor().getSignColor();
 
-		GlStateManager.enableRescaleNormal();
-		GlStateManager.pushMatrix();
-		GlStateManager.scalef(0.6666667F, -0.6666667F, -0.6666667F);
-		model.render();
-		GlStateManager.popMatrix();
-		final TextRenderer textRenderer = getFontRenderer();
-		GlStateManager.translatef(0.0F, 0.33333334F, 0.046666667F);
-		GlStateManager.scalef(0.010416667F, -0.010416667F, 0.010416667F);
-		GlStateManager.normal3f(0.0F, 0.0F, -0.010416667F);
-		GlStateManager.depthMask(false);
-		final int color = be.getTextColor().getSignColor();
-
-		if (destroyStage < 0) {
-			if (!isScreen && be.isLit()) {
-				disableLightmap(true);
-				GlStateManager.disableLighting();
-			}
-
-			for(int i = 0; i < 4; ++i) {
-				final String str = be.getTextBeingEditedOnRow(i, (text) -> {
-					final List<Text> lines = TextComponentUtil.wrapLines(text, 90, textRenderer, false, true);
-					return lines.isEmpty() ? "" : lines.get(0).asFormattedString();
-				});
-
-				if (str != null) {
-					textRenderer.draw(str, -textRenderer.getStringWidth(str) / 2, i * 10 - be.text.length * 5, color);
-
-					if (i == be.getCurrentRow() && be.getSelectionStart() >= 0) {
-						final int caretWidth = textRenderer.getStringWidth(str.substring(0, Math.max(Math.min(be.getSelectionStart(), str.length()), 0)));
-						final int offset = textRenderer.isRightToLeft() ? -1 : 1;
-						final int left = (caretWidth - textRenderer.getStringWidth(str) / 2) * offset;
-						final int selTop = i * 10 - be.text.length * 5;
-
-						if (be.isCaretVisible()) {
-							if (be.getSelectionStart() < str.length()) {
-								DrawableHelper.fill(left, selTop - 1, left + 1, selTop + 9, 0xFF000000 | color);
-							} else {
-								textRenderer.draw("_", left, selTop, color);
-							}
-						}
-
-						if (be.getSelectionEnd() != be.getSelectionStart()) {
-							final int u0 = Math.min(be.getSelectionStart(), be.getSelectionEnd());
-							final int u1 = Math.max(be.getSelectionStart(), be.getSelectionEnd());
-							final int offset0 = (textRenderer.getStringWidth(str.substring(0, u0)) - textRenderer.getStringWidth(str) / 2) * offset;
-							final int offset1 = (textRenderer.getStringWidth(str.substring(0, u1)) - textRenderer.getStringWidth(str) / 2) * offset;
-							final int selLeft = Math.min(offset0, offset1);
-							final int selRight = Math.max(offset0, offset1);
-							drawSelection(selLeft, selTop, selRight, selTop + 9);
-						}
-					}
-				}
-			}
-
-			if (!isScreen && be.isLit()) {
-				GlStateManager.enableLighting();
-				disableLightmap(false);
+		for(int n = 0; n < 4; ++n) {
+			final String string = be.getTextBeingEditedOnRow(n, (text) -> {
+				final List<Text> list = Texts.wrapLines(text, 90, textRenderer, false, true);
+				return list.isEmpty() ? "" : list.get(0).asFormattedString();
+			});
+			if (string != null) {
+				final float o = -textRenderer.getStringWidth(string) / 2;
+				textRenderer.draw(string, o, n * 10 - be.text.length * 5, m, false, matrixStack.peek().getModel(), vertexConsumerProvider, false, 0, i);
 			}
 		}
 
-		GlStateManager.depthMask(true);
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.popMatrix();
-		if (destroyStage >= 0) {
-			GlStateManager.matrixMode(5890);
-			GlStateManager.popMatrix();
-			GlStateManager.matrixMode(5888);
-		}
-
+		matrixStack.pop();
 	}
 
-	private Identifier getModelTexture(Block block_1) {
-		return texture;
-	}
-
-	private void drawSelection(int left, int top, int right, int bottom) {
-		final Tessellator tess = Tessellator.getInstance();
-		final BufferBuilder buff = tess.getBufferBuilder();
-		GlStateManager.color4f(0.0F, 0.0F, 255.0F, 255.0F);
-		GlStateManager.disableTexture();
-		GlStateManager.enableColorLogicOp();
-		GlStateManager.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		buff.begin(7, VertexFormats.POSITION);
-		buff.vertex(left, bottom, 0.0D).next();
-		buff.vertex(right, bottom, 0.0D).next();
-		buff.vertex(right, top, 0.0D).next();
-		buff.vertex(left, top, 0.0D).next();
-		tess.draw();
-		GlStateManager.disableColorLogicOp();
-		GlStateManager.enableTexture();
-	}
+	//	public static class_4730 getModelTexture(Block block) {
+	//		class_4719 lv2;
+	//		if (block instanceof AbstractOpenSignBlock) {
+	//			lv2 = ((AbstractOpenSignBlock)block).method_24025();
+	//		} else {
+	//			lv2 = class_4719.field_21676;
+	//		}
+	//
+	//		return class_4722.method_24064(lv2);
+	//	}
 }

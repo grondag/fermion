@@ -61,12 +61,13 @@ public class Location extends BlockPos {
 	}
 
 	public static Location fromNBT(CompoundTag nbt) {
-		if (nbt != null && nbt.containsKey(NBT_POSITION)) {
+		if (nbt != null && nbt.contains(NBT_POSITION)) {
 			final int dim = nbt.getInt(NBT_DIMENSION);
 			final long pos = nbt.getLong(NBT_POSITION);
 			return new Location(PackedBlockPos.getX(pos), PackedBlockPos.getY(pos), PackedBlockPos.getZ(pos), dim);
-		} else
+		} else {
 			return null;
+		}
 	}
 
 	private final int dimensionID;
@@ -98,17 +99,18 @@ public class Location extends BlockPos {
 
 	public World world() {
 		return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT
-			? ((MinecraftClient)FabricLoader.getInstance().getGameInstance()).getServer().getWorld(dimension())
-				: ((MinecraftDedicatedServer)FabricLoader.getInstance().getGameInstance()).getWorld(dimension());
+				? ((MinecraftClient)FabricLoader.getInstance().getGameInstance()).getServer().getWorld(dimension())
+						: ((MinecraftDedicatedServer)FabricLoader.getInstance().getGameInstance()).getWorld(dimension());
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (o == null || !(o instanceof Location))
+		if (o == null || !(o instanceof Location)) {
 			return false;
+		}
 		final Location other = (Location) o;
 		return getX() == other.getX() && getY() == other.getY() && getZ() == other.getZ()
-			&& dimensionID == other.dimensionID;
+				&& dimensionID == other.dimensionID;
 	}
 
 	@Override

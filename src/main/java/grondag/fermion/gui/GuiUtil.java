@@ -15,6 +15,8 @@
  ******************************************************************************/
 package grondag.fermion.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import grondag.fermion.spatial.HorizontalAlignment;
@@ -67,7 +69,7 @@ public class GuiUtil {
 		final float green = (color >> 8 & 255) / 255.0F;
 		final float blue = (color & 255) / 255.0F;
 		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder vertexbuffer = tessellator.getBufferBuilder();
+		final BufferBuilder vertexbuffer = tessellator.getBuffer();
 
 		GlStateManager.disableTexture();
 		GlStateManager.color4f(red, green, blue, alpha);
@@ -151,17 +153,16 @@ public class GuiUtil {
 		final float f1 = (color >> 8 & 255) / 255.0F;
 		final float f2 = (color & 255) / 255.0F;
 		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder vertexbuffer = tessellator.getBufferBuilder();
+		final BufferBuilder vertexbuffer = tessellator.getBuffer();
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture();
-		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
-			GlStateManager.DestFactor.ZERO);
+		GlStateManager.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 		GlStateManager.color4f(f, f1, f2, f3);
 		vertexbuffer.begin(7, VertexFormats.POSITION);
-		vertexbuffer.vertex(x0, y0, 0.0D).end();
-		vertexbuffer.vertex(x1, y1, 0.0D).end();
-		vertexbuffer.vertex(x2, y2, 0.0D).end();
-		vertexbuffer.vertex(x3, y3, 0.0D).end();
+		vertexbuffer.vertex(x0, y0, 0.0D).next();
+		vertexbuffer.vertex(x1, y1, 0.0D).next();
+		vertexbuffer.vertex(x2, y2, 0.0D).next();
+		vertexbuffer.vertex(x3, y3, 0.0D).next();
 		tessellator.draw();
 		GlStateManager.enableTexture();
 		GlStateManager.disableBlend();
@@ -171,12 +172,12 @@ public class GuiUtil {
 	 * Draws a rectangle using the provide texture sprite and color
 	 */
 	public static void drawTexturedRectWithColor(double xCoord, double yCoord, double zLevel, Sprite textureSprite, double widthIn, double heightIn, int color,
-		Rotation rotation, boolean useAlpha) {
+			Rotation rotation, boolean useAlpha) {
 		drawTexturedRectWithColor(heightIn, heightIn, heightIn, textureSprite, heightIn, heightIn, color, 1, rotation, useAlpha);
 	}
 
-	private static double[][] rotatedUV(double minU, double minV, double maxU, double maxV, Rotation rotation) {
-		final double[][] result = new double[2][4];
+	private static float[][] rotatedUV(float minU, float minV, float maxU, float maxV, Rotation rotation) {
+		final float[][] result = new float[2][4];
 
 		int i;
 
@@ -215,31 +216,30 @@ public class GuiUtil {
 	}
 
 	public static void drawTexturedRectWithColor(double xCoord, double yCoord, double zLevel, Sprite textureSprite, double widthIn, double heightIn, int color,
-		int textureDivision, Rotation rotation, boolean useAlpha) {
+			int textureDivision, Rotation rotation, boolean useAlpha) {
 		final float alpha = (color >> 24 & 255) / 255.0F;
 		final float red = (color >> 16 & 255) / 255.0F;
 		final float green = (color >> 8 & 255) / 255.0F;
 		final float blue = (color & 255) / 255.0F;
 
-		final double minU = textureSprite.getMinU();
-		final double minV = textureSprite.getMinV();
-		final double maxU = minU + (textureSprite.getMaxU() - minU) / textureDivision;
-		final double maxV = minV + (textureSprite.getMaxV() - minV) / textureDivision;
-		final double uv[][] = rotatedUV(minU, minV, maxU, maxV, rotation);
+		final float minU = textureSprite.getMinU();
+		final float minV = textureSprite.getMinV();
+		final float maxU = minU + (textureSprite.getMaxU() - minU) / textureDivision;
+		final float maxV = minV + (textureSprite.getMaxV() - minV) / textureDivision;
+		final float uv[][] = rotatedUV(minU, minV, maxU, maxV, rotation);
 
 		final TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
 		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-		textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).pushFilter(false, false);
+		textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).setFilter(false, false);
 
 		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder vertexbuffer = tessellator.getBufferBuilder();
+		final BufferBuilder vertexbuffer = tessellator.getBuffer();
 		GlStateManager.enableTexture();
 
 		if (useAlpha) {
 			GlStateManager.enableAlphaTest(); // should already be, but make sure
 			GlStateManager.enableBlend();
-			GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-				GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+			GlStateManager.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 		} else {
 			GlStateManager.disableBlend();
 			GlStateManager.disableAlphaTest();
@@ -247,11 +247,11 @@ public class GuiUtil {
 
 		GlStateManager.color4f(1, 1, 1, 1);
 
-		vertexbuffer.begin(7, VertexFormats.POSITION_UV_COLOR);
-		vertexbuffer.vertex(xCoord + 0, yCoord + heightIn, zLevel).texture(uv[0][0], uv[1][0]).color(red, green, blue, alpha).end();
-		vertexbuffer.vertex(xCoord + widthIn, yCoord + heightIn, zLevel).texture(uv[0][1], uv[1][1]).color(red, green, blue, alpha).end();
-		vertexbuffer.vertex(xCoord + widthIn, yCoord + 0, zLevel).texture(uv[0][2], uv[1][2]).color(red, green, blue, alpha).end();
-		vertexbuffer.vertex(xCoord + 0, yCoord + 0, zLevel).texture(uv[0][3], uv[1][3]).color(red, green, blue, alpha).end();
+		vertexbuffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+		vertexbuffer.vertex(xCoord + 0, yCoord + heightIn, zLevel).texture(uv[0][0], uv[1][0]).color(red, green, blue, alpha).next();
+		vertexbuffer.vertex(xCoord + widthIn, yCoord + heightIn, zLevel).texture(uv[0][1], uv[1][1]).color(red, green, blue, alpha).next();
+		vertexbuffer.vertex(xCoord + widthIn, yCoord + 0, zLevel).texture(uv[0][2], uv[1][2]).color(red, green, blue, alpha).next();
+		vertexbuffer.vertex(xCoord + 0, yCoord + 0, zLevel).texture(uv[0][3], uv[1][3]).color(red, green, blue, alpha).next();
 		tessellator.draw();
 
 		if (useAlpha) {
@@ -261,7 +261,6 @@ public class GuiUtil {
 		}
 
 		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-		textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).popFilter();
 
 	}
 
@@ -286,7 +285,7 @@ public class GuiUtil {
 
 			//RenderHelper.enableGUIStandardItemLighting();
 			GlStateManager.pushMatrix();
-			GlStateManager.translated(x, y, 0);
+			GlStateManager.translatef((float)x, (float)y, 0);
 			GlStateManager.scalef(1 / 16f, 1 / 16f, 1 / 16f);
 			GlStateManager.scaled(contentSize, contentSize, contentSize);
 
@@ -310,7 +309,7 @@ public class GuiUtil {
 	 * string, x, y, color
 	 */
 	public static void drawAlignedStringNoShadow(TextRenderer fontRendererIn, String text, float x, float y, float width, float height, int color,
-		HorizontalAlignment hAlign, VerticalAlignment vAlign) {
+			HorizontalAlignment hAlign, VerticalAlignment vAlign) {
 
 		switch (hAlign) {
 		case RIGHT:
@@ -345,7 +344,7 @@ public class GuiUtil {
 	}
 
 	public static void drawAlignedStringNoShadow(TextRenderer fontRendererIn, String text, double x, double y, double width, double height, int color,
-		HorizontalAlignment hAlign, VerticalAlignment vAlign) {
+			HorizontalAlignment hAlign, VerticalAlignment vAlign) {
 		drawAlignedStringNoShadow(fontRendererIn, text, (float) x, (float) y, (float) width, (float) height, color, hAlign, vAlign);
 	}
 

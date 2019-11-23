@@ -171,13 +171,14 @@ public class DomainManager extends SimulationTopNode {
 		// need to do this before loading domains, otherwise they will cause complaints
 		isLoaded = true;
 
-		if (tag == null)
+		if (tag == null) {
 			return;
+		}
 
 		final ListTag nbtDomains = tag.getList(NBT_DOMAIN_MANAGER_DOMAINS, 10);
 		if (nbtDomains != null && !nbtDomains.isEmpty()) {
 			for (int i = 0; i < nbtDomains.size(); ++i) {
-				final Domain domain = new Domain(this, nbtDomains.getCompoundTag(i));
+				final Domain domain = new Domain(this, nbtDomains.getCompound(i));
 				Simulator.instance().assignedNumbersAuthority().register(domain);
 			}
 		}

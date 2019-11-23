@@ -58,11 +58,12 @@ public enum OpenSignUpdateC2S {
 			final ServerWorld world = server.getWorld(player.dimension);
 			player.updateLastActionTime();
 
-			if (world.isBlockLoaded(pos)) {
+			if (world.isChunkLoaded(pos)) {
 				final BlockEntity be = world.getBlockEntity(pos);
 
-				if (!(be instanceof OpenSignBlockEntity))
+				if (!(be instanceof OpenSignBlockEntity)) {
 					return;
+				}
 
 				final OpenSignBlockEntity myBe = (OpenSignBlockEntity)be;
 

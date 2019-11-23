@@ -24,7 +24,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.BlockMirror;
@@ -33,7 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.ViewableWorld;
+import net.minecraft.world.WorldView;
 
 /** open and extensible implementation of vanilla signs */
 public class OpenSignBlock extends AbstractOpenSignBlock {
@@ -41,12 +41,12 @@ public class OpenSignBlock extends AbstractOpenSignBlock {
 
 	public OpenSignBlock(Block.Settings settings, Supplier<BlockEntity> beSupplier) {
 		super(settings, beSupplier);
-		setDefaultState(stateFactory.getDefaultState().with(ROTATION, 0).with(WATERLOGGED, false));
+		setDefaultState(stateManager.getDefaultState().with(ROTATION, 0).with(WATERLOGGED, false));
 	}
 
 	@Override
-	public boolean canPlaceAt(BlockState blockState, ViewableWorld world, BlockPos pos) {
-		return world.getBlockState(pos.down()).getMaterial().isSolid();
+	public boolean canPlaceAt(BlockState blockState, WorldView world, BlockPos pos) {
+		return world.getBlockState(pos.down(1)).getMaterial().isSolid();
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class OpenSignBlock extends AbstractOpenSignBlock {
 	}
 
 	@Override
-	protected void appendProperties(StateFactory.Builder<Block, BlockState> builder) {
+	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		builder.add(ROTATION, WATERLOGGED);
 	}
 
