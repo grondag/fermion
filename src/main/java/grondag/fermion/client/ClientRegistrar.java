@@ -24,8 +24,8 @@ import grondag.fermion.client.models.SimpleModels;
 import grondag.fermion.client.models.SimpleRandomModel;
 import grondag.fermion.client.models.SimpleUnbakedModel;
 import grondag.fermion.registrar.AbstractRegistrar;
-import net.minecraft.client.render.SpriteIdentifier;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Identifier;
 

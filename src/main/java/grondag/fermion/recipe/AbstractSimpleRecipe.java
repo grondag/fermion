@@ -31,12 +31,12 @@ public abstract class AbstractSimpleRecipe implements SimpleRecipe<Inventory> {
 
 	@Override
 	public boolean matches(Inventory inventory, World world) {
-		return ingredient.method_8093(inventory.getInvStack(0));
+		return ingredient.test(inventory.getInvStack(0));
 	}
 
 	@Override
 	public boolean matches(ItemStack stack) {
-		return ingredient.method_8093(stack);
+		return ingredient.test(stack);
 	}
 
 	@Override
