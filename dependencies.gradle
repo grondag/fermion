@@ -24,10 +24,12 @@ dependencies {
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
 	if (!(gradle.startParameter.taskNames.contains("publish") || gradle.startParameter.taskNames.contains("publishToMavenLocal"))) {
-		  include "grondag:fermion-modkeys-${project.mc_tag}:${project.fermion_modkeys_version}.+"
+		include "grondag:fermion-modkeys-${project.mc_tag}:${project.fermion_modkeys_version}.+"
 	    include "grondag:fermion-varia-${project.mc_tag}:${project.fermion_varia_version}.+"
 	    include "grondag:fermion-simulator-${project.mc_tag}:${project.fermion_simulator_version}.+"
 	    include "grondag:special-circumstances-${project.mc_tag}:${project.special_circumstances_version}.+"
-      include "grondag:fermion-modkeys-${project.mc_tag}:${project.fermion_gui_version}.+"
+      	include "grondag:fermion-modkeys-${project.mc_tag}:${project.fermion_gui_version}.+"
+    	include "grondag:fonthack-${mc_tag}:${project.fonthack_version}.+"
+    	include "grondag:mcmarkdown-${mc_tag}:${project.mcmarkdown_version}.+"
  	}
 }

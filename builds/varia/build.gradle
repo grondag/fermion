@@ -93,21 +93,21 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 sourceSets {
 	main {
 	        java {
-							srcDirs = ['../../src/main/java/grondag/fermion']
+				srcDirs = ['../../src/main/java/grondag/fermion']
 	            include 'varia/**/*'
-							include 'bits/**/*'
-							// TODO: put back
-							//include 'block/**/*'
-							include 'client/**/*'
-							include 'color/**/*'
-							include 'entity/**/*'
-							include 'intstream/**/*'
-							include 'position/**/*'
-							include 'recipe/**/*'
-							include 'registrar/**/*'
-							include 'spatial/**/*'
-							include 'world/**/*'
-						  exclude '*.DS_Store'
+				include 'bits/**/*'
+				// TODO: put back
+				//include 'block/**/*'
+				include 'client/**/*'
+				include 'color/**/*'
+				include 'entity/**/*'
+				include 'intstream/**/*'
+				include 'position/**/*'
+				include 'recipe/**/*'
+				include 'registrar/**/*'
+				include 'spatial/**/*'
+				include 'world/**/*'
+			    exclude '*.DS_Store'
 	        }
 	        resources
 	        {

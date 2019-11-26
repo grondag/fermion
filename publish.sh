@@ -31,6 +31,3 @@ cd modkeys
 cd ..
 
 cd ..
-
-echo "fermion bundle"
-./gradlew $1 $2
