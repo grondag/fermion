@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "0.2.5-SNAPSHOT"
+	id "fabric-loom" version "0.2.6-SNAPSHOT"
 	id "eclipse"
 	id "maven-publish"
 	id "com.github.breadmoirai.github-release" version "2.2.9"
@@ -96,7 +96,8 @@ sourceSets {
 							srcDirs = ['../../src/main/java/grondag/fermion']
 	            include 'varia/**/*'
 							include 'bits/**/*'
-							include 'block/**/*'
+							// TODO: put back
+							//include 'block/**/*'
 							include 'client/**/*'
 							include 'color/**/*'
 							include 'entity/**/*'
