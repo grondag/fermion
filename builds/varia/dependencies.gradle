@@ -2,7 +2,7 @@ repositories {
     mavenLocal();
     jcenter();
     maven { url "https://maven.fabricmc.net/" }
-    
+
  	maven {
     	name = "grondag"
     	url = "https://grondag-repo.appspot.com"
@@ -16,15 +16,13 @@ repositories {
 dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
 	mappings "net.fabricmc:yarn:${yarn_mappings}"
-	
+
 	modApi "net.fabricmc:fabric-loader:${loader_version}"
 	modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-	
+
 	// dev env annotation support
 	compileOnly "org.apiguardian:apiguardian-api:1.0.0"
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-		
+
 	modImplementation ("grondag:fermion-${mc_tag}:${project.fermion_version}.+") { transitive = false }
-	
-	modImplementation ("grondag:fermion-varia-${project.mc_tag}:${project.fermion_varia_version}.+") { transitive = false }
 }
