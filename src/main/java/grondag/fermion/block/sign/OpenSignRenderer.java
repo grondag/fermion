@@ -17,9 +17,6 @@ package grondag.fermion.block.sign;
 
 import java.util.List;
 
-import grondag.mcmd.node.Text;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumer;
@@ -27,14 +24,19 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.Texts;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.text.Text;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /** open and extensible implementation of vanilla signs */
 @Environment(EnvType.CLIENT)
 public class OpenSignRenderer extends BlockEntityRenderer<OpenSignBlockEntity> {
-	private final SignBlockEntityRenderer.class_4702 model = new SignBlockEntityRenderer.class_4702();
+	private final SignBlockEntityRenderer.SignModel model = new SignBlockEntityRenderer.SignModel();
 
 	public static boolean isScreen = false;
 
@@ -52,25 +54,25 @@ public class OpenSignRenderer extends BlockEntityRenderer<OpenSignBlockEntity> {
 			matrixStack.translate(0.5D, 0.5D, 0.5D);
 			h = -(blockState.get(OpenSignBlock.ROTATION) * 360 / 16.0F);
 			matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(h));
-			model.field_21531.visible = true;
+			model.foot.visible = true;
 		} else {
 			matrixStack.translate(0.5D, 0.5D, 0.5D);
 			h = -blockState.get(OpenWallSignBlock.FACING).asRotation();
 			matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(h));
 			matrixStack.translate(0.0D, -0.3125D, -0.4375D);
-			model.field_21531.visible = false;
+			model.foot.visible = false;
 		}
 
 		matrixStack.push();
 		matrixStack.scale(0.6666667F, -0.6666667F, -0.6666667F);
-		final class_4730 lv = getModelTexture(blockState.getBlock());
-		final SignBlockEntityRenderer.class_4702 var10002 = model;
+		final SpriteIdentifier lv = SignBlockEntityRenderer.getModelTexture(blockState.getBlock());
+		final SignBlockEntityRenderer.SignModel var10002 = model;
 		var10002.getClass();
-		final VertexConsumer vertexConsumer = lv.method_24145(vertexConsumerProvider, var10002::getLayer);
-		model.field_21530.render(matrixStack, vertexConsumer, i, j);
-		model.field_21531.render(matrixStack, vertexConsumer, i, j);
+		final VertexConsumer vertexConsumer = lv.getVertexConsumer(vertexConsumerProvider, var10002::getLayer);
+		model.field.render(matrixStack, vertexConsumer, i, j);
+		model.foot.render(matrixStack, vertexConsumer, i, j);
 		matrixStack.pop();
-		final TextRenderer textRenderer = blockEntityRenderDispatcher.getTextRenderer();
+		final TextRenderer textRenderer = dispatcher.getTextRenderer();
 		matrixStack.translate(0.0D, 0.3333333432674408D, 0.046666666865348816D);
 		matrixStack.scale(0.010416667F, -0.010416667F, 0.010416667F);
 		final int m = be.getTextColor().getSignColor();

@@ -26,7 +26,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.SpriteIdentifier;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -34,6 +33,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.SelectionManager;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.Texts;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
@@ -44,7 +44,7 @@ import net.minecraft.text.TranslatableText;
 
 public class OpenSignEditScreen extends Screen {
 	public final OpenSignBlockEntity sign;
-	private final SignBlockEntityRenderer.class_4702 model = new SignBlockEntityRenderer.class_4702();
+	private final SignBlockEntityRenderer.SignModel model = new SignBlockEntityRenderer.SignModel();
 	protected int ticksSinceOpened;
 	protected int currentRow;
 	protected SelectionManager selectionManager;
@@ -138,14 +138,14 @@ public class OpenSignEditScreen extends Screen {
 		matrixStack.scale(0.6666667F, -0.6666667F, -0.6666667F);
 		final VertexConsumerProvider.Immediate immediate = minecraft.getBufferBuilders().getEntityVertexConsumers();
 		final SpriteIdentifier lv = sign.getModelTexture();
-		final SignBlockEntityRenderer.class_4702 var10002 = model;
+		final SignBlockEntityRenderer.SignModel var10002 = model;
 		var10002.getClass();
-		final VertexConsumer vertexConsumer = lv.getConsumer(immediate, var10002::getLayer);
+		final VertexConsumer vertexConsumer = lv.getVertexConsumer(immediate, var10002::getLayer);
 
-		model.field_21530.render(matrixStack, vertexConsumer, 15728880, OverlayTexture.DEFAULT_UV);
+		model.field.render(matrixStack, vertexConsumer, 15728880, OverlayTexture.DEFAULT_UV);
 		if (isStanding) {
 
-			model.field_21531.render(matrixStack, vertexConsumer, 15728880, OverlayTexture.DEFAULT_UV);
+			model.field.render(matrixStack, vertexConsumer, 15728880, OverlayTexture.DEFAULT_UV);
 		}
 
 		matrixStack.pop();
