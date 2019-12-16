@@ -62,15 +62,15 @@ public class GuiUtil {
 	 * so if you need alpha rendering have to do that before calling. Doing it here
 	 * causes problems because it doesn't know what to restore it to.
 	 */
-	public static void drawRect(double left, double top, double right, double bottom, int color) {
+	public static void drawRect(float left, float top, float right, float bottom, int color) {
 		if (left < right) {
-			final double i = left;
+			final float i = left;
 			left = right;
 			right = i;
 		}
 
 		if (top < bottom) {
-			final double j = top;
+			final float j = top;
 			top = bottom;
 			bottom = j;
 		}
@@ -94,17 +94,54 @@ public class GuiUtil {
 		GlStateManager.enableTexture();
 	}
 
+	public static void drawGradientRect(float left, float top, float right, float bottom, int color1, int color2) {
+		if (left < right) {
+			final float i = left;
+			left = right;
+			right = i;
+		}
+
+		if (top < bottom) {
+			final float j = top;
+			top = bottom;
+			bottom = j;
+		}
+
+		final float alpha1 = (color1 >> 24 & 255) / 255.0F;
+		final float red1 = (color1 >> 16 & 255) / 255.0F;
+		final float green1 = (color1 >> 8 & 255) / 255.0F;
+		final float blue1 = (color1 & 255) / 255.0F;
+
+		final float alpha2 = (color2 >> 24 & 255) / 255.0F;
+		final float red2 = (color2 >> 16 & 255) / 255.0F;
+		final float green2 = (color2 >> 8 & 255) / 255.0F;
+		final float blue2 = (color2 & 255) / 255.0F;
+
+		final Tessellator tessellator = Tessellator.getInstance();
+		final BufferBuilder vertexbuffer = tessellator.getBuffer();
+
+		GlStateManager.disableTexture();
+		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
+		vertexbuffer.vertex(left, bottom, 0.0D).next();
+		vertexbuffer.vertex(right, bottom, 0.0D).next();
+		vertexbuffer.vertex(right, top, 0.0D).color(alpha1, red1, green1, blue1).next();
+		vertexbuffer.vertex(left, top, 0.0D).color(alpha2, red2, green2, blue2).next();
+		tessellator.draw();
+		GlStateManager.color4f(1, 1, 1, 1);
+		GlStateManager.enableTexture();
+	}
+
 	/**
 	 * Draws a horizontal of the given pixelWidth between two points.
 	 */
-	public static void drawHorizontalLine(double startX, double endX, double y, double width, int color) {
+	public static void drawHorizontalLine(float startX, float endX, float y, float width, int color) {
 		if (endX < startX) {
-			final double x = startX;
+			final float x = startX;
 			startX = endX;
 			endX = x;
 		}
 
-		final double halfWidth = width / 2;
+		final float halfWidth = width / 2;
 
 		drawRect(startX - halfWidth, y - halfWidth, endX + halfWidth, y + halfWidth, color);
 	}
@@ -112,14 +149,14 @@ public class GuiUtil {
 	/**
 	 * Draws a vertical of the given pixelWidth between two points.
 	 */
-	public static void drawVerticalLine(double x, double startY, double endY, double width, int color) {
+	public static void drawVerticalLine(float x, float startY, float endY, float width, int color) {
 		if (endY < startY) {
-			final double y = startY;
+			final float y = startY;
 			startY = endY;
 			endY = y;
 		}
 
-		final double halfWidth = width / 2;
+		final float halfWidth = width / 2;
 
 		drawRect(x - halfWidth, startY - halfWidth, x + halfWidth, endY + halfWidth, color);
 	}
@@ -147,18 +184,18 @@ public class GuiUtil {
 	//  GlStateManager.disableBlend();
 	//}
 
-	public static void drawBoxRightBottom(double left, double top, double right, double bottom, double lineWidth, int color) {
+	public static void drawBoxRightBottom(float left, float top, float right, float bottom, float lineWidth, int color) {
 		drawVerticalLine(left, top, bottom, lineWidth, color);
 		drawVerticalLine(right, top, bottom, lineWidth, color);
 		drawHorizontalLine(left, right, top, lineWidth, color);
 		drawHorizontalLine(left, right, bottom, lineWidth, color);
 	}
 
-	public static void drawBoxWidthHeight(double left, double top, double width, double height, double lineWidth, int color) {
+	public static void drawBoxWidthHeight(float left, float top, float width, float height, float lineWidth, int color) {
 		drawBoxRightBottom(left, top, left + width, top + height, lineWidth, color);
 	}
 
-	public static void drawQuad(double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3, int color) {
+	public static void drawQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, int color) {
 		final float f3 = (color >> 24 & 255) / 255.0F;
 		final float f = (color >> 16 & 255) / 255.0F;
 		final float f1 = (color >> 8 & 255) / 255.0F;

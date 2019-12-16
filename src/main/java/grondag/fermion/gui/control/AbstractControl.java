@@ -15,12 +15,14 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import grondag.fermion.gui.Layout;
-import grondag.fermion.gui.ScreenRenderContext;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+import grondag.fermion.gui.Layout;
+import grondag.fermion.gui.ScreenRenderContext;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractControl<T extends AbstractControl<T>> extends DrawableHelper implements Element {
@@ -40,12 +42,12 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 
 	public static final int NO_SELECTION = -1;
 
-	protected double top;
-	protected double left;
-	protected double height;
-	protected double width;
-	protected double bottom;
-	protected double right;
+	protected float top;
+	protected float left;
+	protected float height;
+	protected float width;
+	protected float bottom;
+	protected float right;
 
 	protected int horizontalWeight = 1;
 	protected int verticalWeight = 1;
@@ -71,7 +73,7 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 	 * pixelWidth by this number to get height. Divide height by this number to get
 	 * pixelWidth.
 	 */
-	protected double aspectRatio = 1.0;
+	protected float aspectRatio = 1.0f;
 
 	protected final ScreenRenderContext renderContext;
 
@@ -79,7 +81,7 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 		this.renderContext = renderContext;
 	}
 
-	public AbstractControl<T> resize(double left, double top, double width, double height) {
+	public AbstractControl<T> resize(float left, float top, float width, float height) {
 		this.left = left;
 		this.top = top;
 		this.width = width;
@@ -184,37 +186,37 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 		}
 	}
 
-	public double getTop() {
+	public float getTop() {
 		return top;
 	}
 
-	public double getBottom() {
+	public float getBottom() {
 		this.refreshContentCoordinatesIfNeeded();
 		return this.bottom;
 	}
 
-	public double getLeft() {
+	public float getLeft() {
 		return left;
 	}
 
-	public double getRight() {
+	public float getRight() {
 		this.refreshContentCoordinatesIfNeeded();
 		return this.right;
 	}
 
-	public double getHeight() {
+	public float getHeight() {
 		return height;
 	}
 
 	@SuppressWarnings("unchecked")
-	public T setTop(double top) {
+	public T setTop(float top) {
 		this.top = top;
 		this.isDirty = true;
 		return (T) this;
 	}
 
 	@SuppressWarnings("unchecked")
-	public T setLeft(double left) {
+	public T setLeft(float left) {
 		this.left = left;
 		this.isDirty = true;
 		return (T) this;
@@ -225,7 +227,7 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 	 * generally don't enforce it. Sometimes life isn't fair.
 	 */
 	@SuppressWarnings("unchecked")
-	public T setSquareSize(double size) {
+	public T setSquareSize(float size) {
 		this.height = size;
 		this.width = size;
 		this.isDirty = true;
@@ -233,18 +235,18 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 	}
 
 	@SuppressWarnings("unchecked")
-	public T setHeight(double height) {
+	public T setHeight(float height) {
 		this.height = height;
 		this.isDirty = true;
 		return (T) this;
 	}
 
-	public double getWidth() {
+	public float getWidth() {
 		return width;
 	}
 
 	@SuppressWarnings("unchecked")
-	public T setWidth(double width) {
+	public T setWidth(float width) {
 		this.width = width;
 		this.isDirty = true;
 		return (T) this;
@@ -260,12 +262,12 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 		return (T) this;
 	}
 
-	public double getAspectRatio() {
+	public float getAspectRatio() {
 		return aspectRatio;
 	}
 
 	@SuppressWarnings("unchecked")
-	public T setAspectRatio(double aspectRatio) {
+	public T setAspectRatio(float aspectRatio) {
 		this.aspectRatio = aspectRatio;
 		return (T) this;
 	}

@@ -15,6 +15,9 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import grondag.fermion.color.Chroma;
 import grondag.fermion.color.Color;
 import grondag.fermion.color.ColorAtlas;
@@ -24,8 +27,6 @@ import grondag.fermion.color.Hue;
 import grondag.fermion.color.Luminance;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.ScreenRenderContext;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class ColorPicker extends AbstractControl<ColorPicker> {
@@ -40,10 +41,10 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 	private double radiusOuter;
 	private final double arc = 360.0 / Hue.COUNT;
 
-	private double gridLeft;
-	private double gridTop;
-	private double gridIncrementX;
-	private double gridIncrementY;
+	private float gridLeft;
+	private float gridTop;
+	private float gridIncrementX;
+	private float gridIncrementY;
 
 	public Hue getHue() {
 		return selectedHue;
@@ -67,7 +68,7 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 
 	public ColorPicker(ScreenRenderContext renderContext) {
 		super(renderContext);
-		setAspectRatio(height(1.0));
+		setAspectRatio((float) height(1.0f));
 	}
 
 	@Override
@@ -89,13 +90,13 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 			final double x3 = centerX;// + Math.sin(arcEnd) * radiusInner;
 			final double y3 = centerY;// + Math.cos(arcEnd) * radiusInner;
 
-			GuiUtil.drawQuad(x0, y0, x1, y1, x2, y2, x3, y3, Hue.VALUES[h].hueSample());
+			GuiUtil.drawQuad((float) x0, (float) y0, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, Hue.VALUES[h].hueSample());
 		}
 
-		double left;
-		double top = gridTop;
-		double right;
-		double bottom;
+		float left;
+		float top = gridTop;
+		float right;
+		float bottom;
 
 		final Tone map = showLampColors ? Tone.LAMP : Tone.BASE;
 
@@ -115,11 +116,11 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 
 		final ColorSet selectedColormap = ColorAtlas.INSTANCE.getColorMap(colorMapID);
 
-		final double sLeft = gridLeft + selectedColormap.chroma.ordinal() * gridIncrementX;
-		final double sTop = gridTop + selectedColormap.luminance.ordinal() * gridIncrementY;
+		final float sLeft = gridLeft + selectedColormap.chroma.ordinal() * gridIncrementX;
+		final float sTop = gridTop + selectedColormap.luminance.ordinal() * gridIncrementY;
 
 		GuiUtil.drawRect(sLeft - 1, sTop - 1, sLeft + gridIncrementX + 1, sTop + gridIncrementY + 1, showLampColors ? Color.BLACK : Color.WHITE);
-		GuiUtil.drawRect(sLeft - 0.5, sTop - 0.5, sLeft + gridIncrementX + 0.5, sTop + gridIncrementY + 0.5, selectedColormap.getColor(map));
+		GuiUtil.drawRect(sLeft - 0.5f, sTop - 0.5f, sLeft + gridIncrementX + 0.5f, sTop + gridIncrementY + 0.5f, selectedColormap.getColor(map));
 	}
 
 	private void changeHueIfDifferent(Hue newHue) {
@@ -200,9 +201,9 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 		radiusInner = innerRadius(height);
 
 		gridIncrementX = (width - height) / (Chroma.COUNT + 1);
-		gridIncrementY = radiusInner * 2 / Luminance.COUNT;
+		gridIncrementY = (float) (radiusInner * 2 / Luminance.COUNT);
 		gridLeft = left + height + gridIncrementX;
-		gridTop = centerY - radiusInner;
+		gridTop = (float) (centerY - radiusInner);
 	}
 
 	private static double outerRadius(double height) {
@@ -226,10 +227,10 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 	}
 
 	@Override
-	public ColorPicker setWidth(double width) {
+	public ColorPicker setWidth(float width) {
 		// pixelWidth is always derived from height, so have to work backwards to
 		// correct height value
-		return setHeight(height(width));
+		return setHeight((float) height(width));
 	}
 
 	@Override

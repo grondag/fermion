@@ -18,31 +18,33 @@ package grondag.fermion.gui.control;
 import java.util.ArrayList;
 import java.util.List;
 
-import grondag.fermion.gui.GuiUtil;
-import grondag.fermion.gui.ScreenRenderContext;
-import grondag.mcmd.McMdRenderer;
-import grondag.mcmd.McMdStyle;
-import grondag.mcmd.node.Node;
-import grondag.mcmd.renderer.mc.McMdContentRenderer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.Rotation3;
 import net.minecraft.util.math.MathHelper;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
+import grondag.mcmd.McMdRenderer;
+import grondag.mcmd.McMdStyle;
+import grondag.mcmd.node.Node;
+import grondag.mcmd.renderer.mc.McMdContentRenderer;
+
 @Environment(EnvType.CLIENT)
 public class MarkdownControl extends AbstractControl<MarkdownControl> {
 	protected List<String> lines = null;
 	final McMdContentRenderer renderer = McMdContentRenderer.builder().build();
-	protected double textHeight = 0;
+	protected float textHeight = 0;
 
-	protected double renderStart = 0;
-	protected double buttonHeight = 0;
-	protected double buttonOffset = 0;
-	protected double maxRenderStart = 0;
-	protected double maxButtonOffset = 0;
+	protected float renderStart = 0;
+	protected float buttonHeight = 0;
+	protected float buttonOffset = 0;
+	protected float maxRenderStart = 0;
+	protected float maxButtonOffset = 0;
 
 	protected Slider slider;
 	Node markdown;
@@ -58,7 +60,7 @@ public class MarkdownControl extends AbstractControl<MarkdownControl> {
 	@Override
 	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
 		final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-		mcmd.drawMarkdown(Rotation3.identity().getMatrix(), immediate, lines, (float) left, (float) top, 0, (float) renderStart, (float) height, mouseY);
+		mcmd.drawMarkdown(Rotation3.identity().getMatrix(), immediate, lines, left, top, 0, renderStart, height, mouseY);
 		immediate.draw();
 		drawScrollIfNeeded();
 	}

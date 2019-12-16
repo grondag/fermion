@@ -18,11 +18,12 @@ package grondag.fermion.gui.control;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.Layout;
 import grondag.fermion.gui.ScreenRenderContext;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class Panel extends AbstractControl<Panel> {
@@ -38,7 +39,7 @@ public class Panel extends AbstractControl<Panel> {
 	 */
 	private boolean isLayoutDisabled = false;
 
-	protected ArrayList<AbstractControl<?>> children = new ArrayList<AbstractControl<?>>();
+	protected ArrayList<AbstractControl<?>> children = new ArrayList<>();
 
 	public Panel(ScreenRenderContext renderContext, boolean isVertical) {
 		super(renderContext);
@@ -74,14 +75,15 @@ public class Panel extends AbstractControl<Panel> {
 
 	@Override
 	protected void handleCoordinateUpdate() {
-		if (isLayoutDisabled || children == null || children.isEmpty())
+		if (isLayoutDisabled || children == null || children.isEmpty()) {
 			return;
+		}
 
 		int totalWeight = 0;
 		int totalFixed = 0;
 
-		final double variableSpace = (isVertical ? height : width) - outerMarginWidth * 2;
-		final double fixedSpace = (isVertical ? width : height) - outerMarginWidth * 2;
+		final float variableSpace = (isVertical ? height : width) - outerMarginWidth * 2;
+		final float fixedSpace = (isVertical ? width : height) - outerMarginWidth * 2;
 
 		// on start pass, gather the size/weights for the expanding dimension
 		for (final AbstractControl<?> control : children) {
@@ -119,18 +121,18 @@ public class Panel extends AbstractControl<Panel> {
 		}
 
 		// now scale the weights to the amount of space available
-		final double spaceFactor = totalWeight <= 0 ? 0 : (variableSpace - totalFixed - innerMarginWidth * (children.size() - 1)) / totalWeight;
+		final float spaceFactor = totalWeight <= 0 ? 0 : (variableSpace - totalFixed - innerMarginWidth * (children.size() - 1)) / totalWeight;
 
-		double contentLeft = left + outerMarginWidth;
-		double contentTop = top + outerMarginWidth;
-		final double fixedSize = (isVertical ? width : height) - outerMarginWidth * 2;
+		float contentLeft = left + outerMarginWidth;
+		float contentTop = top + outerMarginWidth;
+		final float fixedSize = (isVertical ? width : height) - outerMarginWidth * 2;
 
 		// on second pass rescale
 		for (final AbstractControl<?> control : children) {
 			//            double variableSize;
 
-			double controlHeight;
-			double controlWidth;
+			float controlHeight;
+			float controlWidth;
 
 			if (isVertical) {
 				controlWidth = control.getHorizontalLayout() == Layout.FIXED ? control.getWidth() : fixedSize;

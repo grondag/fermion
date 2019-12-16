@@ -15,22 +15,24 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.item.ItemRenderer;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.spatial.HorizontalAlignment;
 import grondag.fermion.spatial.VerticalAlignment;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.item.ItemRenderer;
 
 @Environment(EnvType.CLIENT)
 public class BrightnessSlider extends Slider {
 	private static final String LABEL = "Brightness";
 
 	public BrightnessSlider(ScreenRenderContext renderContext) {
-		super(renderContext, 16, LABEL, 0.22);
-		choiceWidthFactor = 0.1;
+		super(renderContext, 16, LABEL, 0.22f);
+		choiceWidthFactor = 0.1f;
 	}
 
 	/** alias for readability */
@@ -52,7 +54,7 @@ public class BrightnessSlider extends Slider {
 		final int textColor = selectedTabIndex > 6 ? 0xFF000000 : 0xFFFFFFFF;
 
 		GuiUtil.drawAlignedStringNoShadow(mc.textRenderer, Integer.toString(selectedTabIndex), labelRight, top, choiceWidth, height,
-			textColor, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+				textColor, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 	}
 
 }

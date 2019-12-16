@@ -33,7 +33,6 @@ import grondag.fermion.varia.Useful;
 
 @Environment(EnvType.CLIENT)
 public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
-	@SuppressWarnings("hiding")
 	public static final int NO_SELECTION = -1;
 
 	private int tabCount;
@@ -55,11 +54,11 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	private int itemSelectionMargin = 2;
 	private int captionHeight = DEFAULT_CAPTION_HEIGHT;
 
-	private double actualItemSize;
+	private float actualItemSize;
 	/** {@link #actualItemSize()} rounded down */
 	private int actualItemPixels;
-	private double tabSize;
-	private double scrollHeight;
+	private float tabSize;
+	private float scrollHeight;
 
 	private boolean focusOnSelection = false;
 
@@ -117,17 +116,17 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		// skip drawing tabs if there is only one
 		if (this.tabCount > 1) {
 			// if tabs are too small, just do a continuous bar
-			double tabStartY = top + this.tabWidth + this.itemSpacing;
+			float tabStartY = top + this.tabWidth + this.itemSpacing;
 			if (this.tabSize == 0.0) {
 
 				GuiUtil.drawRect(right - this.tabWidth, tabStartY, right, tabStartY + this.scrollHeight, BUTTON_COLOR_INACTIVE);
 
 				// box pixelWidth is same as tab height, so need to have it be half that extra
 				// to the right so that we keep our margins with the arrows
-				final double selectionCenterY = tabStartY + this.tabWidth / 2.0
+				final float selectionCenterY = tabStartY + this.tabWidth / 2.0f
 						+ (this.scrollHeight - this.tabWidth) * this.selectedTabIndex / (this.tabCount - 1);
 
-				GuiUtil.drawRect(right - this.tabWidth, selectionCenterY - this.tabWidth / 2.0, right, selectionCenterY + this.tabWidth / 2.0,
+				GuiUtil.drawRect(right - this.tabWidth, selectionCenterY - this.tabWidth / 2.0f, right, selectionCenterY + this.tabWidth / 2.0f,
 						BUTTON_COLOR_ACTIVE);
 
 			} else {
@@ -140,7 +139,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 				}
 			}
 
-			final double arrowCenterX = right - this.tabWidth / 2.0;
+			final float arrowCenterX = right - this.tabWidth / 2.0f;
 
 			GuiUtil.drawQuad(arrowCenterX, top, right - this.tabWidth, top + this.tabWidth, right, top + this.tabWidth, arrowCenterX,
 					top, this.currentMouseLocation == MouseLocation.TOP_ARROW ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_INACTIVE);
@@ -155,11 +154,9 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		double itemX = left;
 		double itemY = top;
 
-		//		RenderSystem.translatef(0.0F, 0.0F, 32.0F);
-
 		for (int i = start; i < end; i++) {
-
 			this.drawItem(this.get(i), renderContext.minecraft(), renderContext.renderItem(), itemX, itemY, partialTicks, i == itemHighlightIndex);
+
 			if (++column == this.columnsPerRow) {
 				column = 0;
 				itemY += (this.actualItemSize + this.itemSpacing + this.captionHeight);
@@ -219,7 +216,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	 * offset. If isHighlight = true, mouse is over item. If false, item is
 	 * selected.
 	 */
-	protected void drawHighlight(int index, double x, double y, boolean isHighlight) {
+	protected void drawHighlight(int index, float x, float y, boolean isHighlight) {
 		GuiUtil.drawBoxRightBottom(x - itemSelectionMargin, y - itemSelectionMargin, x + this.actualItemSize + itemSelectionMargin,
 				y + this.actualItemSize + itemSelectionMargin, 1, isHighlight ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_ACTIVE);
 	}
@@ -261,7 +258,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	@Override
 	protected void handleCoordinateUpdate() {
 		if (this.items != null) {
-			final double horizontalSpaceRemaining = width - this.tabWidth;
+			final float horizontalSpaceRemaining = width - this.tabWidth;
 			this.actualItemSize = horizontalSpaceRemaining / this.columnsPerRow - this.itemSpacing;
 			this.actualItemPixels = (int) actualItemSize;
 			this.rowsPerTab = (int) ((height + this.itemSpacing) / (actualItemSize + this.itemSpacing + this.captionHeight));

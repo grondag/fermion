@@ -18,16 +18,17 @@ package grondag.fermion.gui.control;
 import static grondag.fermion.spatial.HorizontalAlignment.CENTER;
 import static grondag.fermion.spatial.VerticalAlignment.MIDDLE;
 
-import grondag.fermion.gui.GuiUtil;
-import grondag.fermion.gui.ScreenRenderContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
 
 @Environment(EnvType.CLIENT)
 public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 	private final VisibilityPanel target;
 
-	private double buttonHeight;
+	private float buttonHeight;
 
 	public VisiblitySelector(ScreenRenderContext renderContext, VisibilityPanel target) {
 		super(renderContext);
@@ -36,7 +37,7 @@ public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 
 	@Override
 	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
-		double y = top;
+		float y = top;
 
 		final int hoverIndex = getButtonIndex(mouseX, mouseY);
 
@@ -48,8 +49,8 @@ public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 			GuiUtil.drawRect(left + 2, y + 2, right - 2, y + buttonHeight - 2, buttonColor);
 
 			final int textColor = i == hoverIndex ? TEXT_COLOR_FOCUS : i == target.getVisiblityIndex() ? TEXT_COLOR_ACTIVE : TEXT_COLOR_INACTIVE;
-			GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), label, (float) left, (float) y, (float) width, (float) buttonHeight,
-				textColor, CENTER, MIDDLE);
+			GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), label, left, y, width, buttonHeight,
+					textColor, CENTER, MIDDLE);
 
 			y += buttonHeight;
 		}
@@ -58,8 +59,9 @@ public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 
 	private int getButtonIndex(double mouseX, double mouseY) {
 		refreshContentCoordinatesIfNeeded();
-		if (mouseX < left || mouseX > right || buttonHeight == 0)
+		if (mouseX < left || mouseX > right || buttonHeight == 0) {
 			return NO_SELECTION;
+		}
 
 		final int selection = (int) ((mouseY - top) / buttonHeight);
 

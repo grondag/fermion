@@ -2,27 +2,19 @@ package grondag.fermion.gui;
 
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
-import grondag.fermion.gui.control.AbstractControl;
-import grondag.fermion.gui.control.Panel;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.container.Container;
 import net.minecraft.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
-public abstract class AbstractContainerGui extends GuiContainer implements ScreenRenderContext
+import grondag.fermion.gui.control.AbstractControl;
+
+public abstract class AbstractContainerScreenWithLayout extends AbstractContainerScreen implements ScreenRenderContext
 {
 	protected final ContainerLayout layout;
-
 	public static final ContainerLayout LAYOUT;
-
-	protected @Nullable Panel mainPanel;
-	protected @Nullable AbstractControl<?> hoverControl;
 
 	static
 	{
@@ -34,66 +26,37 @@ public abstract class AbstractContainerGui extends GuiContainer implements Scree
 		LAYOUT.playerInventoryTop = LAYOUT.dialogHeight - LAYOUT.externalMargin - LAYOUT.slotSpacing * 4 - AbstractControl.CONTROL_INTERNAL_MARGIN;
 	}
 
-	public AbstractContainerGui(ContainerLayout layout, Container container)
+	public AbstractContainerScreenWithLayout(ContainerLayout layout, Container container, Text title)
 	{
-		super(container);
+		super(container, title);
 		this.layout = layout;
 		xSize = layout.dialogWidth;
 		ySize = layout.dialogHeight;
 	}
 
-	@Override
-	public void initGui()
-	{
-		super.initGui();
 
-		// if using JEI, center on left 2/3 of screen to allow more room for JEI
-		//        if(Loader.instance().getIndexedModList().containsKey("jei"))
-		//        {
-		//            this.guiLeft = ((this.width * 2 / 3) - this.xSize) / 2;
-		//        }
-
-		mainPanel = this.initScreenContextAndCreateMainPanel();
-
-	}
 
 	@Override
-	public boolean doesGuiPauseGame()
-	{
-		return false;
-	}
+	public void renderBackground() {
+		super.renderBackground();
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
-	{
-		drawRect(guiLeft, guiTop, guiLeft + xSize, guiTop + ySize, 0xFFCCCCCC);
+		GuiUtil.drawRect(guiLeft, guiTop, guiLeft + xSize, guiTop + ySize, 0xFFCCCCCC);
 
 		// player slot backgrounds
 		for(final Slot slot : inventorySlots.slotList)
 		{
 			final int x = guiLeft + slot.xPosition;
 			final int y = guiTop + slot.yPosition;
-			drawGradientRect(x, y, x + 16, y + 16, 0xFFA9A9A9, 0xFF898989);
+			GuiUtil.drawGradientRect(x, y, x + 16, y + 16, 0xFFA9A9A9, 0xFF898989);
 		}
-
-		// Draw controls here because foreground layer is translated to frame of the GUI
-		// and our controls are designed to render in frame of the screen.
-		// And can't draw after super.drawScreen() because would potentially render on top of things.
-
-		//		MachineControlRenderer.setupMachineRendering();
-		mainPanel.drawControl(mouseX, mouseY, partialTicks);
-		//		MachineControlRenderer.restoreGUIRendering();
-
-
 	}
+
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks)
 	{
 		hoverControl = null;
-		super.drawDefaultBackground();
 		super.drawScreen(mouseX, mouseY, partialTicks);
-		super.renderHoveredToolTip(mouseX, mouseY);
 		if(hoverControl != null)
 		{
 			hoverControl.drawToolTip(mouseX, mouseY, partialTicks);
@@ -101,27 +64,9 @@ public abstract class AbstractContainerGui extends GuiContainer implements Scree
 	}
 
 	@Override
-	public MinecraftClient minecraft()
-	{
-		return mc;
-	}
-
-	@Override
-	public ItemRenderer renderItem()
-	{
-		return itemRender;
-	}
-
-	@Override
 	public Screen screen()
 	{
 		return this;
-	}
-
-	@Override
-	public TextRenderer fontRenderer()
-	{
-		return fontRenderer;
 	}
 
 	@Override
