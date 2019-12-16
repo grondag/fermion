@@ -55,6 +55,7 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 		screenWidth = (int) (screenHeight * GuiUtil.GOLDEN_RATIO);
 		screenLeft = (width - screenWidth) / 2;
 		mainPanel = createMainPanel();
+		children.add(mainPanel);
 		addControls(mainPanel);
 	}
 
@@ -93,7 +94,6 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 
 	@Override
 	public void addControls(Panel mainPanel) {
-		// TODO Auto-generated method stub
 
 	}
 

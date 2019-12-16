@@ -26,8 +26,8 @@ import grondag.fermion.gui.ScreenRenderContext;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractControl<T extends AbstractControl<T>> extends DrawableHelper implements Element {
-	public static final int BUTTON_COLOR_ACTIVE = 0x9AFFFFFF;
-	public static final int BUTTON_COLOR_INACTIVE = 0x2AFFFFFF;
+	public static final int BUTTON_COLOR_ACTIVE = 0xFFFFFFFF;
+	public static final int BUTTON_COLOR_INACTIVE = 0xFFA0A0A0;
 	public static final int BUTTON_COLOR_FOCUS = 0xFFBAF6FF;
 	public static final int TEXT_COLOR_ACTIVE = 0xFF000000;
 	public static final int TEXT_COLOR_INACTIVE = 0xFFEEEEEE;
@@ -62,9 +62,9 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 	protected boolean isVisible = true;
 
 	/** cumulative scroll distance from all events */
-	protected int scrollDistance;
+	protected float scrollDistance;
 	/** cumulative distance before scroll is recognized */
-	protected int scrollIncrementDistance = 128;
+	protected float scrollIncrementDistance = 1;
 	/** last scroll increment - used to compute a delta */
 	protected int lastScrollIncrement = 0;
 
@@ -134,7 +134,7 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 			this.scrollDistance += scrollDelta;
 			this.handleMouseScroll(mouseX, mouseY, scrollDelta);
 			return true;
-		}  else {
+		} else {
 			return false;
 		}
 	}
@@ -168,11 +168,13 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 	}
 
 	protected int mouseIncrementDelta() {
-		final int newIncrement = this.scrollDistance / this.scrollIncrementDistance;
+		final int newIncrement = (int) (this.scrollDistance / this.scrollIncrementDistance);
 		final int result = newIncrement - this.lastScrollIncrement;
+
 		if (result != 0) {
 			this.lastScrollIncrement = newIncrement;
 		}
+
 		return result;
 	}
 

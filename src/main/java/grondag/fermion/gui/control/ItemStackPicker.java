@@ -36,18 +36,16 @@ import grondag.fermion.gui.container.ItemDisplayDelegate;
 
 @Environment(EnvType.CLIENT)
 public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
-	protected final TextRenderer fontRenderer;
-	protected final MouseHandler<T> clickHandler;
+	protected final MouseHandler<T> itemClickHandler;
 
-	public ItemStackPicker(ScreenRenderContext renderContext, List<T> items, TextRenderer fontRenderer, MouseHandler<T> clickHandler) {
+	public ItemStackPicker(ScreenRenderContext renderContext, List<T> items, MouseHandler<T> itemClickHandler) {
 		super(renderContext, items);
-		this.fontRenderer = fontRenderer;
-		this.clickHandler = clickHandler;
+		this.itemClickHandler = itemClickHandler;
 		setItemsPerRow(9);
 		setItemSpacing(2);
 		setItemSelectionMargin(1);
 		setSelectionEnabled(false);
-		setCaptionHeight(fontRenderer.fontHeight * 6 / 10 + 4);
+		setCaptionHeight(renderContext.fontRenderer().fontHeight * 6 / 10 + 4);
 	}
 
 	@Override
@@ -99,6 +97,7 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 		final MatrixStack matrixStack = new MatrixStack();
 		matrixStack.translate(0.0D, 0.0D, 200.0F);
 		final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+		final TextRenderer fontRenderer = renderContext.fontRenderer();
 		final float x = left + 8 * scale - fontRenderer.getStringWidth(qtyLabel) * 0.5f;
 		final float y = top + 16 * scale;
 		fontRenderer.draw(qtyLabel, x, y, 0xFF000000, false, matrixStack.peek().getModel(), immediate, true, 0, 15728880);
@@ -122,9 +121,8 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 
 	@Override
 	public void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
-
-		if (clickHandler != null && currentMouseLocation == MouseLocation.ITEM) {
-			clickHandler.handle(MinecraftClient.getInstance(), clickedMouseButton, resourceForClickHandler());
+		if (itemClickHandler != null && currentMouseLocation == MouseLocation.ITEM) {
+			itemClickHandler.handle(MinecraftClient.getInstance(), clickedMouseButton, resourceForClickHandler());
 		} else {
 			super.handleMouseClick(mouseX, mouseY, clickedMouseButton);
 		}
@@ -137,7 +135,7 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 	}
 
 	@Override
-	protected void drawToolTip(ItemDisplayDelegate item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+	protected void drawItemToolTip(ItemDisplayDelegate item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
 		renderContext.drawToolTip(item.displayStack(), mouseX, mouseY);
 	}
 }

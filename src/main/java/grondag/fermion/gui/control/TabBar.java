@@ -113,33 +113,35 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 			this.drawHighlightIfNeeded(this.selectedItemIndex, false);
 		}
 
+		final float halfTabWidth  = tabWidth * 0.5f;
+
 		// skip drawing tabs if there is only one
 		if (this.tabCount > 1) {
 			// if tabs are too small, just do a continuous bar
-			float tabStartY = top + this.tabWidth + this.itemSpacing;
+			float tabCenter = top + this.tabWidth + this.itemSpacing;
 			if (this.tabSize == 0.0) {
 
-				GuiUtil.drawRect(right - this.tabWidth, tabStartY, right, tabStartY + this.scrollHeight, BUTTON_COLOR_INACTIVE);
+				GuiUtil.drawRect(right - this.tabWidth, tabCenter, right, tabCenter + this.scrollHeight, BUTTON_COLOR_INACTIVE);
 
 				// box pixelWidth is same as tab height, so need to have it be half that extra
 				// to the right so that we keep our margins with the arrows
-				final float selectionCenterY = tabStartY + this.tabWidth / 2.0f
+				final float selectionCenter = tabCenter + halfTabWidth
 						+ (this.scrollHeight - this.tabWidth) * this.selectedTabIndex / (this.tabCount - 1);
 
-				GuiUtil.drawRect(right - this.tabWidth, selectionCenterY - this.tabWidth / 2.0f, right, selectionCenterY + this.tabWidth / 2.0f,
+				GuiUtil.drawRect(right - this.tabWidth, selectionCenter - halfTabWidth, right, selectionCenter + halfTabWidth,
 						BUTTON_COLOR_ACTIVE);
 
 			} else {
 				final int tabHighlightIndex = this.currentMouseLocation == MouseLocation.TAB ? this.currentMouseIndex : NO_SELECTION;
 
 				for (int i = 0; i < this.tabCount; i++) {
-					GuiUtil.drawRect(right - this.tabWidth, tabStartY, right, tabStartY + this.tabSize,
+					GuiUtil.drawRect(right - this.tabWidth, tabCenter, right, tabCenter + this.tabSize,
 							i == tabHighlightIndex ? BUTTON_COLOR_FOCUS : i == this.selectedTabIndex ? BUTTON_COLOR_ACTIVE : BUTTON_COLOR_INACTIVE);
-					tabStartY += (this.tabSize + this.tabMargin);
+					tabCenter += (this.tabSize + this.tabMargin);
 				}
 			}
 
-			final float arrowCenterX = right - this.tabWidth / 2.0f;
+			final float arrowCenterX = right - halfTabWidth;
 
 			GuiUtil.drawQuad(arrowCenterX, top, right - this.tabWidth, top + this.tabWidth, right, top + this.tabWidth, arrowCenterX,
 					top, this.currentMouseLocation == MouseLocation.TOP_ARROW ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_INACTIVE);
@@ -183,12 +185,12 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		if (this.currentMouseLocation == MouseLocation.ITEM) {
 			final T item = this.get(this.currentMouseIndex);
 			if (item != null) {
-				this.drawToolTip(item, renderContext, mouseX, mouseY, partialTicks);
+				this.drawItemToolTip(item, renderContext, mouseX, mouseY, partialTicks);
 			}
 		}
 	}
 
-	protected abstract void drawToolTip(T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks);
+	protected abstract void drawItemToolTip(T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks);
 
 	/**
 	 *

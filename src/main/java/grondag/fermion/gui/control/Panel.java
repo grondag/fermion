@@ -15,8 +15,9 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+
+import net.minecraft.client.gui.ParentElement;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -26,7 +27,7 @@ import grondag.fermion.gui.Layout;
 import grondag.fermion.gui.ScreenRenderContext;
 
 @Environment(EnvType.CLIENT)
-public class Panel extends AbstractControl<Panel> {
+public class Panel extends AbstractParentControl<Panel> implements ParentElement {
 	/** if false is horizontal */
 	public final boolean isVertical;
 
@@ -38,8 +39,6 @@ public class Panel extends AbstractControl<Panel> {
 	 * containers that have to conform to a specific pixel layout.
 	 */
 	private boolean isLayoutDisabled = false;
-
-	protected ArrayList<AbstractControl<?>> children = new ArrayList<>();
 
 	public Panel(ScreenRenderContext renderContext, boolean isVertical) {
 		super(renderContext);
@@ -56,10 +55,6 @@ public class Panel extends AbstractControl<Panel> {
 		children.add(control);
 		isDirty = true;
 		return this;
-	}
-
-	public AbstractControl<?> get(int i) {
-		return children.get(i);
 	}
 
 	@Override
