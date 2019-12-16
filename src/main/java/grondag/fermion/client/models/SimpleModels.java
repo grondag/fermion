@@ -17,15 +17,24 @@
 package grondag.fermion.client.models;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
-import net.fabricmc.fabric.api.client.model.ModelProviderContext;
-import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+
+import net.fabricmc.fabric.api.client.model.ModelProviderContext;
+import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 
 public class SimpleModels implements ModelVariantProvider {
 	public static ModelVariantProvider MODEL_VARIANT_PROVIER = new SimpleModels();
@@ -72,5 +81,27 @@ public class SimpleModels implements ModelVariantProvider {
 		poly.sprite(1, spriteIndex, MathHelper.lerp(nudge, u1, uCenter), MathHelper.lerp(nudge, v1, vCenter));
 		poly.sprite(2, spriteIndex, MathHelper.lerp(nudge, u2, uCenter), MathHelper.lerp(nudge, v2, vCenter));
 		poly.sprite(3, spriteIndex, MathHelper.lerp(nudge, u3, uCenter), MathHelper.lerp(nudge, v3, vCenter));
+	}
+
+	public static void emitBakedModelToMesh (BlockState blockState, BakedModel model, QuadEmitter qe) {
+		final Random random = new Random();
+
+		for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
+			final Direction cullFace = ModelHelper.faceFromIndex(i);
+			random.setSeed(42);
+			final List<BakedQuad> quads = model.getQuads(blockState, cullFace, random);
+
+			if (quads.isEmpty()) {
+				continue;
+			}
+
+			for (final BakedQuad q : quads) {
+				qe.fromVanilla(q.getVertexData(), 0, false);
+				qe.cullFace(cullFace);
+				qe.nominalFace(q.getFace());
+				qe.colorIndex(q.getColorIndex());
+				qe.emit();
+			}
+		}
 	}
 }

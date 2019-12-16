@@ -20,14 +20,16 @@ import java.util.List;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import grondag.fermion.gui.GuiUtil;
-import grondag.fermion.gui.ScreenRenderContext;
-import grondag.fermion.varia.Useful;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.util.math.MathHelper;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
+import grondag.fermion.varia.Useful;
 
 @Environment(EnvType.CLIENT)
 public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
@@ -91,8 +93,9 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 	@Override
 	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
-		if (items == null)
+		if (items == null) {
 			return;
+		}
 
 		this.handleListSizeUpdateIfNeeded();
 
@@ -122,17 +125,17 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 				// box pixelWidth is same as tab height, so need to have it be half that extra
 				// to the right so that we keep our margins with the arrows
 				final double selectionCenterY = tabStartY + this.tabWidth / 2.0
-					+ (this.scrollHeight - this.tabWidth) * this.selectedTabIndex / (this.tabCount - 1);
+						+ (this.scrollHeight - this.tabWidth) * this.selectedTabIndex / (this.tabCount - 1);
 
 				GuiUtil.drawRect(right - this.tabWidth, selectionCenterY - this.tabWidth / 2.0, right, selectionCenterY + this.tabWidth / 2.0,
-					BUTTON_COLOR_ACTIVE);
+						BUTTON_COLOR_ACTIVE);
 
 			} else {
 				final int tabHighlightIndex = this.currentMouseLocation == MouseLocation.TAB ? this.currentMouseIndex : NO_SELECTION;
 
 				for (int i = 0; i < this.tabCount; i++) {
 					GuiUtil.drawRect(right - this.tabWidth, tabStartY, right, tabStartY + this.tabSize,
-						i == tabHighlightIndex ? BUTTON_COLOR_FOCUS : i == this.selectedTabIndex ? BUTTON_COLOR_ACTIVE : BUTTON_COLOR_INACTIVE);
+							i == tabHighlightIndex ? BUTTON_COLOR_FOCUS : i == this.selectedTabIndex ? BUTTON_COLOR_ACTIVE : BUTTON_COLOR_INACTIVE);
 					tabStartY += (this.tabSize + this.tabMargin);
 				}
 			}
@@ -140,10 +143,10 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 			final double arrowCenterX = right - this.tabWidth / 2.0;
 
 			GuiUtil.drawQuad(arrowCenterX, top, right - this.tabWidth, top + this.tabWidth, right, top + this.tabWidth, arrowCenterX,
-				top, this.currentMouseLocation == MouseLocation.TOP_ARROW ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_INACTIVE);
+					top, this.currentMouseLocation == MouseLocation.TOP_ARROW ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_INACTIVE);
 
 			GuiUtil.drawQuad(arrowCenterX, bottom, right, bottom - this.tabWidth, right - this.tabWidth, bottom - this.tabWidth,
-				arrowCenterX, bottom, this.currentMouseLocation == MouseLocation.BOTTOM_ARROW ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_INACTIVE);
+					arrowCenterX, bottom, this.currentMouseLocation == MouseLocation.BOTTOM_ARROW ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_INACTIVE);
 		}
 
 		this.setupItemRendering();
@@ -151,6 +154,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		final int end = this.getLastDisplayedIndex();
 		double itemX = left;
 		double itemY = top;
+
+		//		RenderSystem.translatef(0.0F, 0.0F, 32.0F);
 
 		for (int i = start; i < end; i++) {
 
@@ -168,8 +173,9 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 	@Override
 	public final void drawToolTip(int mouseX, int mouseY, float partialTicks) {
-		if (this.items == null)
+		if (this.items == null) {
 			return;
+		}
 
 		this.handleListSizeUpdateIfNeeded();
 
@@ -190,14 +196,16 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	 * @param index
 	 */
 	private void drawHighlightIfNeeded(int index, boolean isHighlight) {
-		if (index == NO_SELECTION)
+		if (index == NO_SELECTION) {
 			return;
+		}
 
 		final int start = this.getFirstDisplayedIndex();
 		final int end = this.getLastDisplayedIndex();
 
-		if (index < start || index >= end)
+		if (index < start || index >= end) {
 			return;
+		}
 
 		final int idx = index - start;
 		final int x = (int) (left + (idx % this.columnsPerRow) * (this.actualItemSize + this.itemSpacing));
@@ -213,7 +221,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	 */
 	protected void drawHighlight(int index, double x, double y, boolean isHighlight) {
 		GuiUtil.drawBoxRightBottom(x - itemSelectionMargin, y - itemSelectionMargin, x + this.actualItemSize + itemSelectionMargin,
-			y + this.actualItemSize + itemSelectionMargin, 1, isHighlight ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_ACTIVE);
+				y + this.actualItemSize + itemSelectionMargin, 1, isHighlight ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_ACTIVE);
 	}
 
 	/** set (non-matrix) GL state needed for proper rending of this tab's items */
@@ -222,8 +230,9 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	protected abstract void drawItem(T item, MinecraftClient mc, ItemRenderer itemRender, double left, double top, float partialTicks, boolean isHighlighted);
 
 	private void updateMouseLocation(double mouseX, double mouseY) {
-		if (items == null)
+		if (items == null) {
 			return;
+		}
 
 		if (mouseX < left || mouseX > right || mouseY < top || mouseY > bottom) {
 			this.currentMouseLocation = MouseLocation.NONE;
@@ -235,15 +244,15 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 			} else {
 				this.currentMouseLocation = MouseLocation.TAB;
 				this.currentMouseIndex = MathHelper
-					.clamp((int) ((mouseY - top - this.tabWidth - this.itemSpacing / 2) / (this.scrollHeight) * this.tabCount), 0, this.tabCount - 1);
+						.clamp((int) ((mouseY - top - this.tabWidth - this.itemSpacing / 2) / (this.scrollHeight) * this.tabCount), 0, this.tabCount - 1);
 				//                this.currentMouseIndex = (int) ((mouseX - this.left - this.tabWidth - this.actualItemMargin / 2) / (this.tabWidth + this.tabMargin));
 			}
 		} else {
 			this.currentMouseLocation = MouseLocation.ITEM;
 
 			final int newIndex = this.getFirstDisplayedIndex()
-				+ (int) ((mouseY - top - this.itemSpacing / 2) / (this.actualItemSize + this.itemSpacing + this.captionHeight)) * this.columnsPerRow
-				+ Math.min((int) ((mouseX - left - this.itemSpacing / 2) / (this.actualItemSize + this.itemSpacing)), this.columnsPerRow - 1);
+					+ (int) ((mouseY - top - this.itemSpacing / 2) / (this.actualItemSize + this.itemSpacing + this.captionHeight)) * this.columnsPerRow
+					+ Math.min((int) ((mouseX - left - this.itemSpacing / 2) / (this.actualItemSize + this.itemSpacing)), this.columnsPerRow - 1);
 
 			this.currentMouseIndex = (newIndex < this.items.size()) ? newIndex : NO_SELECTION;
 		}
@@ -285,7 +294,9 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 	@Override
 	protected void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
-		if (items == null) return;
+		if (items == null) {
+			return;
+		}
 
 		this.updateMouseLocation(mouseX, mouseY);
 		switch (this.currentMouseLocation) {
@@ -322,8 +333,9 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 	@Override
 	protected void handleMouseDrag(double mouseX, double mouseY, int clickedMouseButton, double dx, double dy) {
-		if (items == null)
+		if (items == null) {
 			return;
+		}
 
 		this.updateMouseLocation(mouseX, mouseY);
 		switch (this.currentMouseLocation) {
@@ -351,31 +363,35 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 	@Override
 	protected void handleMouseScroll(double mouseX, double mouseY, double scrollDelta) {
-		if (items == null)
+		if (items == null) {
 			return;
+		}
 
 		this.selectedTabIndex = MathHelper.clamp(this.selectedTabIndex + mouseIncrementDelta(), 0, this.tabCount - 1);
 	}
 
 	public void add(T item) {
-		if (items == null)
+		if (items == null) {
 			return;
+		}
 
 		this.items.add(item);
 		isDirty = true;
 	}
 
 	public void addAll(Collection<T> items) {
-		if (items == null)
+		if (items == null) {
 			return;
+		}
 
 		this.items.addAll(items);
 		isDirty = true;
 	}
 
 	public void addAll(T[] itemsIn) {
-		if (items == null)
+		if (items == null) {
 			return;
+		}
 
 		for (final T item : itemsIn) {
 			this.items.add(item);
@@ -384,29 +400,33 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	}
 
 	public T get(int index) {
-		if (items == null || index == NO_SELECTION)
+		if (items == null || index == NO_SELECTION) {
 			return null;
+		}
 
 		return this.items.get(index);
 	}
 
 	public T getSelected() {
-		if (items == null || this.selectedItemIndex == NO_SELECTION)
+		if (items == null || this.selectedItemIndex == NO_SELECTION) {
 			return null;
+		}
 
 		return this.get(this.getSelectedIndex());
 	}
 
 	public List<T> getDisplayed() {
-		if (items == null)
+		if (items == null) {
 			return null;
+		}
 
 		return this.items.subList(this.getFirstDisplayedIndex(), this.getLastDisplayedIndex());
 	}
 
 	public void clear() {
-		if (items == null)
+		if (items == null) {
 			return;
+		}
 		this.items.clear();
 		isDirty = true;
 	}
@@ -417,21 +437,24 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	}
 
 	public int getItemsPerTab() {
-		if (items == null)
+		if (items == null) {
 			return 0;
+		}
 		refreshContentCoordinatesIfNeeded();
 		return this.itemsPerTab;
 	}
 
 	public int size() {
-		if (items == null)
+		if (items == null) {
 			return 0;
+		}
 		return this.items.size();
 	}
 
 	public void setSelectedIndex(int index) {
-		if (items == null || !this.allowSelection)
+		if (items == null || !this.allowSelection) {
 			return;
+		}
 		this.selectedItemIndex = MathHelper.clamp(index, NO_SELECTION, this.items.size() - 1);
 		this.showSelected();
 	}
@@ -448,23 +471,26 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	}
 
 	public int getSelectedIndex() {
-		if (items == null)
+		if (items == null) {
 			return NO_SELECTION;
+		}
 		return this.selectedItemIndex;
 	}
 
 	/** index of start item on selected tab */
 	public int getFirstDisplayedIndex() {
-		if (items == null)
+		if (items == null) {
 			return NO_SELECTION;
+		}
 		refreshContentCoordinatesIfNeeded();
 		return this.selectedTabIndex * this.itemsPerTab;
 	}
 
 	/** index of start item on selected tab, EXCLUSIVE of the last item */
 	public int getLastDisplayedIndex() {
-		if (items == null)
+		if (items == null) {
 			return NO_SELECTION;
+		}
 		refreshContentCoordinatesIfNeeded();
 		return Useful.min((this.selectedTabIndex + 1) * this.itemsPerTab, this.items.size());
 	}
@@ -475,8 +501,9 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	 * the current tab or if no selection.
 	 */
 	public int getHighlightIndex() {
-		if (items == null || this.selectedItemIndex == NO_SELECTION)
+		if (items == null || this.selectedItemIndex == NO_SELECTION) {
 			return NO_SELECTION;
+		}
 		refreshContentCoordinatesIfNeeded();
 		final int result = this.selectedItemIndex - this.getFirstDisplayedIndex();
 		return (result < 0 || result >= this.getItemsPerTab()) ? NO_SELECTION : result;

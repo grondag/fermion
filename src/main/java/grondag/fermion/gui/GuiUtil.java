@@ -15,27 +15,38 @@
  ******************************************************************************/
 package grondag.fermion.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-
-import grondag.fermion.spatial.HorizontalAlignment;
-import grondag.fermion.spatial.Rotation;
-import grondag.fermion.spatial.VerticalAlignment;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.MathHelper;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+import grondag.fermion.spatial.HorizontalAlignment;
+import grondag.fermion.spatial.Rotation;
+import grondag.fermion.spatial.VerticalAlignment;
 
 @Environment(EnvType.CLIENT)
 public class GuiUtil {
@@ -268,40 +279,85 @@ public class GuiUtil {
 		MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 
-	public static boolean renderItemAndEffectIntoGui(ScreenRenderContext renderContext, ItemStack itm, double x, double y, double contentSize) {
+	public static boolean renderItemAndEffectIntoGui(ScreenRenderContext renderContext, ItemStack itm, float x, float y, float contentSize) {
 		return renderItemAndEffectIntoGui(renderContext.minecraft(), renderContext.renderItem(), itm, x, y, contentSize);
 	}
 
 	/**
 	 * Size is in pixels. Hat tip to McJty.
 	 */
-	public static boolean renderItemAndEffectIntoGui(MinecraftClient mc, ItemRenderer itemRender, ItemStack itm, double x, double y, double contentSize) {
-		boolean rc = false;
+	public static boolean renderItemAndEffectIntoGui(MinecraftClient mc, ItemRenderer itemRender, ItemStack itemStack, float x, float y, float contentSize) {
+		if (itemStack != null && itemStack.getItem() != null) {
+			final BakedModel bakedModel = itemRender.getHeldItemModel(itemStack, null, null);
 
-		if (itm != null && itm.getItem() != null) {
-			rc = true;
+			RenderSystem.pushMatrix();
+			mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+			mc.getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).setFilter(false, false);
+			RenderSystem.enableRescaleNormal();
+			RenderSystem.enableAlphaTest();
+			RenderSystem.defaultAlphaFunc();
+			RenderSystem.enableBlend();
+			RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+			RenderSystem.translatef(x, y, 100.0F + itemRender.zOffset);
 
-			//TODO: This is certaniously borkified now
+			final float half = contentSize * 0.5f;
 
-			//RenderHelper.enableGUIStandardItemLighting();
-			GlStateManager.pushMatrix();
-			GlStateManager.translatef((float)x, (float)y, 0);
-			GlStateManager.scalef(1 / 16f, 1 / 16f, 1 / 16f);
-			GlStateManager.scaled(contentSize, contentSize, contentSize);
+			RenderSystem.translatef(half, half, 0.0F);
+			RenderSystem.scalef(contentSize, -contentSize, contentSize);
+			final MatrixStack matrixStack = new MatrixStack();
+			final VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+			final Item item = itemStack.getItem();
+			final boolean hasDepth = !bakedModel.hasDepthInGui() || item == Items.SHIELD || item == Items.TRIDENT;
 
-			GlStateManager.enableRescaleNormal();
-			//GLX.setLightmapTextureCoords(GLX.lightmapTexUnit, 240.0F, 240.0F);
-			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-			GlStateManager.enableDepthTest();
+			if (hasDepth) {
+				DiffuseLighting.disableGuiDepthLighting();
+			}
 
-			itemRender.renderGuiItemIcon(itm, 0, 0);
+			itemRender.renderItem(itemStack, ModelTransformation.Type.GUI, false, matrixStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, bakedModel);
+			immediate.draw();
 
-			GlStateManager.popMatrix();
-			GlStateManager.enableLighting();
-			//            RenderHelper.disableStandardItemLighting();
+			if (hasDepth) {
+				DiffuseLighting.enableGuiDepthLighting();
+			}
+
+			RenderSystem.disableRescaleNormal();
+			RenderSystem.popMatrix();
+
+			if (itemStack.isDamaged()) {
+				final float scale = contentSize / 16f;
+				RenderSystem.disableTexture();
+				RenderSystem.disableAlphaTest();
+				RenderSystem.disableBlend();
+				final Tessellator tessellator = Tessellator.getInstance();
+				final BufferBuilder bufferBuilder = tessellator.getBuffer();
+				final float dmg = itemStack.getDamage();
+				final float maxDmg = itemStack.getMaxDamage();
+				final float ratio = Math.max(0.0F, (maxDmg - dmg) / maxDmg);
+				final int width = Math.round(13.0F - dmg * 13.0F / maxDmg);
+				final int color = MathHelper.hsvToRgb(ratio / 3.0F, 1.0F, 1.0F);
+				bufferGuiQuad(bufferBuilder, x + 2 * scale, y + 13 * scale, 13 * scale, 2 * scale, 0, 0, 0, 255);
+				tessellator.draw();
+				bufferGuiQuad(bufferBuilder, x + 2 * scale, y + 13.5f * scale, width * scale, scale, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
+				tessellator.draw();
+
+				RenderSystem.enableBlend();
+				RenderSystem.enableAlphaTest();
+				RenderSystem.enableTexture();
+			}
+
+			return true;
+		} else {
+			return false;
 		}
+	}
 
-		return rc;
+	private static void bufferGuiQuad(BufferBuilder bufferBuilder, float left, float top, float width, float height, int r, int g, int b, int a) {
+		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
+		bufferBuilder.vertex(left, top, 0).color(r, g, b, a).next();
+		bufferBuilder.vertex(left, top + height, 0).color(r, g, b, a).next();
+		bufferBuilder.vertex(left + width, top + height, 0).color(r, g, b, a).next();
+		bufferBuilder.vertex(left + width, top, 0).color(r, g, b, a).next();
 	}
 
 	/**
@@ -355,5 +411,4 @@ public class GuiUtil {
 	public static void drawStringNoShadow(TextRenderer fontRendererIn, String text, int x, int y, int color) {
 		fontRendererIn.draw(text, x, y, color);
 	}
-
 }

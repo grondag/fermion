@@ -15,11 +15,13 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import grondag.fermion.gui.GuiUtil;
-import grondag.fermion.gui.ScreenRenderContext;
+import net.minecraft.item.ItemStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.item.ItemStack;
+
+import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
 
 @Environment(EnvType.CLIENT)
 public class ItemPreview extends AbstractControl<ItemPreview> {
@@ -29,9 +31,9 @@ public class ItemPreview extends AbstractControl<ItemPreview> {
 
 	public ItemStack previewItem;
 
-	private double contentLeft;
-	private double contentTop;
-	private double contentSize;
+	private float contentLeft;
+	private float contentTop;
+	private float contentSize;
 
 	@Override
 	public void drawContent(int mouseX, int mouseY, float partialTicks) {
@@ -42,9 +44,9 @@ public class ItemPreview extends AbstractControl<ItemPreview> {
 
 	@Override
 	protected void handleCoordinateUpdate() {
-		contentSize = Math.min(width, height);
-		contentLeft = left + (width - contentSize) / 2;
-		contentTop = top + (height - contentSize) / 2;
+		contentSize = (float) Math.min(width, height);
+		contentLeft = (float) (left + (width - contentSize) / 2);
+		contentTop = (float) (top + (height - contentSize) / 2);
 	}
 
 	@Override
