@@ -148,7 +148,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 					arrowCenterX, bottom, this.currentMouseLocation == MouseLocation.BOTTOM_ARROW ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_INACTIVE);
 		}
 
-		this.setupItemRendering();
+		setupItemRendering();
 		final int start = this.getFirstDisplayedIndex();
 		final int end = this.getLastDisplayedIndex();
 		double itemX = left;
@@ -165,6 +165,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 				itemX += (this.actualItemSize + this.itemSpacing);
 			}
 		}
+
+		tearDownItemRendering();
 
 	}
 
@@ -223,6 +225,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 	/** set (non-matrix) GL state needed for proper rending of this tab's items */
 	protected abstract void setupItemRendering();
+
+	protected abstract void tearDownItemRendering();
 
 	protected abstract void drawItem(T item, MinecraftClient mc, ItemRenderer itemRender, double left, double top, float partialTicks, boolean isHighlighted);
 

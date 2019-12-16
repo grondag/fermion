@@ -336,7 +336,7 @@ public class GuiUtil {
 			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-			RenderSystem.translatef(x, y, 100.0F + itemRender.zOffset);
+			RenderSystem.translatef(x, y, itemRender.zOffset);
 
 			final float half = contentSize * 0.5f;
 
@@ -361,11 +361,12 @@ public class GuiUtil {
 			RenderSystem.disableRescaleNormal();
 			RenderSystem.popMatrix();
 
+			RenderSystem.disableAlphaTest();
+			RenderSystem.disableBlend();
+
 			if (itemStack.isDamaged()) {
 				final float scale = contentSize / 16f;
 				RenderSystem.disableTexture();
-				RenderSystem.disableAlphaTest();
-				RenderSystem.disableBlend();
 				final Tessellator tessellator = Tessellator.getInstance();
 				final BufferBuilder bufferBuilder = tessellator.getBuffer();
 				final float dmg = itemStack.getDamage();
@@ -378,8 +379,6 @@ public class GuiUtil {
 				bufferGuiQuad(bufferBuilder, x + 2 * scale, y + 13.5f * scale, width * scale, scale, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
 				tessellator.draw();
 
-				RenderSystem.enableBlend();
-				RenderSystem.enableAlphaTest();
 				RenderSystem.enableTexture();
 			}
 

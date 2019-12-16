@@ -115,6 +115,12 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 	}
 
 	@Override
+	protected void tearDownItemRendering() {
+		RenderSystem.enableDepthTest();
+		RenderSystem.disableRescaleNormal();
+	}
+
+	@Override
 	public void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
 
 		if (clickHandler != null && currentMouseLocation == MouseLocation.ITEM) {
