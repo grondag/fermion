@@ -17,8 +17,6 @@ package grondag.fermion.gui;
 
 import java.util.Optional;
 
-import grondag.fermion.gui.control.AbstractControl;
-import grondag.fermion.gui.control.Panel;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
@@ -27,6 +25,9 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+
+import grondag.fermion.gui.control.AbstractControl;
+import grondag.fermion.gui.control.Panel;
 
 public abstract class AbstractSimpleScreen extends Screen implements ScreenRenderContext {
 

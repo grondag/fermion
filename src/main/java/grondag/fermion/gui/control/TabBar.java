@@ -18,7 +18,7 @@ package grondag.fermion.gui.control;
 import java.util.Collection;
 import java.util.List;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -104,8 +104,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 		final int itemHighlightIndex = this.currentMouseLocation == MouseLocation.ITEM ? this.currentMouseIndex : NO_SELECTION;
 
-		GlStateManager.disableLighting();
-		GlStateManager.disableDepthTest();
+		RenderSystem.disableLighting();
+		RenderSystem.disableDepthTest();
 
 		this.drawHighlightIfNeeded(itemHighlightIndex, true);
 

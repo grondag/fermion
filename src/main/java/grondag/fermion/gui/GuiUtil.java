@@ -82,16 +82,16 @@ public class GuiUtil {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexbuffer = tessellator.getBuffer();
 
-		GlStateManager.disableTexture();
-		GlStateManager.color4f(red, green, blue, alpha);
+		RenderSystem.disableTexture();
+		RenderSystem.color4f(red, green, blue, alpha);
 		vertexbuffer.begin(7, VertexFormats.POSITION);
 		vertexbuffer.vertex(left, bottom, 0.0D).next();
 		vertexbuffer.vertex(right, bottom, 0.0D).next();
 		vertexbuffer.vertex(right, top, 0.0D).next();
 		vertexbuffer.vertex(left, top, 0.0D).next();
 		tessellator.draw();
-		GlStateManager.color4f(1, 1, 1, 1);
-		GlStateManager.enableTexture();
+		RenderSystem.color4f(1, 1, 1, 1);
+		RenderSystem.enableTexture();
 	}
 
 	public static void drawGradientRect(float left, float top, float right, float bottom, int color1, int color2) {
@@ -120,15 +120,15 @@ public class GuiUtil {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexbuffer = tessellator.getBuffer();
 
-		GlStateManager.disableTexture();
+		RenderSystem.disableTexture();
 		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
 		vertexbuffer.vertex(left, bottom, 0.0D).next();
 		vertexbuffer.vertex(right, bottom, 0.0D).next();
 		vertexbuffer.vertex(right, top, 0.0D).color(alpha1, red1, green1, blue1).next();
 		vertexbuffer.vertex(left, top, 0.0D).color(alpha2, red2, green2, blue2).next();
 		tessellator.draw();
-		GlStateManager.color4f(1, 1, 1, 1);
-		GlStateManager.enableTexture();
+		RenderSystem.color4f(1, 1, 1, 1);
+		RenderSystem.enableTexture();
 	}
 
 	/**
@@ -170,18 +170,18 @@ public class GuiUtil {
 	//  VertexBuffer buffer = tessellator.getBuffer();
 	//
 	//  buffer.begin(GL11.GL_LINES, VertexFormats.POSITION);
-	//  GlStateManager.enableBlend();
-	//  GlStateManager.disableTexture2D();
-	//  GlStateManager.disableDepth();
+	//  RenderSystem.enableBlend();
+	//  RenderSystem.disableTexture2D();
+	//  RenderSystem.disableDepth();
 	//  GL11.glLineWidth(2.0f);
-	//  GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-	//  GlStateManager.color(f, f1, f2, f3);
+	//  RenderSystem.tryBlendFuncSeparate(770, 771, 1, 0);
+	//  RenderSystem.color(f, f1, f2, f3);
 	//  buffer.pos(x1, y1, 0.0D).endVertex();
 	//  buffer.pos(x2, y2, 0.0D).endVertex();
 	//  tessellator.draw();
-	//  GlStateManager.enableTexture2D();
-	//  GlStateManager.enableDepth();
-	//  GlStateManager.disableBlend();
+	//  RenderSystem.enableTexture2D();
+	//  RenderSystem.enableDepth();
+	//  RenderSystem.disableBlend();
 	//}
 
 	public static void drawBoxRightBottom(float left, float top, float right, float bottom, float lineWidth, int color) {
@@ -202,18 +202,18 @@ public class GuiUtil {
 		final float f2 = (color & 255) / 255.0F;
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexbuffer = tessellator.getBuffer();
-		GlStateManager.enableBlend();
-		GlStateManager.disableTexture();
-		GlStateManager.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-		GlStateManager.color4f(f, f1, f2, f3);
+		RenderSystem.enableBlend();
+		RenderSystem.disableTexture();
+		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		RenderSystem.color4f(f, f1, f2, f3);
 		vertexbuffer.begin(7, VertexFormats.POSITION);
 		vertexbuffer.vertex(x0, y0, 0.0D).next();
 		vertexbuffer.vertex(x1, y1, 0.0D).next();
 		vertexbuffer.vertex(x2, y2, 0.0D).next();
 		vertexbuffer.vertex(x3, y3, 0.0D).next();
 		tessellator.draw();
-		GlStateManager.enableTexture();
-		GlStateManager.disableBlend();
+		RenderSystem.enableTexture();
+		RenderSystem.disableBlend();
 	}
 
 	/**
@@ -282,18 +282,18 @@ public class GuiUtil {
 
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexbuffer = tessellator.getBuffer();
-		GlStateManager.enableTexture();
+		RenderSystem.enableTexture();
 
 		if (useAlpha) {
-			GlStateManager.enableAlphaTest(); // should already be, but make sure
-			GlStateManager.enableBlend();
-			GlStateManager.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+			RenderSystem.enableAlphaTest(); // should already be, but make sure
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 		} else {
-			GlStateManager.disableBlend();
-			GlStateManager.disableAlphaTest();
+			RenderSystem.disableBlend();
+			RenderSystem.disableAlphaTest();
 		}
 
-		GlStateManager.color4f(1, 1, 1, 1);
+		RenderSystem.color4f(1, 1, 1, 1);
 
 		vertexbuffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
 		vertexbuffer.vertex(xCoord + 0, yCoord + heightIn, zLevel).texture(uv[0][0], uv[1][0]).color(red, green, blue, alpha).next();
@@ -303,9 +303,9 @@ public class GuiUtil {
 		tessellator.draw();
 
 		if (useAlpha) {
-			GlStateManager.disableBlend();
+			RenderSystem.disableBlend();
 		} else {
-			GlStateManager.enableAlphaTest();
+			RenderSystem.enableAlphaTest();
 		}
 
 		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
