@@ -18,14 +18,14 @@ package grondag.fermion.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import grondag.fermion.gui.control.AbstractControl;
-import grondag.fermion.gui.control.Panel;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
+
+import grondag.fermion.gui.control.AbstractControl;
 
 public interface ScreenRenderContext {
 	int CAPACITY_BAR_WIDTH = 4;
@@ -62,10 +62,11 @@ public interface ScreenRenderContext {
 	}
 
 	default void drawLocalizedToolTip(int mouseX, int mouseY, String... lang_keys) {
-		if (lang_keys.length == 0)
+		if (lang_keys.length == 0) {
 			return;
+		}
 
-		final ArrayList<String> list = new ArrayList<String>(lang_keys.length);
+		final ArrayList<String> list = new ArrayList<>(lang_keys.length);
 
 		for (final String key : lang_keys) {
 			list.add(I18n.translate(key));
@@ -85,16 +86,18 @@ public interface ScreenRenderContext {
 
 	int screenHeight();
 
-	default Panel createMainPanel() {
-		final Panel mainPanel = new Panel(this, true);
-		mainPanel.setLeft(screenLeft() + AbstractControl.CONTROL_EXTERNAL_MARGIN);
-		mainPanel.setTop(screenTop() + AbstractControl.CONTROL_EXTERNAL_MARGIN);
-		mainPanel.setWidth(screenWidth() - AbstractControl.CONTROL_EXTERNAL_MARGIN * 2);
-		mainPanel.setHeight(screenHeight() - AbstractControl.CONTROL_EXTERNAL_MARGIN * 2);
-		mainPanel.setBackgroundColor(0x00FFFFFF);
-		return mainPanel;
-	}
+	// TODO: remove
+	//	default Panel createMainPanel() {
+	//		final Panel mainPanel = new Panel(this, true);
+	//		mainPanel.setLeft(screenLeft() + AbstractControl.CONTROL_EXTERNAL_MARGIN);
+	//		mainPanel.setTop(screenTop() + AbstractControl.CONTROL_EXTERNAL_MARGIN);
+	//		mainPanel.setWidth(screenWidth() - AbstractControl.CONTROL_EXTERNAL_MARGIN * 2);
+	//		mainPanel.setHeight(screenHeight() - AbstractControl.CONTROL_EXTERNAL_MARGIN * 2);
+	//		mainPanel.setBackgroundColor(0x00FFFFFF);
+	//		return mainPanel;
+	//	}
 
+	// TODO: remove
 	//    public default AbstractMachineControl<?, ?> sizeControl(Panel mainPanel, AbstractMachineControl<?, ?> control, AbstractRectRenderBounds bounds)
 	//    {
 	//        control.setLeft(mainPanel.getLeft() + mainPanel.getWidth() * ((AbstractRectRenderBounds)bounds).left());
@@ -104,5 +107,5 @@ public interface ScreenRenderContext {
 	//        return control;
 	//    }
 
-	void addControls(Panel mainPanel);
+	void addControls();
 }
