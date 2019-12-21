@@ -16,6 +16,10 @@
 package grondag.fermion.gui.control;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.ToLongFunction;
+
+import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -33,21 +37,24 @@ import net.fabricmc.api.Environment;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.gui.ScreenTheme;
-import grondag.fermion.gui.container.ItemDisplayDelegate;
 
 @Environment(EnvType.CLIENT)
-public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
+public class ItemStackPicker<T> extends TabBar<T> {
 	protected final MouseHandler<T> itemClickHandler;
 
 	// avoids creating a new instance each frame
 	protected final Matrix4f fontMatrix = new Matrix4f();
+	protected final Function<T, ItemStack> stackFunc;
+	protected final ToLongFunction<T> countFunc;
 
 	// scales the glyphs
 	protected float fontDrawScale;
 
-	public ItemStackPicker(ScreenRenderContext renderContext, List<T> items, MouseHandler<T> itemClickHandler) {
+	public ItemStackPicker(ScreenRenderContext renderContext, List<T> items, MouseHandler<T> itemClickHandler, Function<T, ItemStack> stackFunc, ToLongFunction<T> countFunc) {
 		super(renderContext, items);
 		this.itemClickHandler = itemClickHandler;
+		this.stackFunc = stackFunc;
+		this.countFunc = countFunc;
 		setItemsPerRow(9);
 		setSelectionEnabled(false);
 	}
@@ -74,12 +81,12 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 	}
 
 	@Override
-	protected void drawItem(ItemDisplayDelegate item, MinecraftClient mc, ItemRenderer itemRenderer, double left, double top, float partialTicks,
+	protected void drawItem(T item, MinecraftClient mc, ItemRenderer itemRenderer, double left, double top, float partialTicks,
 			boolean isHighlighted) {
 		final int x = (int) left;
 		final int y = (int) top;
 
-		final ItemStack itemStack = item.displayStack();
+		final ItemStack itemStack = stackFunc.apply(item);
 
 		setBlitOffset(200);
 		itemRenderer.zOffset = 200.0F;
@@ -87,7 +94,7 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 		GuiUtil.renderItemAndEffectIntoGui(mc, itemRenderer, itemStack, x, y, theme.itemSize);
 		// TODO: support for dragging
 
-		drawQuantity(item.count(), x, y);
+		drawQuantity(countFunc.applyAsLong(item), x, y);
 
 		setBlitOffset(0);
 		itemRenderer.zOffset = 0.0F;
@@ -144,14 +151,12 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private T resourceForClickHandler() {
-		final T res = get(currentMouseIndex);
-		return res == null ? (T) ItemDisplayDelegate.EMPTY : res;
+	private @Nullable T resourceForClickHandler() {
+		return get(currentMouseIndex);
 	}
 
 	@Override
-	protected void drawItemToolTip(ItemDisplayDelegate item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
-		renderContext.drawToolTip(item.displayStack(), mouseX, mouseY);
+	protected void drawItemToolTip(T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+		renderContext.drawToolTip(stackFunc.apply(item), mouseX, mouseY);
 	}
 }

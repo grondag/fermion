@@ -96,6 +96,18 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 		RenderSystem.enableRescaleNormal();
 		RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+		RenderSystem.disableBlend();
+
+		if (focusedSlot != null) {
+			final int sx = x + focusedSlot.xPosition;
+			final int sy = y + focusedSlot.yPosition;
+			GuiUtil.drawBoxRightBottom(sx - theme.itemSelectionMargin, sy - theme.itemSelectionMargin, sx + theme.itemSize + theme.itemSelectionMargin,
+					sy + theme.itemSize + theme.itemSelectionMargin, 1, theme.buttonColorFocus);
+		}
+
+		//	      this.nameField.render(i, j, f);
+		drawMouseoverTooltip(mouseX, mouseY);
 	}
 
 	protected abstract void drawControls(int mouseX, int mouseY, float partialTicks);

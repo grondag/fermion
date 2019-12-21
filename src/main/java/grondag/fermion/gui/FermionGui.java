@@ -15,13 +15,11 @@
  ******************************************************************************/
 package grondag.fermion.gui;
 
-import grondag.fermion.gui.container.OpenContainerStorageInteractionC2S;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 
 public class FermionGui implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ServerSidePacketRegistry.INSTANCE.register(OpenContainerStorageInteractionC2S.ID, OpenContainerStorageInteractionC2S::accept);
+
 	}
 }
