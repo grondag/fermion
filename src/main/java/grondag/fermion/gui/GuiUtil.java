@@ -107,27 +107,35 @@ public class GuiUtil {
 			bottom = j;
 		}
 
-		final float alpha1 = (color1 >> 24 & 255) / 255.0F;
-		final float red1 = (color1 >> 16 & 255) / 255.0F;
-		final float green1 = (color1 >> 8 & 255) / 255.0F;
+		final float alpha1 = ((color1 >> 24) & 255) / 255.0F;
+		final float red1 = ((color1 >> 16) & 255) / 255.0F;
+		final float green1 = ((color1 >> 8) & 255) / 255.0F;
 		final float blue1 = (color1 & 255) / 255.0F;
 
-		final float alpha2 = (color2 >> 24 & 255) / 255.0F;
-		final float red2 = (color2 >> 16 & 255) / 255.0F;
-		final float green2 = (color2 >> 8 & 255) / 255.0F;
+		final float alpha2 = ((color2 >> 24) & 255) / 255.0F;
+		final float red2 = ((color2 >> 16) & 255) / 255.0F;
+		final float green2 = ((color2 >> 8) & 255) / 255.0F;
 		final float blue2 = (color2 & 255) / 255.0F;
+
+		RenderSystem.disableTexture();
+		RenderSystem.enableBlend();
+		RenderSystem.disableAlphaTest();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.shadeModel(7425);
 
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexbuffer = tessellator.getBuffer();
 
-		RenderSystem.disableTexture();
 		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
-		vertexbuffer.vertex(left, bottom, 0.0D).next();
-		vertexbuffer.vertex(right, bottom, 0.0D).next();
-		vertexbuffer.vertex(right, top, 0.0D).color(alpha1, red1, green1, blue1).next();
-		vertexbuffer.vertex(left, top, 0.0D).color(alpha2, red2, green2, blue2).next();
+		vertexbuffer.vertex(left, bottom, 0.0D).color(red1, green1, blue1, alpha1).next();
+		vertexbuffer.vertex(right, bottom, 0.0D).color(red1, green1, blue1, alpha1).next();
+		vertexbuffer.vertex(right, top, 0.0D).color(red2, green2, blue2, alpha2).next();
+		vertexbuffer.vertex(left, top, 0.0D).color(red2, green2, blue2, alpha2).next();
 		tessellator.draw();
 		RenderSystem.color4f(1, 1, 1, 1);
+		RenderSystem.shadeModel(7424);
+		RenderSystem.disableBlend();
+		RenderSystem.enableAlphaTest();
 		RenderSystem.enableTexture();
 	}
 

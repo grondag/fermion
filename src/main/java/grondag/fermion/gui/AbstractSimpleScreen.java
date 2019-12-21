@@ -30,6 +30,7 @@ import grondag.fermion.gui.control.AbstractControl;
 
 public abstract class AbstractSimpleScreen extends Screen implements ScreenRenderContext {
 
+	protected final ScreenTheme theme = ScreenTheme.current();
 	protected AbstractControl<?> hoverControl;
 
 	protected int screenLeft;

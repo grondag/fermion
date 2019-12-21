@@ -15,40 +15,26 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import static grondag.fermion.gui.control.AbstractControl.BUTTON_COLOR_ACTIVE;
-import static grondag.fermion.gui.control.AbstractControl.BUTTON_COLOR_FOCUS;
-import static grondag.fermion.gui.control.AbstractControl.BUTTON_COLOR_INACTIVE;
-import static grondag.fermion.gui.control.AbstractControl.TEXT_COLOR_ACTIVE;
 import static grondag.fermion.spatial.HorizontalAlignment.CENTER;
 import static grondag.fermion.spatial.VerticalAlignment.MIDDLE;
 
-import grondag.fermion.gui.GuiUtil;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+
+import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
+import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
 public class Button extends AbstractButtonWidget {
-	public int buttonColor = BUTTON_COLOR_ACTIVE;
-	public int disabledColor = BUTTON_COLOR_INACTIVE;
-	public int hoverColor = BUTTON_COLOR_FOCUS;
-	public int textColor = TEXT_COLOR_ACTIVE;
+	protected final ScreenRenderContext renderContext;
+	protected final ScreenTheme theme = ScreenTheme.current();
 
-	// from 1.12 - not part of 1.14
-	protected int buttonId;
-
-	public Button(int buttonId, int x, int y, int width, int height, String buttonText) {
+	public Button(ScreenRenderContext renderContext, int x, int y, int width, int height, String buttonText) {
 		super(x, y, width, height, buttonText);
-		this.buttonId = buttonId;
-	}
-
-	public void resize(int x, int y, int width, int height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+		this.renderContext = renderContext;
 	}
 
 	// TODO: add narration logic
@@ -57,12 +43,10 @@ public class Button extends AbstractButtonWidget {
 		if (visible) {
 			isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 			final int i = getYImage(isHovered);
-			final int color = i == 0 ? disabledColor : i == 2 ? hoverColor : buttonColor;
+			final int color = i == 0 ? theme.buttonColorInactive : i == 2 ? theme.buttonColorFocus : theme.buttonColorActive;
 
-			final MinecraftClient mc = MinecraftClient.getInstance();
 			GuiUtil.drawRect(x, y, x + width - 1, y + height - 1, color);
-			final TextRenderer fontrenderer = mc.textRenderer;
-			GuiUtil.drawAlignedStringNoShadow(fontrenderer, getMessage(), x, y, width, height, textColor, CENTER, MIDDLE);
+			GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), getMessage(), x, y, width, height, theme.textColorActive, CENTER, MIDDLE);
 		}
 	}
 }

@@ -83,7 +83,7 @@ public class Slider extends AbstractControl<Slider> {
 		this.size = size;
 		this.label = label;
 		this.labelWidthFactor = labelWidthFactor;
-		setHeight(Math.max(TAB_WIDTH, renderContext.fontRenderer().fontHeight + CONTROL_INTERNAL_MARGIN));
+		setHeight(Math.max(TAB_WIDTH, renderContext.fontRenderer().fontHeight + theme.internalMargin));
 		setVerticalLayout(Layout.FIXED);
 	}
 
@@ -105,7 +105,7 @@ public class Slider extends AbstractControl<Slider> {
 
 		// draw label if there is one
 		if (label != null && labelWidth > 0) {
-			GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), label, left, top, labelWidth, height, TEXT_COLOR_LABEL,
+			GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), label, left, top, labelWidth, height, theme.textColorLabel,
 					HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 		}
 
@@ -123,19 +123,19 @@ public class Slider extends AbstractControl<Slider> {
 		final float tabTop = top + (height - TAB_WIDTH) / 2;
 		final float tabBottom = tabTop + TAB_WIDTH;
 		if (tabSize == 0.0) {
-			GuiUtil.drawRect(tabStartX, tabTop, tabStartX + scrollWidth, tabBottom, BUTTON_COLOR_INACTIVE);
+			GuiUtil.drawRect(tabStartX, tabTop, tabStartX + scrollWidth, tabBottom, theme.buttonColorInactive);
 
 			// box pixelWidth is same as tab height, so need to have it be half that extra
 			// to the right so that we keep our margins with the arrows
 			final float selectionCenterX = tabStartX + TAB_WIDTH * 0.5f + (scrollWidth - TAB_WIDTH) * selectedTabIndex / (size - 1);
 
-			GuiUtil.drawRect(selectionCenterX - TAB_WIDTH * 0.5f, tabTop, selectionCenterX - TAB_WIDTH * 0.5f, tabBottom, BUTTON_COLOR_ACTIVE);
+			GuiUtil.drawRect(selectionCenterX - TAB_WIDTH * 0.5f, tabTop, selectionCenterX - TAB_WIDTH * 0.5f, tabBottom, theme.buttonColorActive);
 		} else {
 			final int highlightIndex = currentMouseLocation == MouseLocation.TAB ? currentMouseIndex : -1;
 
 			for (int i = 0; i < size; i++) {
 				GuiUtil.drawRect(tabStartX, tabTop, tabStartX + tabSize, tabBottom,
-						i == highlightIndex ? BUTTON_COLOR_FOCUS : i == selectedTabIndex ? BUTTON_COLOR_ACTIVE : BUTTON_COLOR_INACTIVE);
+						i == highlightIndex ? theme.buttonColorFocus : i == selectedTabIndex ? theme.buttonColorActive : theme.buttonColorInactive);
 				tabStartX += (tabSize + TAB_MARGIN);
 			}
 		}
@@ -143,10 +143,10 @@ public class Slider extends AbstractControl<Slider> {
 		final float arrowCenterY = tabTop + TAB_WIDTH * 0.5f;
 
 		GuiUtil.drawQuad(choiceRight, arrowCenterY, choiceRight + TAB_WIDTH, tabBottom, choiceRight + TAB_WIDTH, tabTop, choiceRight,
-				arrowCenterY, currentMouseLocation == MouseLocation.LEFT_ARROW ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_INACTIVE);
+				arrowCenterY, currentMouseLocation == MouseLocation.LEFT_ARROW ? theme.buttonColorFocus : theme.buttonColorInactive);
 
 		GuiUtil.drawQuad(right, arrowCenterY, right - TAB_WIDTH, tabTop, right - TAB_WIDTH, tabBottom, right, arrowCenterY,
-				currentMouseLocation == MouseLocation.RIGHT_ARROW ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_INACTIVE);
+				currentMouseLocation == MouseLocation.RIGHT_ARROW ? theme.buttonColorFocus : theme.buttonColorInactive);
 
 	}
 
@@ -174,8 +174,8 @@ public class Slider extends AbstractControl<Slider> {
 			labelWidth = width * labelWidthFactor;
 			choiceWidth = width * choiceWidthFactor;
 			labelRight = left + labelWidth;
-			choiceRight = labelRight + choiceWidth + CONTROL_INTERNAL_MARGIN;
-			scrollWidth = width - labelWidth - choiceWidth - CONTROL_INTERNAL_MARGIN - (TAB_WIDTH + ITEM_SPACING) * 2;
+			choiceRight = labelRight + choiceWidth + theme.internalMargin;
+			scrollWidth = width - labelWidth - choiceWidth - theme.internalMargin - (TAB_WIDTH + ITEM_SPACING) * 2;
 			tabSize = size <= 0 ? 0 : (scrollWidth - (TAB_MARGIN * (size - 1))) / size;
 			if (tabSize < TAB_MARGIN * 2) {
 				tabSize = 0;

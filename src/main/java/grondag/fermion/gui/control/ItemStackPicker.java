@@ -24,7 +24,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.api.EnvType;
@@ -32,20 +32,31 @@ import net.fabricmc.api.Environment;
 
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.ScreenRenderContext;
+import grondag.fermion.gui.ScreenTheme;
 import grondag.fermion.gui.container.ItemDisplayDelegate;
 
 @Environment(EnvType.CLIENT)
 public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 	protected final MouseHandler<T> itemClickHandler;
 
+	// avoids creating a new instance each frame
+	protected final Matrix4f fontMatrix = new Matrix4f();
+
+	// scales the glyphs
+	protected float fontDrawScale;
+
+	// scales the font screen coordinates
+	protected float screenScale;
+
 	public ItemStackPicker(ScreenRenderContext renderContext, List<T> items, MouseHandler<T> itemClickHandler) {
 		super(renderContext, items);
 		this.itemClickHandler = itemClickHandler;
 		setItemsPerRow(9);
-		setItemSpacing(2);
-		setItemSelectionMargin(1);
 		setSelectionEnabled(false);
-		setCaptionHeight(renderContext.fontRenderer().fontHeight * 6 / 10 + 4);
+	}
+
+	public static int idealWidth(ScreenTheme theme, int itemsPerRow) {
+		return theme.itemSlotSpacing * itemsPerRow - theme.itemSpacing + theme.internalMargin + theme.tabWidth;
 	}
 
 	@Override
@@ -90,19 +101,27 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 			return;
 		}
 
-		final float scale = actualItemPixels() / 16f;
-
-		final String qtyLabel = getQuantityLabel(qty);
-		// PERF: use a fixed instance
-		final MatrixStack matrixStack = new MatrixStack();
-		matrixStack.translate(0.0D, 0.0D, 200.0F);
-		final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
 		final TextRenderer fontRenderer = renderContext.fontRenderer();
-		final float x = left + 8 * scale - fontRenderer.getStringWidth(qtyLabel) * 0.5f;
-		final float y = top + 16 * scale;
-		fontRenderer.draw(qtyLabel, x, y, 0xFF000000, false, matrixStack.peek().getModel(), immediate, true, 0, 15728880);
+		final String qtyLabel = getQuantityLabel(qty);
+
+		fontMatrix.loadIdentity();
+		fontMatrix.multiply(Matrix4f.method_24019(fontDrawScale, fontDrawScale, 1));
+		fontMatrix.multiply(Matrix4f.method_24021(0.0f, 0.0f, 200.0f));
+
+		final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+		final float x = (left + 8 - fontRenderer.getStringWidth(qtyLabel) * 0.5f * fontDrawScale) / fontDrawScale;
+		final float y = (top + 16.5f * screenScale) / fontDrawScale;
+		fontRenderer.draw(qtyLabel, x + 0.15f, y, theme.itemCaptionColor, false, fontMatrix, immediate, true, 0, 15728880);
+		fontRenderer.draw(qtyLabel, x - 0.15f, y, theme.itemCaptionColor, false, fontMatrix, immediate, true, 0, 15728880);
 		immediate.draw();
 
+	}
+
+	@Override
+	protected void handleCoordinateUpdate() {
+		fontDrawScale = 6f / renderContext.fontRenderer().fontHeight;
+		super.handleCoordinateUpdate();
+		screenScale = actualItemPixels / 16f;
 	}
 
 	@Override
@@ -115,8 +134,9 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 
 	@Override
 	protected void tearDownItemRendering() {
-		RenderSystem.enableDepthTest();
+		RenderSystem.disableDepthTest();
 		RenderSystem.disableRescaleNormal();
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override

@@ -23,24 +23,13 @@ import net.fabricmc.api.Environment;
 
 import grondag.fermion.gui.Layout;
 import grondag.fermion.gui.ScreenRenderContext;
+import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
 public abstract class AbstractControl<T extends AbstractControl<T>> extends DrawableHelper implements Element {
-	public static final int BUTTON_COLOR_ACTIVE = 0xFFFFFFFF;
-	public static final int BUTTON_COLOR_INACTIVE = 0xFFA0A0A0;
-	public static final int BUTTON_COLOR_FOCUS = 0xFFBAF6FF;
-	public static final int TEXT_COLOR_ACTIVE = 0xFF000000;
-	public static final int TEXT_COLOR_INACTIVE = 0xFFEEEEEE;
-	public static final int TEXT_COLOR_FOCUS = 0xFF000000;
-	public static final int TEXT_COLOR_LABEL = 0xFFFFFFFF;
-
-	public static final int CONTROL_INTERNAL_MARGIN = 5;
-	public static final int CONTROL_EXTERNAL_MARGIN = 5;
-	public static final int CONTROL_BACKGROUND = 0x4AFFFFFF;
-
-	public static final int SCROLLBAR_WIDTH = 10;
-
 	public static final int NO_SELECTION = -1;
+
+	protected final ScreenTheme theme = ScreenTheme.current();
 
 	protected float top;
 	protected float left;

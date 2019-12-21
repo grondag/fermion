@@ -28,8 +28,6 @@ import net.minecraft.item.ItemStack;
 import grondag.fermion.gui.control.AbstractControl;
 
 public interface ScreenRenderContext {
-	int CAPACITY_BAR_WIDTH = 4;
-
 	MinecraftClient minecraft();
 
 	ItemRenderer renderItem();

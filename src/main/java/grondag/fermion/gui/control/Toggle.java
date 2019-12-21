@@ -15,13 +15,15 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
+import net.minecraft.client.MinecraftClient;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.spatial.HorizontalAlignment;
 import grondag.fermion.spatial.VerticalAlignment;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 
 @Environment(EnvType.CLIENT)
 public class Toggle extends AbstractControl<Toggle> {
@@ -39,17 +41,17 @@ public class Toggle extends AbstractControl<Toggle> {
 
 	@Override
 	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
-		final float boxRight = (float) (left + labelHeight);
+		final float boxRight = left + labelHeight;
 
 		GuiUtil.drawBoxRightBottom(left, targetAreaTop, boxRight, targetAreaBottom, 1,
-			isMouseOver(mouseX, mouseY) ? BUTTON_COLOR_FOCUS : BUTTON_COLOR_ACTIVE);
+				isMouseOver(mouseX, mouseY) ? theme.buttonColorFocus : theme.buttonColorActive);
 
 		if (isOn) {
-			GuiUtil.drawRect(left + 2, targetAreaTop + 2, boxRight - 2, targetAreaBottom - 2, BUTTON_COLOR_ACTIVE);
+			GuiUtil.drawRect(left + 2, targetAreaTop + 2, boxRight - 2, targetAreaBottom - 2, theme.buttonColorActive);
 		}
 
-		GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), label, boxRight + CONTROL_INTERNAL_MARGIN, targetAreaTop, labelWidth,
-			labelHeight, TEXT_COLOR_LABEL, HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+		GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), label, boxRight + theme.internalMargin, targetAreaTop, labelWidth,
+				labelHeight, theme.textColorLabel, HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 	}
 
 	@Override
@@ -63,8 +65,8 @@ public class Toggle extends AbstractControl<Toggle> {
 
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
-		return !(mouseX < left || mouseX > left + labelHeight + CONTROL_INTERNAL_MARGIN + labelWidth || mouseY < targetAreaTop
-			|| mouseY > targetAreaBottom);
+		return !(mouseX < left || mouseX > left + labelHeight + theme.internalMargin + labelWidth || mouseY < targetAreaTop
+				|| mouseY > targetAreaBottom);
 	}
 
 	@Override

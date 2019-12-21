@@ -2,6 +2,8 @@ package grondag.fermion.gui;
 
 import java.util.Optional;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
@@ -21,17 +23,11 @@ import grondag.fermion.gui.control.AbstractControl;
 public abstract class AbstractSimpleContainerScreen<T extends Container> extends AbstractContainerScreen<T>  implements ScreenRenderContext
 {
 	protected AbstractControl<?> hoverControl;
+	protected final ScreenTheme theme = ScreenTheme.current();
 
-	protected int screenLeft;
-	protected int screenTop;
-	protected int screenWidth;
-	protected int screenHeight;
 
-	protected final ContainerLayout layout;
-
-	public AbstractSimpleContainerScreen(ContainerLayout layout, T container, PlayerInventory playerInventory, Text title) {
+	public AbstractSimpleContainerScreen(T container, PlayerInventory playerInventory, Text title) {
 		super(container, playerInventory, title);
-		this.layout = layout;
 	}
 
 	@Override
@@ -45,36 +41,29 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 	 * Called during init before controls are created.
 	 */
 	protected void computeScreenBounds() {
-		screenWidth = layout.dialogWidth;
-		screenHeight = layout.dialogHeight;
-
-		screenTop = (height - screenHeight) / 2;
+		y = (height - containerHeight) / 2;
 
 		// if using REI, center on left 2/3 of screen to allow more room for REI
 		if(FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
-			screenLeft = ((width * 2 / 3) - screenWidth) / 2;
+			x = ((width * 2 / 3) - containerWidth) / 2;
 		} else {
-			screenLeft = (width - screenWidth) / 2;
+			x = (width - containerWidth) / 2;
 		}
 	}
 
 	@Override
-	public void renderBackground() {
+	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
 		super.renderBackground();
-		fill(screenLeft, screenTop, screenLeft + screenWidth, screenTop + screenHeight, 0xFFCCCCCC);
+		fill(x, y, x + containerWidth, y + containerHeight, theme.screenBackground);
 
-		final Slot upperLeft = container.getSlot(9);
+		final int limit = container.slotList.size();
 
-		final int offsetX = screenLeft - upperLeft.xPosition + layout.playerInventoryLeft;
-		final int offsetY = screenTop - upperLeft.yPosition + layout.playerInventoryTop;
-
-		final int limit = container.slotList.size() - 1;
 		// player slot backgrounds
-		for(int i = 9; i < limit; i++) {
+		for(int i = 0; i < limit; i++) {
 			final Slot slot = container.getSlot(i);
-			final int x = offsetX + slot.xPosition;
-			final int y = offsetY + slot.yPosition;
-			fillGradient(x, y, x + 16, y + 16, 0xFFA9A9A9, 0xFF898989);
+			final int u = slot.xPosition + x;
+			final int v = slot.yPosition + y;
+			fillGradient(u, v, u + theme.itemSize, v + theme.itemSize, theme.itemSlotGradientTop, theme.itemSlotGradientBottom);
 		}
 	}
 
@@ -86,9 +75,12 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 
 		hoverControl = null;
 
-		renderBackground();
+		super.render(mouseX, mouseY, partialTicks);
 
-		// Don't call super render because will render container crap
+		RenderSystem.disableRescaleNormal();
+		RenderSystem.disableDepthTest();
+		RenderSystem.pushMatrix();
+
 		for(int k = 0; k < buttons.size(); ++k) {
 			buttons.get(k).render(mouseX, mouseY, partialTicks);
 		}
@@ -98,6 +90,12 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 		if (hoverControl != null) {
 			hoverControl.drawToolTip(mouseX, mouseY, partialTicks);
 		}
+
+		RenderSystem.popMatrix();
+		RenderSystem.enableDepthTest();
+		RenderSystem.enableRescaleNormal();
+		RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	protected abstract void drawControls(int mouseX, int mouseY, float partialTicks);
@@ -139,22 +137,22 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 
 	@Override
 	public int screenLeft() {
-		return screenLeft;
+		return x;
 	}
 
 	@Override
 	public int screenWidth() {
-		return screenWidth;
+		return containerWidth;
 	}
 
 	@Override
 	public int screenTop() {
-		return screenTop;
+		return y;
 	}
 
 	@Override
 	public int screenHeight() {
-		return screenHeight;
+		return containerHeight;
 	}
 
 	@Override

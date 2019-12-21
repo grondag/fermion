@@ -67,9 +67,9 @@ public class MarkdownControl extends AbstractControl<MarkdownControl> {
 
 	protected void drawScrollIfNeeded() {
 		if (buttonHeight != 0) {
-			GuiUtil.drawRect(left + width - SCROLLBAR_WIDTH, top, right, bottom, 0xFF505050);
+			GuiUtil.drawRect(left + width - theme.scrollbarWidth, top, right, bottom, 0xFF505050);
 
-			GuiUtil.drawRect(left + width - SCROLLBAR_WIDTH + 1, top + 1 + buttonOffset, right - 1, top + buttonOffset + 1 + buttonHeight, 0xFF508080);
+			GuiUtil.drawRect(left + width - theme.scrollbarWidth + 1, top + 1 + buttonOffset, right - 1, top + buttonOffset + 1 + buttonHeight, 0xFF508080);
 		}
 	}
 
@@ -89,7 +89,7 @@ public class MarkdownControl extends AbstractControl<MarkdownControl> {
 
 	@Override
 	protected void handleCoordinateUpdate() {
-		parse(mcmd, (int) width - SCROLLBAR_WIDTH - CONTROL_INTERNAL_MARGIN);
+		parse(mcmd, (int) width - theme.scrollbarWidth - theme.internalMargin);
 
 		textHeight = mcmd.verticalHeight(lines);
 		buttonHeight = textHeight > height ? (height - 2) * height / textHeight : 0;
