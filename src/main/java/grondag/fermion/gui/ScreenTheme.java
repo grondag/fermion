@@ -12,6 +12,8 @@ public class ScreenTheme {
 	public final int textColorInactive = 0xFFEEEEEE;
 	public final int textColorFocus = 0xFF000000;
 	public final int textColorLabel = 0xFFFFFFFF;
+	public final int textBorder = 0xFF404040;
+	public final int textBackground = 0xFFA0A0A0;
 	public final int internalMargin = 5;
 	public final int externalMargin = 5;
 	public final int controlBackground = 0x4AFFFFFF;
@@ -22,7 +24,7 @@ public class ScreenTheme {
 	public final int itemSpacing = 2;
 	public final int itemSelectionMargin = 2;
 	public final int itemCaptionHeight = 8;
-	public final int itemCaptionColor = 0xFFFFFFFF;
+	public final int itemCaptionColor = 0xFF000000;
 	public final int itemSlotSpacing = itemSize + itemSpacing;
 	public final int itemRowHeightWithCaption = itemSize + itemCaptionHeight + itemSpacing;
 	public final int capacityBarWidth = 4;

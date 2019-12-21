@@ -44,9 +44,6 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 	private boolean allowSelection = true;
 
-	protected float actualItemSize;
-	/** {@link #actualItemSize()} rounded down */
-	protected int actualItemPixels;
 	protected float tabSize;
 	protected float scrollHeight;
 	protected float scrollBottom;
@@ -156,10 +153,10 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 			if (++column == this.columnsPerRow) {
 				column = 0;
-				itemY += (this.actualItemSize + theme.itemSpacing + theme.itemCaptionHeight);
+				itemY += theme.itemRowHeightWithCaption;
 				itemX = left;
 			} else {
-				itemX += (this.actualItemSize + theme.itemSpacing);
+				itemX += theme.itemSlotSpacing;
 			}
 		}
 
@@ -205,8 +202,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		}
 
 		final int idx = index - start;
-		final int x = (int) (left + (idx % this.columnsPerRow) * (this.actualItemSize + theme.itemSpacing));
-		final int y = (int) (top + (idx / this.columnsPerRow) * (this.actualItemSize + theme.itemSpacing + theme.itemCaptionHeight));
+		final int x = (int) (left + (idx % this.columnsPerRow) * theme.itemSlotSpacing);
+		final int y = (int) (top + (idx / this.columnsPerRow) * theme.itemRowHeightWithCaption);
 
 		this.drawHighlight(index, x, y, isHighlight);
 	}
@@ -217,8 +214,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	 * selected.
 	 */
 	protected void drawHighlight(int index, float x, float y, boolean isHighlight) {
-		GuiUtil.drawBoxRightBottom(x - theme.itemSelectionMargin, y - theme.itemSelectionMargin, x + this.actualItemSize + theme.itemSelectionMargin,
-				y + this.actualItemSize + theme.itemSelectionMargin, 1, isHighlight ? theme.buttonColorFocus : theme.buttonColorActive);
+		GuiUtil.drawBoxRightBottom(x - theme.itemSelectionMargin, y - theme.itemSelectionMargin, x + theme.itemSize + theme.itemSelectionMargin,
+				y + theme.itemSize + theme.itemSelectionMargin, 1, isHighlight ? theme.buttonColorFocus : theme.buttonColorActive);
 	}
 
 	/** set (non-matrix) GL state needed for proper rending of this tab's items */
@@ -251,8 +248,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 			this.currentMouseLocation = MouseLocation.ITEM;
 
 			final int newIndex = this.getFirstDisplayedIndex()
-					+ (int) ((mouseY - top - theme.itemSpacing / 2) / (this.actualItemSize + theme.itemSpacing + theme.itemCaptionHeight)) * this.columnsPerRow
-					+ Math.min((int) ((mouseX - left - theme.itemSpacing / 2) / (this.actualItemSize + theme.itemSpacing)), this.columnsPerRow - 1);
+					+ (int) ((mouseY - top - theme.itemSpacing / 2) / theme.itemRowHeightWithCaption) * this.columnsPerRow
+					+ Math.min((int) ((mouseX - left - theme.itemSpacing / 2) / theme.itemSlotSpacing), this.columnsPerRow - 1);
 
 			this.currentMouseIndex = (newIndex < this.items.size()) ? newIndex : NO_SELECTION;
 		}
@@ -261,11 +258,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	@Override
 	protected void handleCoordinateUpdate() {
 		if (this.items != null) {
-			final float horizontalSpaceRemaining = width - theme.tabWidth;
-			actualItemSize = horizontalSpaceRemaining / this.columnsPerRow - theme.itemSpacing;
-			actualItemPixels = (int) actualItemSize;
-			rowsPerTab = (int) ((height + theme.itemSpacing) / (actualItemSize + theme.itemSpacing + theme.itemCaptionHeight));
-			scrollHeight = rowsPerTab * (actualItemSize + theme.itemSpacing + theme.itemCaptionHeight) - theme.itemSpacing - (theme.tabWidth + theme.itemSpacing) * 2;
+			rowsPerTab = (int) ((height + theme.itemSpacing) / theme.itemRowHeightWithCaption);
+			scrollHeight = rowsPerTab * theme.itemRowHeightWithCaption - theme.itemSpacing - (theme.tabWidth + theme.itemSpacing) * 2;
 			scrollBottom = top + theme.tabWidth + theme.itemSpacing * 2 + scrollHeight;
 			itemsPerTab = columnsPerRow * rowsPerTab;
 
@@ -524,17 +518,6 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		// next refresh
 		focusOnSelection = true;
 		isDirty = true;
-	}
-
-	protected double actualItemSize() {
-		refreshContentCoordinatesIfNeeded();
-		return actualItemSize;
-	}
-
-	/** {@link #actualItemSize()} rounded down to nearest integer */
-	protected int actualItemPixels() {
-		refreshContentCoordinatesIfNeeded();
-		return actualItemPixels;
 	}
 
 	/**

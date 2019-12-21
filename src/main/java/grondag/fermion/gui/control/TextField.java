@@ -28,6 +28,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 import grondag.fermion.gui.ScreenRenderContext;
+import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
 public class TextField extends AbstractButtonWidget implements Drawable, Element {
@@ -41,11 +42,10 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 	protected int firstCharacterIndex;
 	protected int selectionStart;
 	protected int selectionEnd;
-	protected int editableColor;
-	protected int uneditableColor;
 	protected String suggestion;
 	protected Consumer<String> changedListener;
 	protected Predicate<String> textPredicate;
+	protected final ScreenTheme theme = ScreenTheme.current();
 
 	protected final ScreenRenderContext renderContext;
 
@@ -60,8 +60,6 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 		focused = true;
 		focusUnlocked = true;
 		editable = true;
-		editableColor = 14737632;
-		uneditableColor = 7368816;
 		textPredicate = Predicates.alwaysTrue();
 		renderContext = context;
 
@@ -397,11 +395,14 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 
 		if (isVisible()) {
 			if (hasBorder()) {
-				fill(x - 1, y - 1, x + width + 1, y + height + 1, -6250336);
-				fill(x, y, x + width, y + height, -16777216);
+				final int borderColor = isFocused() || isHovered ? theme.buttonColorFocus : theme.textBorder;
+				fill(x - 1, y - 1, x + width + 1, y + height + 1, borderColor);
+
 			}
 
-			final int textColor = editable ? editableColor : uneditableColor;
+			fill(x, y, x + width, y + height, theme.textBackground);
+
+			final int textColor = editable ? theme.textColorActive : theme.textColorInactive;
 			final int startIndex = selectionStart - firstCharacterIndex;
 			int selectionLength = selectionEnd - firstCharacterIndex;
 			final String textToRender = textRenderer.trimToWidth(text.substring(firstCharacterIndex), getInnerWidth());
@@ -417,7 +418,7 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 
 			if (!textToRender.isEmpty()) {
 				final String string2 = caretFlag ? textToRender.substring(0, startIndex) : textToRender;
-				p = textRenderer.drawWithShadow(string2, n, o, textColor);
+				p = textRenderer.draw(string2, n, o, textColor);
 			}
 
 			final boolean bl3 = selectionStart < text.length() || text.length() >= getMaxLength();
@@ -430,11 +431,11 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 			}
 
 			if (!textToRender.isEmpty() && caretFlag && startIndex < textToRender.length()) {
-				textRenderer.drawWithShadow(textToRender.substring(startIndex), p, o, textColor);
+				textRenderer.draw(textToRender.substring(startIndex), p, o, textColor);
 			}
 
 			if (!bl3 && suggestion != null) {
-				textRenderer.drawWithShadow(suggestion, q - 1, o, -8355712);
+				textRenderer.draw(suggestion, q - 1, o, -8355712);
 			}
 
 			int var10002;
@@ -447,7 +448,7 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 					textRenderer.getClass();
 					DrawableHelper.fill(q, var10001, var10002, var10003 + 9, -3092272);
 				} else {
-					textRenderer.drawWithShadow("_", q, o, textColor);
+					textRenderer.draw("_", q, o, textColor);
 				}
 			}
 
@@ -526,14 +527,6 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 		focused = bl;
 	}
 
-	public void setEditableColor(int i) {
-		editableColor = i;
-	}
-
-	public void setUneditableColor(int i) {
-		uneditableColor = i;
-	}
-
 	@Override
 	public boolean changeFocus(boolean bl) {
 		return visible && editable ? super.changeFocus(bl) : false;
@@ -549,7 +542,6 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 		if (bl) {
 			focusedTicks = 0;
 		}
-
 	}
 
 	private boolean isEditable() {

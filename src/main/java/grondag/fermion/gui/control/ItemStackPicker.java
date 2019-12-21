@@ -45,9 +45,6 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 	// scales the glyphs
 	protected float fontDrawScale;
 
-	// scales the font screen coordinates
-	protected float screenScale;
-
 	public ItemStackPicker(ScreenRenderContext renderContext, List<T> items, MouseHandler<T> itemClickHandler) {
 		super(renderContext, items);
 		this.itemClickHandler = itemClickHandler;
@@ -87,7 +84,7 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 		setBlitOffset(200);
 		itemRenderer.zOffset = 200.0F;
 
-		GuiUtil.renderItemAndEffectIntoGui(mc, itemRenderer, itemStack, x, y, actualItemPixels());
+		GuiUtil.renderItemAndEffectIntoGui(mc, itemRenderer, itemStack, x, y, theme.itemSize);
 		// TODO: support for dragging
 
 		drawQuantity(item.count(), x, y);
@@ -110,7 +107,7 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 
 		final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
 		final float x = (left + 8 - fontRenderer.getStringWidth(qtyLabel) * 0.5f * fontDrawScale) / fontDrawScale;
-		final float y = (top + 16.5f * screenScale) / fontDrawScale;
+		final float y = (top + 16.5f) / fontDrawScale;
 		fontRenderer.draw(qtyLabel, x + 0.15f, y, theme.itemCaptionColor, false, fontMatrix, immediate, true, 0, 15728880);
 		fontRenderer.draw(qtyLabel, x - 0.15f, y, theme.itemCaptionColor, false, fontMatrix, immediate, true, 0, 15728880);
 		immediate.draw();
@@ -121,7 +118,6 @@ public class ItemStackPicker<T extends ItemDisplayDelegate> extends TabBar<T> {
 	protected void handleCoordinateUpdate() {
 		fontDrawScale = 6f / renderContext.fontRenderer().fontHeight;
 		super.handleCoordinateUpdate();
-		screenScale = actualItemPixels / 16f;
 	}
 
 	@Override
