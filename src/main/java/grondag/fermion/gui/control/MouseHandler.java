@@ -17,7 +17,6 @@ package grondag.fermion.gui.control;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 
 /**
  * Callback to handle mouse input on items within the control.
@@ -25,7 +24,7 @@ import net.minecraft.client.MinecraftClient;
 @Environment(EnvType.CLIENT)
 @FunctionalInterface
 public interface MouseHandler<T> {
-	void handle(MinecraftClient mc, int mouseButton, T target);
+	void handle(int mouseButton, T target);
 
-	MouseHandler<?> IGNORE = (mc, mouseButton, target) -> {};
+	MouseHandler<?> IGNORE = (mouseButton, target) -> {};
 }

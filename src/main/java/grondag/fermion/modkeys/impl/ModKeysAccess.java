@@ -22,6 +22,9 @@ public interface ModKeysAccess {
 	int CONTROL = 2;
 	int ALT = 4;
 	int SUPER = 8;
+	int PRIMARY = 16;
+	int SECONDARY = 32;
+	int TERTIARY = 64;
 
 	void mk_flags(byte flags);
 
@@ -41,5 +44,17 @@ public interface ModKeysAccess {
 
 	static boolean isSuperPressed(PlayerEntity player) {
 		return player != null && (((ModKeysAccess) player).mk_flags() & SUPER) == SUPER;
+	}
+
+	static boolean isPrimaryPressed(PlayerEntity player) {
+		return player != null && (((ModKeysAccess) player).mk_flags() & PRIMARY) == PRIMARY;
+	}
+
+	static boolean isSecondartPressed(PlayerEntity player) {
+		return player != null && (((ModKeysAccess) player).mk_flags() & SECONDARY) == SECONDARY;
+	}
+
+	static boolean isTertiaryPressed(PlayerEntity player) {
+		return player != null && (((ModKeysAccess) player).mk_flags() & TERTIARY) == TERTIARY;
 	}
 }

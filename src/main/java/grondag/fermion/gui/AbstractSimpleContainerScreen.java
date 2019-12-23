@@ -171,4 +171,21 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 	public Optional<Element> hoveredElement(double double_1, double double_2) {
 		return Optional.ofNullable(hoverControl);
 	}
+
+	// like private vanilla method but doesn't test drawHovereffect for the slot
+	public Slot getSlotAt(double x, double y) {
+		for(int i = 0; i < container.slotList.size(); ++i) {
+			final Slot slot = container.slotList.get(i);
+
+			if (this.isPointOverSlot(slot, x, y)) {
+				return slot;
+			}
+		}
+
+		return null;
+	}
+
+	public boolean isPointOverSlot(Slot slot, double x, double y) {
+		return isPointWithinBounds(slot.xPosition, slot.yPosition, 16, 16, x, y);
+	}
 }

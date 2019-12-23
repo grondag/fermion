@@ -15,19 +15,20 @@
  ******************************************************************************/
 package grondag.fermion.modkeys.impl;
 
+import io.netty.buffer.Unpooled;
 import org.lwjgl.glfw.GLFW;
 
-import io.netty.buffer.Unpooled;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.network.PacketContext;
 
 public class ModKeysHandler {
 
@@ -41,17 +42,26 @@ public class ModKeysHandler {
 		final long handle = client.getWindow().getHandle();
 
 		byte f = 0;
+
+		// TODO: implement config for primary/secondary/tertiary
+
 		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
 			f |= ModKeysAccess.SHIFT;
 		}
+
 		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_CONTROL) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_CONTROL)) {
 			f |= ModKeysAccess.CONTROL;
+			f |= ModKeysAccess.SECONDARY;
 		}
+
 		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_ALT) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_ALT)) {
 			f |= ModKeysAccess.ALT;
+			f |= ModKeysAccess.TERTIARY;
 		}
+
 		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SUPER) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SUPER)) {
 			f |= ModKeysAccess.SUPER;
+			f |= ModKeysAccess.PRIMARY;
 		}
 
 		if (f != lastFlags) {

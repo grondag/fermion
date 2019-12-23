@@ -145,7 +145,7 @@ public class ItemStackPicker<T> extends TabBar<T> {
 	@Override
 	public void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
 		if (itemClickHandler != null && currentMouseLocation == MouseLocation.ITEM) {
-			itemClickHandler.handle(MinecraftClient.getInstance(), clickedMouseButton, resourceForClickHandler());
+			itemClickHandler.handle(clickedMouseButton, resourceForClickHandler());
 		} else {
 			super.handleMouseClick(mouseX, mouseY, clickedMouseButton);
 		}

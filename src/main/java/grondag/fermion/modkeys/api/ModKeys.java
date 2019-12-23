@@ -15,8 +15,9 @@
  ******************************************************************************/
 package grondag.fermion.modkeys.api;
 
-import grondag.fermion.modkeys.impl.ModKeysAccess;
 import net.minecraft.entity.player.PlayerEntity;
+
+import grondag.fermion.modkeys.impl.ModKeysAccess;
 
 public interface ModKeys {
 	static boolean isShiftPressed(PlayerEntity player) {
@@ -33,5 +34,17 @@ public interface ModKeys {
 
 	static boolean isSuperPressed(PlayerEntity player) {
 		return ModKeysAccess.isSuperPressed(player);
+	}
+
+	static boolean isPrimaryPressed(PlayerEntity player) {
+		return ModKeysAccess.isPrimaryPressed(player);
+	}
+
+	static boolean isSecondartPressed(PlayerEntity player) {
+		return ModKeysAccess.isSecondartPressed(player);
+	}
+
+	static boolean isTertiaryPressed(PlayerEntity player) {
+		return ModKeysAccess.isTertiaryPressed(player);
 	}
 }
