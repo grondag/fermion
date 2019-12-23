@@ -84,26 +84,5 @@ public interface ScreenRenderContext {
 
 	int screenHeight();
 
-	// TODO: remove
-	//	default Panel createMainPanel() {
-	//		final Panel mainPanel = new Panel(this, true);
-	//		mainPanel.setLeft(screenLeft() + AbstractControl.CONTROL_EXTERNAL_MARGIN);
-	//		mainPanel.setTop(screenTop() + AbstractControl.CONTROL_EXTERNAL_MARGIN);
-	//		mainPanel.setWidth(screenWidth() - AbstractControl.CONTROL_EXTERNAL_MARGIN * 2);
-	//		mainPanel.setHeight(screenHeight() - AbstractControl.CONTROL_EXTERNAL_MARGIN * 2);
-	//		mainPanel.setBackgroundColor(0x00FFFFFF);
-	//		return mainPanel;
-	//	}
-
-	// TODO: remove
-	//    public default AbstractMachineControl<?, ?> sizeControl(Panel mainPanel, AbstractMachineControl<?, ?> control, AbstractRectRenderBounds bounds)
-	//    {
-	//        control.setLeft(mainPanel.getLeft() + mainPanel.getWidth() * ((AbstractRectRenderBounds)bounds).left());
-	//        control.setTop(mainPanel.getTop() + mainPanel.getHeight() * ((AbstractRectRenderBounds)bounds).top());
-	//        control.setWidth(mainPanel.getWidth() * ((AbstractRectRenderBounds)bounds).width());
-	//        control.setHeight(mainPanel.getHeight() * ((AbstractRectRenderBounds)bounds).height());
-	//        return control;
-	//    }
-
 	void addControls();
 }

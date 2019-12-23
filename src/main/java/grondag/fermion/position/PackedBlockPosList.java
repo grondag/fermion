@@ -80,13 +80,11 @@ public class PackedBlockPosList {
 	}
 
 	public boolean isNear(long packedPos, int d) {
-		return true;
-		//TODO: put back
-		//		final int x = getX(packedPos);
-		//		final int y = getY(packedPos);
-		//		final int z = getZ(packedPos);
-		//
-		//		return !(x < minX - d || x > maxX + d || y < minY - d|| y > maxY + d || z < minZ - d || z > maxZ + d);
+		final int x = getX(packedPos);
+		final int y = getY(packedPos);
+		final int z = getZ(packedPos);
+
+		return !(x < minX - d || x > maxX + d || y < minY - d|| y > maxY + d || z < minZ - d || z > maxZ + d);
 	}
 
 	public boolean isEmpty() {
