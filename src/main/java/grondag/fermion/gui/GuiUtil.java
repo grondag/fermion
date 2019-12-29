@@ -359,7 +359,7 @@ public class GuiUtil {
 				DiffuseLighting.disableGuiDepthLighting();
 			}
 
-			itemRender.renderItem(itemStack, ModelTransformation.Type.GUI, false, matrixStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, bakedModel);
+			itemRender.renderItem(itemStack, ModelTransformation.Mode.GUI, false, matrixStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, bakedModel);
 			immediate.draw();
 
 			if (hasDepth) {

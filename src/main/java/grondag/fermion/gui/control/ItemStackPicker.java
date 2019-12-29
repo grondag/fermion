@@ -109,8 +109,8 @@ public class ItemStackPicker<T> extends TabBar<T> {
 		final String qtyLabel = getQuantityLabel(qty);
 
 		fontMatrix.loadIdentity();
-		fontMatrix.multiply(Matrix4f.method_24019(fontDrawScale, fontDrawScale, 1));
-		fontMatrix.multiply(Matrix4f.method_24021(0.0f, 0.0f, 200.0f));
+		fontMatrix.multiply(Matrix4f.scale(fontDrawScale, fontDrawScale, 1));
+		fontMatrix.multiply(Matrix4f.translate(0.0f, 0.0f, 200.0f));
 
 		final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
 		final float x = (left + 8 - fontRenderer.getStringWidth(qtyLabel) * 0.5f * fontDrawScale) / fontDrawScale;
