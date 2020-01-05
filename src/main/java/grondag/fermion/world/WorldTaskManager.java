@@ -31,28 +31,38 @@ import java.util.function.BooleanSupplier;
  *
  */
 public class WorldTaskManager {
+	private static int tickCounter = 0;
+
+	/** Monotonic increasing integer - incremented each tick.  May be more convenient than world time. */
+	public static int tickCounter() {
+		return tickCounter;
+	}
+
 	/**
 	 * Metered tasks - run based on budget consumption until drained.
 	 */
-	private static ConcurrentLinkedQueue<BooleanSupplier> tasks = new ConcurrentLinkedQueue<BooleanSupplier>();
+	private static ConcurrentLinkedQueue<BooleanSupplier> tasks = new ConcurrentLinkedQueue<>();
 
 	/**
 	 * Immediate tasks - queue is fully drained each tick.
 	 */
-	private static ConcurrentLinkedQueue<Runnable> immediateTasks = new ConcurrentLinkedQueue<Runnable>();
+	private static ConcurrentLinkedQueue<Runnable> immediateTasks = new ConcurrentLinkedQueue<>();
 
 	public static void clear() {
 		tasks.clear();
 	}
 
 	public static void doServerTick() {
+		++tickCounter;
+
 		while (!immediateTasks.isEmpty()) {
 			final Runnable r = immediateTasks.poll();
 			r.run();
 		}
 
-		if (tasks.isEmpty())
+		if (tasks.isEmpty()) {
 			return;
+		}
 
 		//TODO: remove or make configurable
 		int operations = 64; //XmConfig.EXECUTION.maxQueuedWorldOperationsPerTick;

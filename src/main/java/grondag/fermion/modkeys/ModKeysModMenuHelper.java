@@ -14,18 +14,26 @@
  * the License.
  ******************************************************************************/
 
-package grondag.fermion.varia;
+package grondag.fermion.modkeys;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import java.util.function.Function;
 
-import grondag.fermion.world.WorldTaskManager;
+import io.github.prospector.modmenu.api.ModMenuApi;
 
-public class FermionVaria implements ModInitializer {
+import net.minecraft.client.gui.screen.Screen;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+@Environment(EnvType.CLIENT)
+public class ModKeysModMenuHelper implements ModMenuApi {
 	@Override
-	public void onInitialize() {
-		ServerTickCallback.EVENT.register(s -> WorldTaskManager.doServerTick());
-		//TODO: put back
-		//ServerSidePacketRegistry.INSTANCE.register(OpenSignUpdateC2S.C2S_ID, OpenSignUpdateC2S::handleC2S);
+	public Function<Screen, ? extends Screen> getConfigScreenFactory() {
+		return ModKeysConfigScreen::new;
+	}
+
+	@Override
+	public String getModId() {
+		return "fermion-modkeys";
 	}
 }

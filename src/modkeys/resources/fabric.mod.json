@@ -18,12 +18,17 @@
   "environment": "*",
   "entrypoints": {
     "main": [ "grondag.fermion.modkeys.ModKeysInit" ],
-    "client": [ "grondag.fermion.modkeys.ModKeysClientInit" ]
+    "client": [ "grondag.fermion.modkeys.ModKeysClientInit" ],
+    "modmenu": [ "grondag.fermion.modkeys.ModKeysModMenuHelper" ]
   },
   "mixins": [
 	  {
 	  	  "config": "modkeys.common.json",
 	      "environment": "*"
+	  },
+	  {
+	      "config": "modkeys.client.json",
+	      "environment": "client"
 	  }
   ],
   "depends": {

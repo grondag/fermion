@@ -50,7 +50,7 @@ public interface ModKeysAccess {
 		return player != null && (((ModKeysAccess) player).mk_flags() & PRIMARY) == PRIMARY;
 	}
 
-	static boolean isSecondartPressed(PlayerEntity player) {
+	static boolean isSecondaryPressed(PlayerEntity player) {
 		return player != null && (((ModKeysAccess) player).mk_flags() & SECONDARY) == SECONDARY;
 	}
 

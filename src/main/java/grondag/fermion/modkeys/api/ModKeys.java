@@ -20,18 +20,34 @@ import net.minecraft.entity.player.PlayerEntity;
 import grondag.fermion.modkeys.impl.ModKeysAccess;
 
 public interface ModKeys {
+	/**
+	 * @deprecated Use one of them primary/secondary/tertiary conditions instead, to allow for client-side configuration by player.
+	 */
+	@Deprecated
 	static boolean isShiftPressed(PlayerEntity player) {
 		return ModKeysAccess.isShiftPressed(player);
 	}
 
+	/**
+	 * @deprecated Use one of the primary/secondary/tertiary conditions instead, to allow for client-side configuration by player.
+	 */
+	@Deprecated
 	static boolean isControlPressed(PlayerEntity player) {
 		return ModKeysAccess.isControlPressed(player);
 	}
 
+	/**
+	 * @deprecated Use one of the primary/secondary/tertiary conditions instead, to allow for client-side configuration by player.
+	 */
+	@Deprecated
 	static boolean isAltPressed(PlayerEntity player) {
 		return ModKeysAccess.isAltPressed(player);
 	}
 
+	/**
+	 * @deprecated Use one of the primary/secondary/tertiary conditions instead, to allow for client-side configuration by player.
+	 */
+	@Deprecated
 	static boolean isSuperPressed(PlayerEntity player) {
 		return ModKeysAccess.isSuperPressed(player);
 	}
@@ -40,8 +56,8 @@ public interface ModKeys {
 		return ModKeysAccess.isPrimaryPressed(player);
 	}
 
-	static boolean isSecondartPressed(PlayerEntity player) {
-		return ModKeysAccess.isSecondartPressed(player);
+	static boolean isSecondaryPressed(PlayerEntity player) {
+		return ModKeysAccess.isSecondaryPressed(player);
 	}
 
 	static boolean isTertiaryPressed(PlayerEntity player) {

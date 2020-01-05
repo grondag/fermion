@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "grondag.fermion.modkeys.mixin.client",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinControlsOptionsScreen"
+      ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

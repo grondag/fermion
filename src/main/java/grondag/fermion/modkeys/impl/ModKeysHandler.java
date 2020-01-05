@@ -30,6 +30,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 
+import grondag.fermion.modkeys.ModKeysConfig;
+
 public class ModKeysHandler {
 
 	public static Identifier PACKET_ID = new Identifier("modkeys", "modifiers");
@@ -43,25 +45,32 @@ public class ModKeysHandler {
 
 		byte f = 0;
 
-		// TODO: implement config for primary/secondary/tertiary
-
 		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
 			f |= ModKeysAccess.SHIFT;
 		}
 
 		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_CONTROL) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_CONTROL)) {
 			f |= ModKeysAccess.CONTROL;
-			f |= ModKeysAccess.SECONDARY;
 		}
 
 		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_ALT) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_ALT)) {
 			f |= ModKeysAccess.ALT;
-			f |= ModKeysAccess.TERTIARY;
 		}
 
 		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SUPER) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SUPER)) {
 			f |= ModKeysAccess.SUPER;
+		}
+
+		if ((f & ModKeysConfig.primary().flag) != 0) {
 			f |= ModKeysAccess.PRIMARY;
+		}
+
+		if ((f & ModKeysConfig.secondary().flag) != 0) {
+			f |= ModKeysAccess.SECONDARY;
+		}
+
+		if ((f & ModKeysConfig.tertiary().flag) != 0) {
+			f |= ModKeysAccess.TERTIARY;
 		}
 
 		if (f != lastFlags) {

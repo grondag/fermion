@@ -15,13 +15,15 @@
  ******************************************************************************/
 package grondag.fermion.modkeys;
 
-import grondag.fermion.modkeys.impl.ModKeysHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+
+import grondag.fermion.modkeys.impl.ModKeysHandler;
 
 public class ModKeysClientInit implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientTickCallback.EVENT.register(ModKeysHandler::update);
+		ModKeysConfig.init();
 	}
 }
