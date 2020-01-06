@@ -1,5 +1,11 @@
 # fermion
-Generic library for MC mods
+Grondag's semi-public general-purpose library for MC mods.  It is divided into several modules for `include` purposes but I distribute it on curseforge as a single jar file. 
+
+You are welcome to use it if it helps but I'm not promoting most of it as a public-facing API beause docs and code quality are inconsistent in some parts and it can change rapidly.  It was and is developed primarily for my own use. 
+
+[Mod Keys](https://github.com/grondag/fermion/wiki/Fermion-Modifier-Keys) is an exception. It is stable and I will support it if you use it as a dependency.
+
+Other parts of Fermion may become "officially" supported in the future. 
 
 
 # Build setup
