@@ -29,4 +29,6 @@ dependencies {
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 		
 	modImplementation ("grondag:fermion-${project.mc_tag}:${project.fermion_version}.+") { transitive = false }
+	
+	modApi ("io.github.prospector:modmenu:${project.modmenu_version}") { transitive = false }
 }
