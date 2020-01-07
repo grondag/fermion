@@ -37,12 +37,12 @@ if (grgit == null) {
 processResources {
 	inputs.property "version", project.version
 
-	from(sourceSets.modkeys.resources.srcDirs) {
+	from(sourceSets.main.resources.srcDirs) {
 		include "fabric.mod.json"
 		expand "version": project.version
 	}
 
-	from(sourceSets.modkeys.resources.srcDirs) {
+	from(sourceSets.main.resources.srcDirs) {
 		exclude "fabric.mod.json"
 	}
 }
