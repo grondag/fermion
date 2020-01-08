@@ -2,6 +2,7 @@ plugins {
 	id "fabric-loom" version "0.2.6-SNAPSHOT"
 	id "eclipse"
 	id "maven-publish"
+	id "java"
 	id "com.github.breadmoirai.github-release" version "2.2.9"
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -35,11 +36,9 @@ if (grgit == null) {
 }
 
 processResources {
-	inputs.property "version", project.version
-
 	from(sourceSets.main.resources.srcDirs) {
 		include "fabric.mod.json"
-		expand "version": project.version
+		expand "version" : project.version
 	}
 
 	from(sourceSets.main.resources.srcDirs) {
@@ -93,13 +92,13 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 sourceSets {
 	main {
 	        java {
-							srcDirs = ['../../src/main/java/grondag/fermion']
+				srcDirs = ['../../src/main/java/grondag/fermion']
 	            include 'modkeys/**/*'
 	            exclude '*.DS_Store'
 	        }
 	        resources
 	        {
-						srcDirs = ['../../src/modkeys/resources']
+				//srcDirs = ['../../src/modkeys/resources']
 	        	include '**/*'
 	        	exclude '*.DS_Store'
 	        }
