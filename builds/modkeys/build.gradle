@@ -98,7 +98,7 @@ sourceSets {
 	        }
 	        resources
 	        {
-				//srcDirs = ['../../src/modkeys/resources']
+				srcDirs = ['../../src/modkeys/resources']
 	        	include '**/*'
 	        	exclude '*.DS_Store'
 	        }
