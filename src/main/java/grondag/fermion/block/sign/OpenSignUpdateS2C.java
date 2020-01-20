@@ -15,10 +15,8 @@
  ******************************************************************************/
 package grondag.fermion.block.sign;
 
-import grondag.fermion.Fermion;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
@@ -28,6 +26,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+
+import grondag.fermion.Fermion;
 
 public enum OpenSignUpdateS2C {
 	;
@@ -61,8 +64,8 @@ public enum OpenSignUpdateS2C {
 		context.getTaskQueue().execute(() -> {
 			BlockEntity be = context.getPlayer().world.getBlockEntity(pos);
 			if (!(be instanceof OpenSignBlockEntity)) {
-				be = new OpenSignBlockEntity((BlockEntityType<OpenSignBlockEntity>) Registry.BLOCK_ENTITY.get(id));
-				be.setWorld(context.getPlayer().world, pos);
+				be = new OpenSignBlockEntity((BlockEntityType<OpenSignBlockEntity>) Registry.BLOCK_ENTITY_TYPE.get(id));
+				be.setLocation(context.getPlayer().world, pos);
 			}
 
 			((OpenSignBlockEntity) be).setText(tex0, tex1, tex2, tex3);

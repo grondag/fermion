@@ -19,9 +19,6 @@ package grondag.fermion.registrar;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
-import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -45,6 +42,10 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 
 public class Registrar extends AbstractRegistrar {
 	public final ItemGroup itemGroup;
@@ -103,7 +104,7 @@ public class Registrar extends AbstractRegistrar {
 	}
 
 	public <T extends BlockEntity> BlockEntityType<T> blockEntityType(String id, Supplier<T> supplier, Block... blocks) {
-		return Registry.register(Registry.BLOCK_ENTITY, id(id), BlockEntityType.Builder.create(supplier, blocks).build(null));
+		return Registry.register(Registry.BLOCK_ENTITY_TYPE, id(id), BlockEntityType.Builder.create(supplier, blocks).build(null));
 	}
 
 	public <T extends RecipeSerializer<?>> T recipeSerializer(String id, T serializer) {

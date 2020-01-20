@@ -353,16 +353,16 @@ public class GuiUtil {
 			final MatrixStack matrixStack = new MatrixStack();
 			final VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 			final Item item = itemStack.getItem();
-			final boolean hasDepth = !bakedModel.hasDepthInGui() || item == Items.SHIELD || item == Items.TRIDENT;
+			final boolean frontLit = !bakedModel.isSideLit() || item == Items.SHIELD || item == Items.TRIDENT;
 
-			if (hasDepth) {
+			if (frontLit) {
 				DiffuseLighting.disableGuiDepthLighting();
 			}
 
 			itemRender.renderItem(itemStack, ModelTransformation.Mode.GUI, false, matrixStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, bakedModel);
 			immediate.draw();
 
-			if (hasDepth) {
+			if (frontLit) {
 				DiffuseLighting.enableGuiDepthLighting();
 			}
 
