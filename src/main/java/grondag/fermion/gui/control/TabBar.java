@@ -142,9 +142,14 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 					arrowCenterX, scrollBottom + theme.tabWidth, this.currentMouseLocation == MouseLocation.BOTTOM_ARROW ? theme.buttonColorFocus : theme.buttonColorInactive);
 		}
 
-		setupItemRendering();
 		final int start = this.getFirstDisplayedIndex();
 		final int end = this.getLastDisplayedIndex();
+
+		if(start == NO_SELECTION || end == NO_SELECTION) {
+			return;
+		}
+
+		setupItemRendering();
 		double itemX = left;
 		double itemY = top;
 
@@ -161,7 +166,6 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		}
 
 		tearDownItemRendering();
-
 	}
 
 	@Override
@@ -251,7 +255,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 					+ (int) ((mouseY - top - theme.itemSpacing / 2) / theme.itemRowHeightWithCaption) * this.columnsPerRow
 					+ Math.min((int) ((mouseX - left - theme.itemSpacing / 2) / theme.itemSlotSpacing), this.columnsPerRow - 1);
 
-			this.currentMouseIndex = (newIndex < this.items.size()) ? newIndex : NO_SELECTION;
+			this.currentMouseIndex = (newIndex >= 0 && newIndex < this.items.size()) ? newIndex : NO_SELECTION;
 		}
 	}
 
@@ -482,18 +486,20 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 	/** index of start item on selected tab */
 	public int getFirstDisplayedIndex() {
-		if (items == null) {
+		if (items == null || items.isEmpty()) {
 			return NO_SELECTION;
 		}
+
 		refreshContentCoordinatesIfNeeded();
 		return selectedTabIndex * itemsPerTab;
 	}
 
 	/** index of start item on selected tab, EXCLUSIVE of the last item */
 	public int getLastDisplayedIndex() {
-		if (items == null) {
+		if (items == null || items.isEmpty()) {
 			return NO_SELECTION;
 		}
+
 		refreshContentCoordinatesIfNeeded();
 		return Useful.min((selectedTabIndex + 1) * itemsPerTab, items.size());
 	}
