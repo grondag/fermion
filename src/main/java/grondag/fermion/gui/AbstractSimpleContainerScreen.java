@@ -16,8 +16,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
-import net.fabricmc.loader.api.FabricLoader;
-
 import grondag.fermion.gui.control.AbstractControl;
 
 public abstract class AbstractSimpleContainerScreen<T extends Container> extends AbstractContainerScreen<T>  implements ScreenRenderContext
@@ -42,13 +40,7 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 	 */
 	protected void computeScreenBounds() {
 		y = (height - containerHeight) / 2;
-
-		// if using REI, center on left 2/3 of screen to allow more room for REI
-		if(FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
-			x = ((width * 2 / 3) - containerWidth) / 2;
-		} else {
-			x = (width - containerWidth) / 2;
-		}
+		x = (width - containerWidth) / 2;
 	}
 
 	@Override
