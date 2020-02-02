@@ -24,12 +24,11 @@ import net.minecraft.util.math.MathHelper;
  * Serialization of BlockPos to long values with functionality beyond the
  * vanilla serialization methods in the BlockPos class.
  */
-@Deprecated
 public class PackedBlockPos {
 	public static final int WORLD_BOUNDARY = 30000000;
 	public static final long NULL_POS = Long.MIN_VALUE;
 	public static final int NUM_X_BITS = 1
-		+ MathHelper.log2(MathHelper.smallestEncompassingPowerOfTwo(WORLD_BOUNDARY));
+			+ MathHelper.log2(MathHelper.smallestEncompassingPowerOfTwo(WORLD_BOUNDARY));
 	public static final int NUM_Z_BITS = NUM_X_BITS;
 	public static final int NUM_Y_BITS = 8;
 	public static final int NUM_EXTRA_BITS = 3;
@@ -72,8 +71,12 @@ public class PackedBlockPos {
 	 * inputs.
 	 */
 	public static final long pack(int x, int y, int z) {
+		if (y < 0) {
+			y = 0;
+		}
+
 		return (x + WORLD_BOUNDARY & X_MASK) << X_SHIFT | (y & Y_MASK) << Y_SHIFT
-			| (z + WORLD_BOUNDARY & Z_MASK);
+				| (z + WORLD_BOUNDARY & Z_MASK);
 	}
 
 	public static final long pack(double x, double y, double z) {
