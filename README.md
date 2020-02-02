@@ -45,4 +45,6 @@ Then include whichever modules you need.  Generally you always want to include t
   }
 ```
 
+Fermion libraries are built for specific Minecraft versions, indicated by `mc_tag`. Minecraft 1.15.x has tag `mc115`. 
+
 Look at [gradle.properties](https://github.com/grondag/fermion/blob/master/gradle.properties) in the appropriate branch to identify latest major.minor versions.
