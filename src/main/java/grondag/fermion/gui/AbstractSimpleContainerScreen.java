@@ -8,7 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
+import net.minecraft.client.gui.screen.ingame.ContainerScreen;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.container.Container;
 import net.minecraft.container.Slot;
@@ -18,7 +18,7 @@ import net.minecraft.text.Text;
 
 import grondag.fermion.gui.control.AbstractControl;
 
-public abstract class AbstractSimpleContainerScreen<T extends Container> extends AbstractContainerScreen<T>  implements ScreenRenderContext
+public abstract class AbstractSimpleContainerScreen<T extends Container> extends ContainerScreen<T>  implements ScreenRenderContext
 {
 	protected AbstractControl<?> hoverControl;
 	protected final ScreenTheme theme = ScreenTheme.current();
@@ -48,7 +48,7 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 		super.renderBackground();
 		fill(x, y, x + containerWidth, y + containerHeight, theme.screenBackground);
 
-		final int limit = container.slotList.size();
+		final int limit = container.slots.size();
 
 		// player slot backgrounds
 		for(int i = 0; i < limit; i++) {
@@ -166,8 +166,8 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 
 	// like private vanilla method but doesn't test drawHovereffect for the slot
 	public Slot getSlotAt(double x, double y) {
-		for(int i = 0; i < container.slotList.size(); ++i) {
-			final Slot slot = container.slotList.get(i);
+		for(int i = 0; i < container.slots.size(); ++i) {
+			final Slot slot = container.slots.get(i);
 
 			if (this.isPointOverSlot(slot, x, y)) {
 				return slot;

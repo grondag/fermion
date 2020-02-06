@@ -18,14 +18,15 @@ package grondag.fermion.registrar;
 
 import java.util.function.Supplier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Lazy;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class SimpleArmorMaterial implements ArmorMaterial {
 	private static final int[] BASE_DURABILITY = new int[]{13, 15, 16, 11};
@@ -89,5 +90,11 @@ public class SimpleArmorMaterial implements ArmorMaterial {
 
 	public static ArmorMaterial of(String id, int durability, int[] protection, int enchantability, SoundEvent soundEvent, float toughness, ItemConvertible repairItem) {
 		return new SimpleArmorMaterial(id, durability, protection, enchantability, soundEvent, toughness, () -> Ingredient.ofItems(repairItem.asItem()));
+	}
+
+	@Override
+	public float method_24355() {
+		// TODO implement knock-back resistance
+		return 0;
 	}
 }
