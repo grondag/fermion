@@ -5,6 +5,11 @@ import net.minecraft.util.math.MathHelper;
 /**
  * Uses large blocks only - may be space-inefficient.
  */
+
+/**
+ * @deprecated Use IntStreamProvider
+ */
+@Deprecated
 class SimpleStream implements IntStream {
 	int[][] blocks = new int[16][];
 
