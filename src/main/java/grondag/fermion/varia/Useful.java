@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import grondag.fermion.position.PackedBlockPos;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
@@ -34,11 +34,12 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 
+import grondag.fermion.position.PackedBlockPos;
+
 /**
  * Random utilities that have not yet found a more appropriate home.
  * Many of these are obsolete and should be removed.
  */
-@Deprecated
 public class Useful {
 	/**
 	 * See {@link #getDistanceSortedCircularOffset(int)}. If you simply want to
