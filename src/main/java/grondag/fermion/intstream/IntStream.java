@@ -35,6 +35,18 @@ public interface IntStream {
 		}
 	}
 
+	default void copyFrom(int targetAddress, int[] source, int sourceIndex, int length) {
+		for (int i = 0; i < length; i++) {
+			set(targetAddress + i, source[sourceIndex + i]);
+		}
+	}
+
+	default void copyTo(int sourceAddress, int[] target, int targetAddress, int length) {
+		for (int i = 0; i < length; i++) {
+			target[targetAddress + i] = get(sourceAddress + i);
+		}
+	}
+
 	default void release() {
 	}
 

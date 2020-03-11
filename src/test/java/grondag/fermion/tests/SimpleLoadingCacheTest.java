@@ -1,4 +1,4 @@
-package grondag.sc.tests;
+package grondag.fermion.tests;
 
 import java.util.ArrayList;
 import java.util.Random;

@@ -68,6 +68,7 @@ public class ItemStackPicker<T> extends TabBar<T> {
 		super.drawContent(mouseX, mouseY, partialTicks);
 	}
 
+	// TODO: better labels for higher numbers
 	private String getQuantityLabel(long qty) {
 		if (qty < 1000) {
 			return Long.toString(qty);

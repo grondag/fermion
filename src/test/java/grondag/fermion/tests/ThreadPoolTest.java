@@ -1,4 +1,4 @@
-package grondag.sc.tests;
+package grondag.fermion.tests;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ExecutionException;

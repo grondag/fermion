@@ -1,4 +1,4 @@
-package grondag.sc.tests;
+package grondag.fermion.tests;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;

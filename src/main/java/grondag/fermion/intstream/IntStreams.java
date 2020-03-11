@@ -18,6 +18,10 @@ package grondag.fermion.intstream;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
+/**
+ * @deprecated Use IntStreamProvider
+ */
+@Deprecated
 public abstract class IntStreams {
 	public static final int BLOCK_SIZE = 1024;
 	static final int BLOCK_MASK = BLOCK_SIZE - 1;
