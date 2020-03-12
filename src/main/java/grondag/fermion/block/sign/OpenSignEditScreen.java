@@ -56,14 +56,14 @@ public class OpenSignEditScreen extends Screen {
 
 	@Override
 	protected void init() {
-		minecraft.keyboard.enableRepeatEvents(true);
+		client.keyboard.enableRepeatEvents(true);
 
 		addButton(new ButtonWidget(width / 2 - 100, height / 4 + 120, 200, 20, I18n.translate("gui.done"), (widget) -> {
 			finishEditing();
 		}));
 
 		sign.setEditable(false);
-		selectionManager = new SelectionManager(minecraft, () -> {
+		selectionManager = new SelectionManager(client, () -> {
 			return sign.getTextOnRow(currentRow).getString();
 		}, (s) -> {
 			sign.setTextOnRow(currentRow, new LiteralText(s));
@@ -72,7 +72,7 @@ public class OpenSignEditScreen extends Screen {
 
 	@Override
 	public void removed() {
-		minecraft.keyboard.enableRepeatEvents(false);
+		client.keyboard.enableRepeatEvents(false);
 		OpenSignUpdateC2S.updateSignC2S(sign.getPos(), sign.getTextOnRow(0), sign.getTextOnRow(1), sign.getTextOnRow(2), sign.getTextOnRow(3));
 		sign.setEditable(true);
 	}
@@ -88,7 +88,7 @@ public class OpenSignEditScreen extends Screen {
 
 	protected void finishEditing() {
 		sign.markDirty();
-		minecraft.openScreen(null);
+		client.openScreen(null);
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class OpenSignEditScreen extends Screen {
 	@Override
 	public void render(int i, int j, float tickDelta) {
 		this.renderBackground();
-		drawCenteredString(font, title.asFormattedString(), width / 2, 40, 16777215);
+		drawCenteredString(textRenderer, title.asFormattedString(), width / 2, 40, 16777215);
 		final MatrixStack matrixStack = new MatrixStack();
 		matrixStack.push();
 		matrixStack.translate(width / 2, 0.0D, 50.0D);
@@ -136,7 +136,7 @@ public class OpenSignEditScreen extends Screen {
 
 		matrixStack.push();
 		matrixStack.scale(0.6666667F, -0.6666667F, -0.6666667F);
-		final VertexConsumerProvider.Immediate immediate = minecraft.getBufferBuilders().getEntityVertexConsumers();
+		final VertexConsumerProvider.Immediate immediate = client.getBufferBuilders().getEntityVertexConsumers();
 		final SpriteIdentifier lv = sign.getModelTexture();
 		final SignBlockEntityRenderer.SignModel var10002 = model;
 		var10002.getClass();
@@ -156,7 +156,7 @@ public class OpenSignEditScreen extends Screen {
 
 		for(int m = 0; m < strings.length; ++m) {
 			strings[m] = sign.getTextBeingEditedOnRow(m, (text) -> {
-				final List<Text> list = Texts.wrapLines(text, 90, minecraft.textRenderer, false, true);
+				final List<Text> list = Texts.wrapLines(text, 90, client.textRenderer, false, true);
 				return list.isEmpty() ? "" : list.get(0).asFormattedString();
 			});
 		}
@@ -164,7 +164,7 @@ public class OpenSignEditScreen extends Screen {
 		final Matrix4f matrix4f = matrixStack.peek().getModel();
 		final int n = selectionManager.getSelectionStart();
 		final int o = selectionManager.getSelectionEnd();
-		final int p = minecraft.textRenderer.isRightToLeft() ? -1 : 1;
+		final int p = client.textRenderer.isRightToLeft() ? -1 : 1;
 		final int q = currentRow * 10 - sign.text.length * 5;
 
 		final boolean fade = ticksSinceOpened / 6 % 2 == 0;
@@ -173,15 +173,15 @@ public class OpenSignEditScreen extends Screen {
 		for(int v = 0; v < strings.length; ++v) {
 			final String line = strings[v];
 			if (line != null) {
-				final float s = -minecraft.textRenderer.getStringWidth(line) / 2;
-				minecraft.textRenderer.draw(line, s, v * 10 - sign.text.length * 5, l, false, matrix4f, immediate, false, 0, 15728880);
+				final float s = -client.textRenderer.getStringWidth(line) / 2;
+				client.textRenderer.draw(line, s, v * 10 - sign.text.length * 5, l, false, matrix4f, immediate, false, 0, 15728880);
 
 				if (v == currentRow && n >= 0 && fade) {
-					final int x = minecraft.textRenderer.getStringWidth(line.substring(0, Math.max(Math.min(n, line.length()), 0)));
-					final int y = (x - minecraft.textRenderer.getStringWidth(line) / 2) * p;
+					final int x = client.textRenderer.getStringWidth(line.substring(0, Math.max(Math.min(n, line.length()), 0)));
+					final int y = (x - client.textRenderer.getStringWidth(line) / 2) * p;
 
 					if (n >= line.length()) {
-						minecraft.textRenderer.draw("_", y, q, l, false, matrix4f, immediate, false, 0, 15728880);
+						client.textRenderer.draw("_", y, q, l, false, matrix4f, immediate, false, 0, 15728880);
 					}
 				}
 			}
@@ -192,21 +192,21 @@ public class OpenSignEditScreen extends Screen {
 		for(int v = 0; v < strings.length; ++v) {
 			final String line = strings[v];
 			if (line != null && v == currentRow && n >= 0) {
-				final int w = minecraft.textRenderer.getStringWidth(line.substring(0, Math.max(Math.min(n, line.length()), 0)));
-				final int x = (w - minecraft.textRenderer.getStringWidth(line) / 2) * p;
+				final int w = client.textRenderer.getStringWidth(line.substring(0, Math.max(Math.min(n, line.length()), 0)));
+				final int x = (w - client.textRenderer.getStringWidth(line) / 2) * p;
 
 				if (fade && n < line.length()) {
 					final int var34 = q - 1;
 					final int var10003 = x + 1;
-					minecraft.textRenderer.getClass();
+					client.textRenderer.getClass();
 					fill(matrix4f, x, var34, var10003, q + 9, -16777216 | l);
 				}
 
 				if (o != n) {
 					final int y = Math.min(n, o);
 					final int z = Math.max(n, o);
-					final int aa = (minecraft.textRenderer.getStringWidth(line.substring(0, y)) - minecraft.textRenderer.getStringWidth(line) / 2) * p;
-					final int ab = (minecraft.textRenderer.getStringWidth(line.substring(0, z)) - minecraft.textRenderer.getStringWidth(line) / 2) * p;
+					final int aa = (client.textRenderer.getStringWidth(line.substring(0, y)) - client.textRenderer.getStringWidth(line) / 2) * p;
+					final int ab = (client.textRenderer.getStringWidth(line.substring(0, z)) - client.textRenderer.getStringWidth(line) / 2) * p;
 					final int ac = Math.min(aa, ab);
 					final int ad = Math.max(aa, ab);
 					final Tessellator tessellator = Tessellator.getInstance();

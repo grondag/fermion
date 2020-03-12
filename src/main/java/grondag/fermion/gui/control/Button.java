@@ -41,8 +41,8 @@ public class Button extends AbstractButtonWidget {
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		if (visible) {
-			isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-			final int i = getYImage(isHovered);
+			hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+			final int i = getYImage(hovered);
 			final int color = i == 0 ? theme.buttonColorInactive : i == 2 ? theme.buttonColorFocus : theme.buttonColorActive;
 
 			GuiUtil.drawRect(x, y, x + width - 1, y + height - 1, color);

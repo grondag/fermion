@@ -8,17 +8,17 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.ContainerScreen;
+import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.container.Container;
-import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 
 import grondag.fermion.gui.control.AbstractControl;
 
-public abstract class AbstractSimpleContainerScreen<T extends Container> extends ContainerScreen<T>  implements ScreenRenderContext
+public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> extends ScreenWithHandler<T>  implements ScreenRenderContext
 {
 	protected AbstractControl<?> hoverControl;
 	protected final ScreenTheme theme = ScreenTheme.current();
@@ -39,20 +39,20 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 	 * Called during init before controls are created.
 	 */
 	protected void computeScreenBounds() {
-		y = (height - containerHeight) / 2;
-		x = (width - containerWidth) / 2;
+		y = (height - backgroundHeight) / 2;
+		x = (width - backgroundWidth) / 2;
 	}
 
 	@Override
 	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
 		super.renderBackground();
-		fill(x, y, x + containerWidth, y + containerHeight, theme.screenBackground);
+		fill(x, y, x + backgroundWidth, y + backgroundHeight, theme.screenBackground);
 
-		final int limit = container.slots.size();
+		final int limit = handler.slots.size();
 
 		// player slot backgrounds
 		for(int i = 0; i < limit; i++) {
-			final Slot slot = container.getSlot(i);
+			final Slot slot = handler.getSlot(i);
 			final int u = slot.xPosition + x;
 			final int v = slot.yPosition + y;
 			fillGradient(u, v, u + theme.itemSize, v + theme.itemSize, theme.itemSlotGradientTop, theme.itemSlotGradientBottom);
@@ -111,7 +111,7 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 
 	@Override
 	public MinecraftClient minecraft() {
-		return minecraft;
+		return client;
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 
 	@Override
 	public TextRenderer fontRenderer() {
-		return font;
+		return textRenderer;
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 
 	@Override
 	public int screenWidth() {
-		return containerWidth;
+		return backgroundWidth;
 	}
 
 	@Override
@@ -156,7 +156,7 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 
 	@Override
 	public int screenHeight() {
-		return containerHeight;
+		return backgroundHeight;
 	}
 
 	@Override
@@ -166,8 +166,8 @@ public abstract class AbstractSimpleContainerScreen<T extends Container> extends
 
 	// like private vanilla method but doesn't test drawHovereffect for the slot
 	public Slot getSlotAt(double x, double y) {
-		for(int i = 0; i < container.slots.size(); ++i) {
-			final Slot slot = container.slots.get(i);
+		for(int i = 0; i < handler.slots.size(); ++i) {
+			final Slot slot = handler.slots.get(i);
 
 			if (this.isPointOverSlot(slot, x, y)) {
 				return slot;

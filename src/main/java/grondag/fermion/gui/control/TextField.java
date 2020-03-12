@@ -395,7 +395,7 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 
 		if (isVisible()) {
 			if (hasBorder()) {
-				final int borderColor = isFocused() || isHovered ? theme.buttonColorFocus : theme.textBorder;
+				final int borderColor = isFocused() || hovered ? theme.buttonColorFocus : theme.textBorder;
 				fill(x - 1, y - 1, x + width + 1, y + height + 1, borderColor);
 
 			}

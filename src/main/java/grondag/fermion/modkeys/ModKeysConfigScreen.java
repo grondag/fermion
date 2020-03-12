@@ -24,12 +24,12 @@ public class ModKeysConfigScreen extends Screen {
 
 	@Override
 	public void removed() {
-		minecraft.options.write();
+		client.options.write();
 	}
 
 	@Override
 	public void onClose() {
-		minecraft.openScreen(parent);
+		client.openScreen(parent);
 	}
 
 	@Override
@@ -87,17 +87,17 @@ public class ModKeysConfigScreen extends Screen {
 
 		addButton(new ButtonWidget(width / 2 + 5, 200, 150, 20, I18n.translate("gui.done"), (buttonWidget) -> {
 			ModKeysConfig.saveOptions(primary, secondary, tertiary);
-			minecraft.openScreen(parent);
+			client.openScreen(parent);
 		}));
 	}
 
 	@Override
 	public void render(int i, int j, float f) {
 		renderDirtBackground(0);
-		drawCenteredString(font, title.asFormattedString(), width / 2, 5, 16777215);
-		drawRightAlignedString(font, I18n.translate("config.modkeys.label.primary"), width / 2 - 5, 105, 16777215);
-		drawRightAlignedString(font, I18n.translate("config.modkeys.label.secondary"), width / 2 - 5, 135, 16777215);
-		drawRightAlignedString(font, I18n.translate("config.modkeys.label.tertiary"), width / 2 - 5, 165, 16777215);
+		drawCenteredString(textRenderer, title.asFormattedString(), width / 2, 5, 16777215);
+		drawString(textRenderer, I18n.translate("config.modkeys.label.primary"), width / 2 - 5, 105, 16777215);
+		drawString(textRenderer, I18n.translate("config.modkeys.label.secondary"), width / 2 - 5, 135, 16777215);
+		drawString(textRenderer, I18n.translate("config.modkeys.label.tertiary"), width / 2 - 5, 165, 16777215);
 
 		super.render(i, j, f);
 	}

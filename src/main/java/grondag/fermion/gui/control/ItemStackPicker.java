@@ -89,7 +89,7 @@ public class ItemStackPicker<T> extends TabBar<T> {
 
 		final ItemStack itemStack = stackFunc.apply(item);
 
-		setBlitOffset(200);
+		setZOffset(200);
 		itemRenderer.zOffset = 200.0F;
 
 		GuiUtil.renderItemAndEffectIntoGui(mc, itemRenderer, itemStack, x, y, theme.itemSize);
@@ -97,7 +97,7 @@ public class ItemStackPicker<T> extends TabBar<T> {
 
 		drawQuantity(countFunc.applyAsLong(item), x, y);
 
-		setBlitOffset(0);
+		setZOffset(0);
 		itemRenderer.zOffset = 0.0F;
 	}
 

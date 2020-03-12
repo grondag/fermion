@@ -41,7 +41,7 @@ public class MixinControlsOptionsScreen extends Screen {
 		final Screen thisScreen =  this;
 
 		addButton(new ButtonWidget(width - 100, 10, 90, 20, I18n.translate("config.modkeys.button"), (buttonWidget) -> {
-			minecraft.openScreen(new ModKeysConfigScreen(thisScreen));
+			client.openScreen(new ModKeysConfigScreen(thisScreen));
 		}));
 	}
 }

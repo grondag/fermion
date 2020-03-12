@@ -93,7 +93,7 @@ public class SimpleArmorMaterial implements ArmorMaterial {
 	}
 
 	@Override
-	public float method_24355() {
+	public float getKnockbackResistance() {
 		// TODO implement knock-back resistance
 		return 0;
 	}

@@ -102,7 +102,7 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 
 	@Override
 	public MinecraftClient minecraft() {
-		return minecraft;
+		return client;
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 
 	@Override
 	public TextRenderer fontRenderer() {
-		return font;
+		return textRenderer;
 	}
 
 	@Override
