@@ -100,6 +100,19 @@ public class AbstractUnorderedArrayList<T> extends AbstractList<T> {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	public T removeLast() {
+		assert this.size > 0 : "SimpleUnoderedArrayList detected attempt to remove item from empty list.";
+		if (this.size > 0) {
+			final int i = --size;
+			final T result = (T) items[i];
+			items[i] = null;
+			return result;
+		} else {
+			return null;
+		}
+	}
+
 	@Override
 	public boolean remove(Object itemToRemove) {
 		for (int i = this.size - 1; i >= 0; i--) {
