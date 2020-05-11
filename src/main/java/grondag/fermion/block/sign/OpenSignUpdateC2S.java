@@ -15,19 +15,23 @@
  ******************************************************************************/
 package grondag.fermion.block.sign;
 
-import grondag.fermion.Fermion;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
+
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.network.PacketContext;
+
+import grondag.fermion.Fermion;
 
 public enum OpenSignUpdateC2S {
 	;
@@ -68,7 +72,7 @@ public enum OpenSignUpdateC2S {
 				final OpenSignBlockEntity myBe = (OpenSignBlockEntity)be;
 
 				if (!myBe.isEditable() || myBe.getEditor() != player) {
-					server.warn("Player " + player.getName().getString() + " just tried to change non-editable sign");
+					server.sendSystemMessage(new LiteralText("Player " + player.getName().getString() + " just tried to change non-editable sign"));
 					return;
 				}
 

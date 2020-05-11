@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.util.SpriteIdentifier;
@@ -79,9 +80,9 @@ public class OpenSignBlockEntity extends BlockEntity implements BlockEntityClien
 	}
 
 	@Override
-	public void fromTag(CompoundTag tag) {
+	public void fromTag(BlockState blockState, CompoundTag tag) {
 		editable = false;
-		super.fromTag(tag);
+		super.fromTag(blockState, tag);
 		textColor = DyeColor.byName(tag.getString("Color"), DyeColor.BLACK);
 
 		for(int i = 0; i < 4; ++i) {
@@ -136,7 +137,7 @@ public class OpenSignBlockEntity extends BlockEntity implements BlockEntityClien
 	}
 
 	@Override
-	public boolean shouldNotCopyTagFromItem() {
+	public boolean copyItemDataRequiresOperator() {
 		return true;
 	}
 
@@ -257,7 +258,7 @@ public class OpenSignBlockEntity extends BlockEntity implements BlockEntityClien
 
 	@Override
 	public void fromClientTag(CompoundTag tag) {
-		fromTag(tag);
+		fromTag(getCachedState(), tag);
 		RenderRefreshProxy.refresh(pos);
 	}
 

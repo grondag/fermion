@@ -8,7 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -18,7 +18,7 @@ import net.minecraft.text.Text;
 
 import grondag.fermion.gui.control.AbstractControl;
 
-public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> extends ScreenWithHandler<T>  implements ScreenRenderContext
+public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> extends HandledScreen<T>  implements ScreenRenderContext
 {
 	protected AbstractControl<?> hoverControl;
 	protected final ScreenTheme theme = ScreenTheme.current();
@@ -53,8 +53,8 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 		// player slot backgrounds
 		for(int i = 0; i < limit; i++) {
 			final Slot slot = handler.getSlot(i);
-			final int u = slot.xPosition + x;
-			final int v = slot.yPosition + y;
+			final int u = slot.x + x;
+			final int v = slot.y + y;
 			fillGradient(u, v, u + theme.itemSize, v + theme.itemSize, theme.itemSlotGradientTop, theme.itemSlotGradientBottom);
 		}
 	}
@@ -92,8 +92,8 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 		RenderSystem.disableBlend();
 
 		if (focusedSlot != null) {
-			final int sx = x + focusedSlot.xPosition;
-			final int sy = y + focusedSlot.yPosition;
+			final int sx = x + focusedSlot.x;
+			final int sy = y + focusedSlot.y;
 			GuiUtil.drawBoxRightBottom(sx - theme.itemSelectionMargin, sy - theme.itemSelectionMargin, sx + theme.itemSize + theme.itemSelectionMargin,
 					sy + theme.itemSize + theme.itemSelectionMargin, 1, theme.buttonColorFocus);
 		}
@@ -178,6 +178,6 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 	}
 
 	public boolean isPointOverSlot(Slot slot, double x, double y) {
-		return isPointWithinBounds(slot.xPosition, slot.yPosition, 16, 16, x, y);
+		return isPointWithinBounds(slot.x, slot.y, 16, 16, x, y);
 	}
 }

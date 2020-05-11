@@ -4,11 +4,11 @@ import com.google.gson.JsonObject;
 
 import grondag.fermion.recipe.AbstractSimpleRecipe.Factory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 
 public class SimpleRecipeSerializer<T extends AbstractSimpleRecipe> implements RecipeSerializer<T> {
