@@ -54,5 +54,4 @@ public class SimpleUnorderedArrayList<T> extends AbstractUnorderedArrayList<T> i
 	public void accept(T t) {
 		this.add(t);
 	}
-
 }
