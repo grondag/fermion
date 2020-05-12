@@ -93,11 +93,11 @@ public class ModKeysConfigScreen extends Screen {
 
 	@Override
 	public void render(int i, int j, float f) {
-		renderDirtBackground(0);
+		renderBackground(0);
 		drawCenteredString(textRenderer, title.asFormattedString(), width / 2, 5, 16777215);
-		drawString(textRenderer, I18n.translate("config.modkeys.label.primary"), width / 2 - 5, 105, 16777215);
-		drawString(textRenderer, I18n.translate("config.modkeys.label.secondary"), width / 2 - 5, 135, 16777215);
-		drawString(textRenderer, I18n.translate("config.modkeys.label.tertiary"), width / 2 - 5, 165, 16777215);
+		textRenderer.drawWithShadow(I18n.translate("config.modkeys.label.primary"), width / 2 - 5, 105, 16777215);
+		textRenderer.drawWithShadow(I18n.translate("config.modkeys.label.secondary"), width / 2 - 5, 135, 16777215);
+		textRenderer.drawWithShadow(I18n.translate("config.modkeys.label.tertiary"), width / 2 - 5, 165, 16777215);
 
 		super.render(i, j, f);
 	}
