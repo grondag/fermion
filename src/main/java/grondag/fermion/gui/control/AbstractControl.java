@@ -17,6 +17,7 @@ package grondag.fermion.gui.control;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -79,7 +80,7 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 		return this;
 	}
 
-	public final void drawControl(int mouseX, int mouseY, float partialTicks) {
+	public final void drawControl(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		this.refreshContentCoordinatesIfNeeded();
 
 		if (this.isVisible) {
@@ -88,13 +89,13 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 				renderContext.setHoverControl(this);
 			}
 
-			this.drawContent(mouseX, mouseY, partialTicks);
+			this.drawContent(matrixStack, mouseX, mouseY, partialTicks);
 		}
 	}
 
-	public abstract void drawToolTip(int mouseX, int mouseY, float partialTicks);
+	public abstract void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks);
 
-	protected abstract void drawContent(int mouseX, int mouseY, float partialTicks);
+	protected abstract void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks);
 
 	/** called after any coordinate-related input changes */
 	protected void handleCoordinateUpdate() {

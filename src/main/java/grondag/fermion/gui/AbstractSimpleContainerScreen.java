@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
@@ -44,9 +45,9 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 	}
 
 	@Override
-	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
-		super.renderBackground();
-		fill(x, y, x + backgroundWidth, y + backgroundHeight, theme.screenBackground);
+	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+		super.renderBackground(matrixStack);
+		fill(matrixStack, x, y, x + backgroundWidth, y + backgroundHeight, theme.screenBackground);
 
 		final int limit = handler.slots.size();
 
@@ -55,32 +56,32 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 			final Slot slot = handler.getSlot(i);
 			final int u = slot.x + x;
 			final int v = slot.y + y;
-			fillGradient(u, v, u + theme.itemSize, v + theme.itemSize, theme.itemSlotGradientTop, theme.itemSlotGradientBottom);
+			fillGradient(matrixStack, u, v, u + theme.itemSize, v + theme.itemSize, theme.itemSlotGradientTop, theme.itemSlotGradientBottom);
 		}
 	}
 
 	@Override
-	public final void render(int mouseX, int mouseY, float partialTicks) {
+	public final void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO: make generic
 		// ensure we get updates
 		//te.notifyServerPlayerWatching();
 
 		hoverControl = null;
 
-		super.render(mouseX, mouseY, partialTicks);
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
 
 		RenderSystem.disableRescaleNormal();
 		RenderSystem.disableDepthTest();
 		RenderSystem.pushMatrix();
 
 		for(int k = 0; k < buttons.size(); ++k) {
-			buttons.get(k).render(mouseX, mouseY, partialTicks);
+			buttons.get(k).render(matrixStack, mouseX, mouseY, partialTicks);
 		}
 
-		drawControls(mouseX, mouseY, partialTicks);
+		drawControls(matrixStack, mouseX, mouseY, partialTicks);
 
 		if (hoverControl != null) {
-			hoverControl.drawToolTip(mouseX, mouseY, partialTicks);
+			hoverControl.drawToolTip(matrixStack, mouseX, mouseY, partialTicks);
 		}
 
 		RenderSystem.popMatrix();
@@ -99,10 +100,10 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 		}
 
 		//	      this.nameField.render(i, j, f);
-		drawMouseoverTooltip(mouseX, mouseY);
+		drawMouseoverTooltip(matrixStack, mouseX, mouseY);
 	}
 
-	protected abstract void drawControls(int mouseX, int mouseY, float partialTicks);
+	protected abstract void drawControls(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks);
 
 	@Override
 	public void addControls() {
@@ -135,8 +136,8 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 	}
 
 	@Override
-	public void drawToolTip(ItemStack hoverStack, int mouseX, int mouseY) {
-		super.renderTooltip(hoverStack, mouseX, mouseY);
+	public void renderTooltip(MatrixStack matrixStack, ItemStack hoverStack, int mouseX, int mouseY) {
+		super.renderTooltip(matrixStack, hoverStack, mouseX, mouseY);
 	}
 
 	@Override

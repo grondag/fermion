@@ -16,6 +16,7 @@
 package grondag.fermion.gui.control;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -40,7 +41,7 @@ public class Toggle extends AbstractControl<Toggle> {
 	protected int labelHeight;
 
 	@Override
-	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		final float boxRight = left + labelHeight;
 
 		GuiUtil.drawBoxRightBottom(left, targetAreaTop, boxRight, targetAreaBottom, 1,
@@ -50,7 +51,7 @@ public class Toggle extends AbstractControl<Toggle> {
 			GuiUtil.drawRect(left + 2, targetAreaTop + 2, boxRight - 2, targetAreaBottom - 2, theme.buttonColorActive);
 		}
 
-		GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), label, boxRight + theme.internalMargin, targetAreaTop, labelWidth,
+		GuiUtil.drawAlignedStringNoShadow(matrixStack, renderContext.fontRenderer(), label, boxRight + theme.internalMargin, targetAreaTop, labelWidth,
 				labelHeight, theme.textColorLabel, HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 	}
 
@@ -60,7 +61,7 @@ public class Toggle extends AbstractControl<Toggle> {
 		targetAreaTop = (int) Math.max(top, top + (height - fontHeight) / 2);
 		targetAreaBottom = (int) Math.min(bottom, targetAreaTop + fontHeight);
 		labelHeight = fontHeight;
-		labelWidth = MinecraftClient.getInstance().textRenderer.getStringWidth(label);
+		labelWidth = MinecraftClient.getInstance().textRenderer.getWidth(label);
 	}
 
 	@Override
@@ -98,9 +99,8 @@ public class Toggle extends AbstractControl<Toggle> {
 	}
 
 	@Override
-	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}
-
 }

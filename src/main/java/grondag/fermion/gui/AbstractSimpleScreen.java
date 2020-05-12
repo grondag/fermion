@@ -22,7 +22,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
@@ -69,31 +69,26 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 	}
 
 	@Override
-	public void renderBackground() {
-		super.renderBackground();
-	}
-
-	@Override
-	public final void render(int mouseX, int mouseY, float partialTicks) {
+	public final void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO: make generic
 		// ensure we get updates
 		//te.notifyServerPlayerWatching();
 
 		hoverControl = null;
 
-		renderBackground();
+		renderBackground(matrixStack);
 
 		// shouldn't do anything but call in case someone is hooking it
-		super.render(mouseX, mouseY, partialTicks);
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-		drawControls(mouseX, mouseY, partialTicks);
+		drawControls(matrixStack, mouseX, mouseY, partialTicks);
 
 		if (hoverControl != null) {
-			hoverControl.drawToolTip(mouseX, mouseY, partialTicks);
+			hoverControl.drawToolTip(matrixStack, mouseX, mouseY, partialTicks);
 		}
 	}
 
-	protected abstract void drawControls(int mouseX, int mouseY, float partialTicks);
+	protected abstract void drawControls(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks);
 
 	@Override
 	public void addControls() {
@@ -123,11 +118,6 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 	@Override
 	public void setHoverControl(AbstractControl<?> control) {
 		hoverControl = control;
-	}
-
-	@Override
-	public void drawToolTip(ItemStack hoverStack, int mouseX, int mouseY) {
-		super.renderTooltip(hoverStack, mouseX, mouseY);
 	}
 
 	@Override

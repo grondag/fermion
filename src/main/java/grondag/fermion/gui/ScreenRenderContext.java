@@ -22,8 +22,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import grondag.fermion.gui.control.AbstractControl;
 
@@ -47,33 +49,33 @@ public interface ScreenRenderContext {
 	/**
 	 * Draws the given text as a tooltip.
 	 */
-	default void drawToolTip(String text, int mouseX, int mouseY) {
-		screen().renderTooltip(text, mouseX, mouseY);
+	default void drawToolTip(MatrixStack matrixStack, Text text, int mouseX, int mouseY) {
+		screen().renderTooltip(matrixStack, text, mouseX, mouseY);
 	}
 
-	default void drawToolTip(List<String> textLines, int mouseX, int mouseY) {
-		screen().renderTooltip(textLines, mouseX, mouseY);
+	default void drawToolTip(MatrixStack matrixStack, List<Text> textLines, int mouseX, int mouseY) {
+		screen().renderTooltip(matrixStack, textLines, mouseX, mouseY);
 	}
 
-	default void drawLocalizedToolTip(String lang_key, int mouseX, int mouseY) {
-		this.drawToolTip(I18n.translate(lang_key), mouseX, mouseY);
+	default void drawLocalizedToolTip(MatrixStack matrixStack, String lang_key, int mouseX, int mouseY) {
+		this.drawToolTip(matrixStack, new TranslatableText(lang_key), mouseX, mouseY);
 	}
 
-	default void drawLocalizedToolTip(int mouseX, int mouseY, String... lang_keys) {
+	default void drawLocalizedToolTip(MatrixStack matrixStack, int mouseX, int mouseY, String... lang_keys) {
 		if (lang_keys.length == 0) {
 			return;
 		}
 
-		final ArrayList<String> list = new ArrayList<>(lang_keys.length);
+		final ArrayList<Text> list = new ArrayList<>(lang_keys.length);
 
 		for (final String key : lang_keys) {
-			list.add(I18n.translate(key));
+			list.add(new TranslatableText(key));
 		}
-		this.drawToolTip(list, mouseX, mouseY);
+		this.drawToolTip(matrixStack, list, mouseX, mouseY);
 	}
 
-	default void drawLocalizedToolTipBoolean(boolean bool, String true_key, String false_key, int mouseX, int mouseY) {
-		this.drawToolTip(I18n.translate(bool ? true_key : false_key), mouseX, mouseY);
+	default void drawLocalizedToolTipBoolean(MatrixStack matrixStack, boolean bool, String true_key, String false_key, int mouseX, int mouseY) {
+		this.drawToolTip(matrixStack, new TranslatableText(bool ? true_key : false_key), mouseX, mouseY);
 	}
 
 	int screenLeft();

@@ -19,6 +19,8 @@ import static grondag.fermion.spatial.HorizontalAlignment.CENTER;
 import static grondag.fermion.spatial.VerticalAlignment.MIDDLE;
 
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -32,21 +34,21 @@ public class Button extends AbstractButtonWidget {
 	protected final ScreenRenderContext renderContext;
 	protected final ScreenTheme theme = ScreenTheme.current();
 
-	public Button(ScreenRenderContext renderContext, int x, int y, int width, int height, String buttonText) {
+	public Button(ScreenRenderContext renderContext, int x, int y, int width, int height, Text buttonText) {
 		super(x, y, width, height, buttonText);
 		this.renderContext = renderContext;
 	}
 
 	// TODO: add narration logic
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (visible) {
 			hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 			final int i = getYImage(hovered);
 			final int color = i == 0 ? theme.buttonColorInactive : i == 2 ? theme.buttonColorFocus : theme.buttonColorActive;
 
 			GuiUtil.drawRect(x, y, x + width - 1, y + height - 1, color);
-			GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), getMessage(), x, y, width, height, theme.textColorActive, CENTER, MIDDLE);
+			GuiUtil.drawAlignedStringNoShadow(matrixStack, renderContext.fontRenderer(), getMessage(), x, y, width, height, theme.textColorActive, CENTER, MIDDLE);
 		}
 	}
 }

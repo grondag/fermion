@@ -3,7 +3,8 @@ package grondag.fermion.modkeys;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 
 import grondag.fermion.modkeys.ModKeysConfig.Option;
@@ -34,71 +35,71 @@ public class ModKeysConfigScreen extends Screen {
 
 	@Override
 	protected void init() {
-		addButton(new ButtonWidget(width / 2 + 5, 100, 120, 20, I18n.translate(keyPrefix + primary.key), (buttonWidget) -> {
+		addButton(new ButtonWidget(width / 2 + 5, 100, 120, 20, new TranslatableText(keyPrefix + primary.key), (buttonWidget) -> {
 			primary = primary.ordinal() == options.length - 1 ? options[0] : options[primary.ordinal() + 1];
 			buttonWidget.queueNarration(250);
 		}) {
 			@Override
-			public String getMessage() {
-				return I18n.translate(keyPrefix + primary.key);
+			public MutableText getMessage() {
+				return new TranslatableText(keyPrefix + primary.key);
 			}
 
 			@Override
-			public void renderToolTip(int i, int j) {
-				renderTooltip(I18n.translate("config.modkeys.help.primary"), i, j);
+			public void renderToolTip(MatrixStack matrixStack, int i, int j) {
+				renderTooltip(matrixStack, new TranslatableText("config.modkeys.help.primary"), i, j);
 			}
 		});
 
-		addButton(new ButtonWidget(width / 2 + 5, 130, 120, 20, I18n.translate(keyPrefix + secondary.key), (buttonWidget) -> {
+		addButton(new ButtonWidget(width / 2 + 5, 130, 120, 20, new TranslatableText(keyPrefix + secondary.key), (buttonWidget) -> {
 			secondary = secondary.ordinal() == options.length - 1 ? options[0] : options[secondary.ordinal() + 1];
 			buttonWidget.queueNarration(250);
 		}) {
 			@Override
-			public String getMessage() {
-				return I18n.translate(keyPrefix + secondary.key);
+			public MutableText getMessage() {
+				return new TranslatableText(keyPrefix + secondary.key);
 			}
 
 			@Override
-			public void renderToolTip(int i, int j) {
-				renderTooltip(I18n.translate("config.modkeys.help.secondary"), i, j);
+			public void renderToolTip(MatrixStack matrixStack, int i, int j) {
+				renderTooltip(matrixStack, new TranslatableText("config.modkeys.help.secondary"), i, j);
 			}
 		});
 
-		addButton(new ButtonWidget(width / 2 + 5, 160, 120, 20, I18n.translate(keyPrefix + tertiary.key), (buttonWidget) -> {
+		addButton(new ButtonWidget(width / 2 + 5, 160, 120, 20, new TranslatableText(keyPrefix + tertiary.key), (buttonWidget) -> {
 			tertiary = tertiary.ordinal() == options.length - 1 ? options[0] : options[tertiary.ordinal() + 1];
 			buttonWidget.queueNarration(250);
 		}) {
 			@Override
-			public String getMessage() {
-				return I18n.translate(keyPrefix + tertiary.key);
+			public MutableText getMessage() {
+				return new TranslatableText(keyPrefix + tertiary.key);
 			}
 
 			@Override
-			public void renderToolTip(int i, int j) {
-				renderTooltip(I18n.translate("config.modkeys.help.tertiary"), i, j);
+			public void renderToolTip(MatrixStack matrixStack, int i, int j) {
+				renderTooltip(matrixStack, new TranslatableText("config.modkeys.help.tertiary"), i, j);
 			}
 		});
 
-		addButton(new ButtonWidget(width / 2 - 155, 200, 150, 20, I18n.translate("controls.reset"), (buttonWidget) -> {
+		addButton(new ButtonWidget(width / 2 - 155, 200, 150, 20, new TranslatableText("controls.reset"), (buttonWidget) -> {
 			primary = Option.CONTROL;
 			secondary = Option.ALT;
 			tertiary = Option.SUPER;
 		}));
 
-		addButton(new ButtonWidget(width / 2 + 5, 200, 150, 20, I18n.translate("gui.done"), (buttonWidget) -> {
+		addButton(new ButtonWidget(width / 2 + 5, 200, 150, 20, new TranslatableText("gui.done"), (buttonWidget) -> {
 			ModKeysConfig.saveOptions(primary, secondary, tertiary);
 			client.openScreen(parent);
 		}));
 	}
 
 	@Override
-	public void render(int i, int j, float f) {
-		renderBackground(0);
-		drawCenteredString(textRenderer, title.asFormattedString(), width / 2, 5, 16777215);
-		textRenderer.drawWithShadow(I18n.translate("config.modkeys.label.primary"), width / 2 - 5, 105, 16777215);
-		textRenderer.drawWithShadow(I18n.translate("config.modkeys.label.secondary"), width / 2 - 5, 135, 16777215);
-		textRenderer.drawWithShadow(I18n.translate("config.modkeys.label.tertiary"), width / 2 - 5, 165, 16777215);
+	public void render(MatrixStack matrixStack, int i, int j, float f) {
+		renderBackground(matrixStack, 0);
+		drawCenteredText(matrixStack, textRenderer, title, width / 2, 5, 16777215);
+		textRenderer.drawWithShadow(matrixStack, new TranslatableText("config.modkeys.label.primary"), width / 2 - 5, 105, 16777215);
+		textRenderer.drawWithShadow(matrixStack, new TranslatableText("config.modkeys.label.secondary"), width / 2 - 5, 135, 16777215);
+		textRenderer.drawWithShadow(matrixStack, new TranslatableText("config.modkeys.label.tertiary"), width / 2 - 5, 165, 16777215);
 
-		super.render(i, j, f);
+		super.render(matrixStack, i, j, f);
 	}
 }

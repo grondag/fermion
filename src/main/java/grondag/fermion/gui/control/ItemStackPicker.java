@@ -28,6 +28,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Matrix4f;
 
@@ -63,11 +64,6 @@ public class ItemStackPicker<T> extends TabBar<T> {
 		return theme.itemSlotSpacing * itemsPerRow - theme.itemSpacing + theme.internalMargin + theme.tabWidth;
 	}
 
-	@Override
-	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
-		super.drawContent(mouseX, mouseY, partialTicks);
-	}
-
 	// TODO: better labels for higher numbers
 	private String getQuantityLabel(long qty) {
 		if (qty < 1000) {
@@ -82,7 +78,7 @@ public class ItemStackPicker<T> extends TabBar<T> {
 	}
 
 	@Override
-	protected void drawItem(T item, MinecraftClient mc, ItemRenderer itemRenderer, double left, double top, float partialTicks,
+	protected void drawItem(MatrixStack matrixStack, T item, MinecraftClient mc, ItemRenderer itemRenderer, double left, double top, float partialTicks,
 			boolean isHighlighted) {
 		final int x = (int) left;
 		final int y = (int) top;
@@ -95,13 +91,13 @@ public class ItemStackPicker<T> extends TabBar<T> {
 		GuiUtil.renderItemAndEffectIntoGui(mc, itemRenderer, itemStack, x, y, theme.itemSize);
 		// TODO: support for dragging
 
-		drawQuantity(countFunc.applyAsLong(item), x, y);
+		drawQuantity(matrixStack, countFunc.applyAsLong(item), x, y);
 
 		setZOffset(0);
 		itemRenderer.zOffset = 0.0F;
 	}
 
-	protected void drawQuantity(long qty, int left, int top) {
+	protected void drawQuantity(MatrixStack matrixStack, long qty, int left, int top) {
 		if (qty < 2) {
 			return;
 		}
@@ -114,7 +110,7 @@ public class ItemStackPicker<T> extends TabBar<T> {
 		fontMatrix.multiply(Matrix4f.translate(0.0f, 0.0f, 200.0f));
 
 		final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-		final float x = (left + 8 - fontRenderer.getStringWidth(qtyLabel) * 0.5f * fontDrawScale) / fontDrawScale;
+		final float x = (left + 8 - fontRenderer.getWidth(qtyLabel) * 0.5f * fontDrawScale) / fontDrawScale;
 		final float y = (top + 16.5f) / fontDrawScale;
 		fontRenderer.draw(qtyLabel, x + 0.15f, y, theme.itemCaptionColor, false, fontMatrix, immediate, true, 0, 15728880);
 		fontRenderer.draw(qtyLabel, x - 0.15f, y, theme.itemCaptionColor, false, fontMatrix, immediate, true, 0, 15728880);

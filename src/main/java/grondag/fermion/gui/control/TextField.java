@@ -20,7 +20,10 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
@@ -49,11 +52,11 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 
 	protected final ScreenRenderContext renderContext;
 
-	public TextField(ScreenRenderContext context, int left, int top, int width, int height, String string) {
+	public TextField(ScreenRenderContext context, int left, int top, int width, int height, Text string) {
 		this(context, left, top, width, height, null, string);
 	}
 
-	public TextField(ScreenRenderContext context, int left, int top, int width, int height, @Nullable TextField textField, String string) {
+	public TextField(ScreenRenderContext context, int left, int top, int width, int height, @Nullable TextField textField, Text string) {
 		super(left, top, width, height, string);
 		text = "";
 		maxLength = 32;
@@ -78,9 +81,9 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 	}
 
 	@Override
-	protected String getNarrationMessage() {
-		final String string = getMessage();
-		return string.isEmpty() ? "" : I18n.translate("gui.narrate.editBox", string, text);
+	protected MutableText getNarrationMessage() {
+		final Text text = getMessage();
+		return new TranslatableText("gui.narrate.editBox", new Object[]{text, this.text});
 	}
 
 	public void setText(String string) {
@@ -390,17 +393,17 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 	}
 
 	@Override
-	public void renderButton(int i, int j, float f) {
+	public void renderButton(MatrixStack matrixStack, int i, int j, float f) {
 		final TextRenderer textRenderer = renderContext.fontRenderer();
 
 		if (isVisible()) {
 			if (hasBorder()) {
 				final int borderColor = isFocused() || hovered ? theme.buttonColorFocus : theme.textBorder;
-				fill(x - 1, y - 1, x + width + 1, y + height + 1, borderColor);
+				fill(matrixStack, x - 1, y - 1, x + width + 1, y + height + 1, borderColor);
 
 			}
 
-			fill(x, y, x + width, y + height, theme.textBackground);
+			fill(matrixStack, x, y, x + width, y + height, theme.textBackground);
 
 			final int textColor = editable ? theme.textColorActive : theme.textColorInactive;
 			final int startIndex = selectionStart - firstCharacterIndex;
@@ -418,7 +421,7 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 
 			if (!textToRender.isEmpty()) {
 				final String string2 = caretFlag ? textToRender.substring(0, startIndex) : textToRender;
-				p = textRenderer.draw(string2, n, o, textColor);
+				p = textRenderer.draw(matrixStack, string2, n, o, textColor);
 			}
 
 			final boolean bl3 = selectionStart < text.length() || text.length() >= getMaxLength();
@@ -431,11 +434,11 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 			}
 
 			if (!textToRender.isEmpty() && caretFlag && startIndex < textToRender.length()) {
-				textRenderer.draw(textToRender.substring(startIndex), p, o, textColor);
+				textRenderer.draw(matrixStack, textToRender.substring(startIndex), p, o, textColor);
 			}
 
 			if (!bl3 && suggestion != null) {
-				textRenderer.draw(suggestion, q - 1, o, -8355712);
+				textRenderer.draw(matrixStack, suggestion, q - 1, o, -8355712);
 			}
 
 			int var10002;
@@ -446,14 +449,14 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 					var10002 = q + 1;
 					var10003 = o + 1;
 					textRenderer.getClass();
-					DrawableHelper.fill(q, var10001, var10002, var10003 + 9, -3092272);
+					DrawableHelper.fill(matrixStack, q, var10001, var10002, var10003 + 9, -3092272);
 				} else {
-					textRenderer.draw("_", q, o, textColor);
+					textRenderer.draw(matrixStack, "_", q, o, textColor);
 				}
 			}
 
 			if (selectionLength != startIndex) {
-				final int r = n + textRenderer.getStringWidth(textToRender.substring(0, selectionLength));
+				final int r = n + textRenderer.getWidth(textToRender.substring(0, selectionLength));
 				var10002 = o - 1;
 				var10003 = r - 1;
 				final int var10004 = o + 1;
@@ -601,7 +604,7 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 	}
 
 	public int getCharacterX(int i) {
-		return i > text.length() ? x : x + renderContext.fontRenderer().getStringWidth(text.substring(0, i));
+		return i > text.length() ? x : x + renderContext.fontRenderer().getWidth(text.substring(0, i));
 	}
 
 	public void setX(int i) {

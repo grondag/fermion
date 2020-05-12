@@ -15,6 +15,8 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
+import net.minecraft.client.util.math.MatrixStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -72,7 +74,7 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 	}
 
 	@Override
-	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		for (int h = 0; h < Hue.COUNT; h++) {
 			final double radius = (h == selectedHue.ordinal()) ? radiusOuter : radiusInner;
 			final double arcStart = Math.toRadians(arc * h);
@@ -234,7 +236,7 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 	}
 
 	@Override
-	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

@@ -39,6 +39,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.api.EnvType;
@@ -408,16 +409,16 @@ public class GuiUtil {
 	 * Renders the specified text to the screen, center-aligned. Args : renderer,
 	 * string, x, y, color
 	 */
-	public static void drawAlignedStringNoShadow(TextRenderer fontRendererIn, String text, float x, float y, float width, float height, int color,
+	public static void drawAlignedStringNoShadow(MatrixStack matrixStack, TextRenderer fontRendererIn, Text text, float x, float y, float width, float height, int color,
 			HorizontalAlignment hAlign, VerticalAlignment vAlign) {
 
 		switch (hAlign) {
 		case RIGHT:
-			x += width - fontRendererIn.getStringWidth(text);
+			x += width - fontRendererIn.getWidth(text);
 			break;
 
 		case CENTER:
-			x += (width - fontRendererIn.getStringWidth(text)) / 2;
+			x += (width - fontRendererIn.getWidth(text)) / 2;
 			break;
 
 		case LEFT:
@@ -440,19 +441,19 @@ public class GuiUtil {
 			break;
 
 		}
-		fontRendererIn.draw(text, x, y, color);
+		fontRendererIn.draw(matrixStack, text, x, y, color);
 	}
 
-	public static void drawAlignedStringNoShadow(TextRenderer fontRendererIn, String text, double x, double y, double width, double height, int color,
+	public static void drawAlignedStringNoShadow(MatrixStack matrixStack, TextRenderer fontRendererIn, String text, double x, double y, double width, double height, int color,
 			HorizontalAlignment hAlign, VerticalAlignment vAlign) {
-		drawAlignedStringNoShadow(fontRendererIn, text, (float) x, (float) y, (float) width, (float) height, color, hAlign, vAlign);
+		drawAlignedStringNoShadow(matrixStack, fontRendererIn, text, (float) x, (float) y, (float) width, (float) height, color, hAlign, vAlign);
 	}
 
 	/**
 	 * Renders the specified text to the screen. Args : renderer, string, x, y,
 	 * color
 	 */
-	public static void drawStringNoShadow(TextRenderer fontRendererIn, String text, int x, int y, int color) {
-		fontRendererIn.draw(text, x, y, color);
+	public static void drawStringNoShadow(MatrixStack matrixStack, TextRenderer fontRendererIn, String text, int x, int y, int color) {
+		fontRendererIn.draw(matrixStack, text, x, y, color);
 	}
 }

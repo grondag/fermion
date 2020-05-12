@@ -18,6 +18,8 @@ package grondag.fermion.gui.control;
 import static grondag.fermion.spatial.HorizontalAlignment.CENTER;
 import static grondag.fermion.spatial.VerticalAlignment.MIDDLE;
 
+import net.minecraft.client.util.math.MatrixStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -36,7 +38,7 @@ public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 	}
 
 	@Override
-	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		float y = top;
 
 		final int hoverIndex = getButtonIndex(mouseX, mouseY);
@@ -49,7 +51,7 @@ public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 			GuiUtil.drawRect(left + 2, y + 2, right - 2, y + buttonHeight - 2, buttonColor);
 
 			final int textColor = i == hoverIndex ? theme.textColorFocus : i == target.getVisiblityIndex() ? theme.textColorActive : theme.textColorInactive;
-			GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), label, left, y, width, buttonHeight,
+			GuiUtil.drawAlignedStringNoShadow(matrixStack, renderContext.fontRenderer(), label, left, y, width, buttonHeight,
 					textColor, CENTER, MIDDLE);
 
 			y += buttonHeight;
@@ -86,7 +88,7 @@ public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 	}
 
 	@Override
-	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

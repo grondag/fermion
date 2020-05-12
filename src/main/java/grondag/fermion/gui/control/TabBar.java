@@ -22,6 +22,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.api.EnvType;
@@ -79,7 +80,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	}
 
 	@Override
-	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (items == null) {
 			return;
 		}
@@ -98,10 +99,10 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		// really doesn't look good
 		//GuiUtil.drawGradientRect(left, top, right - theme.tabWidth - theme.internalMargin, top + height, theme.itemSlotGradientTop, theme.itemSlotGradientBottom);
 
-		this.drawHighlightIfNeeded(itemHighlightIndex, true);
+		this.drawHighlightIfNeeded(matrixStack, itemHighlightIndex, true);
 
 		if (this.selectedItemIndex != itemHighlightIndex) {
-			this.drawHighlightIfNeeded(this.selectedItemIndex, false);
+			this.drawHighlightIfNeeded(matrixStack, this.selectedItemIndex, false);
 		}
 
 		final float halfTabWidth  = theme.tabWidth * 0.5f;
@@ -154,7 +155,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		double itemY = top;
 
 		for (int i = start; i < end; i++) {
-			this.drawItem(this.get(i), renderContext.minecraft(), renderContext.renderItem(), itemX, itemY, partialTicks, i == itemHighlightIndex);
+			this.drawItem(matrixStack, this.get(i), renderContext.minecraft(), renderContext.renderItem(), itemX, itemY, partialTicks, i == itemHighlightIndex);
 
 			if (++column == this.columnsPerRow) {
 				column = 0;
@@ -169,7 +170,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	}
 
 	@Override
-	public final void drawToolTip(int mouseX, int mouseY, float partialTicks) {
+	public final void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (this.items == null) {
 			return;
 		}
@@ -193,7 +194,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	 *
 	 * @param index
 	 */
-	private void drawHighlightIfNeeded(int index, boolean isHighlight) {
+	private void drawHighlightIfNeeded(MatrixStack matrixStack, int index, boolean isHighlight) {
 		if (index == NO_SELECTION) {
 			return;
 		}
@@ -209,7 +210,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		final int x = (int) (left + (idx % this.columnsPerRow) * theme.itemSlotSpacing);
 		final int y = (int) (top + (idx / this.columnsPerRow) * theme.itemRowHeightWithCaption);
 
-		this.drawHighlight(index, x, y, isHighlight);
+		this.drawHighlight(matrixStack, index, x, y, isHighlight);
 	}
 
 	/**
@@ -217,7 +218,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	 * offset. If isHighlight = true, mouse is over item. If false, item is
 	 * selected.
 	 */
-	protected void drawHighlight(int index, float x, float y, boolean isHighlight) {
+	protected void drawHighlight(MatrixStack matrixStack, int index, float x, float y, boolean isHighlight) {
 		GuiUtil.drawBoxRightBottom(x - theme.itemSelectionMargin, y - theme.itemSelectionMargin, x + theme.itemSize + theme.itemSelectionMargin,
 				y + theme.itemSize + theme.itemSelectionMargin, 1, isHighlight ? theme.buttonColorFocus : theme.buttonColorActive);
 	}
@@ -227,7 +228,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 	protected abstract void tearDownItemRendering();
 
-	protected abstract void drawItem(T item, MinecraftClient mc, ItemRenderer itemRender, double left, double top, float partialTicks, boolean isHighlighted);
+	protected abstract void drawItem(MatrixStack matrixStack, T item, MinecraftClient mc, ItemRenderer itemRender, double left, double top, float partialTicks, boolean isHighlighted);
 
 	private void updateMouseLocation(double mouseX, double mouseY) {
 		if (items == null) {

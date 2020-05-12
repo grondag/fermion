@@ -17,6 +17,7 @@ package grondag.fermion.gui.control;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.api.EnvType;
@@ -91,12 +92,12 @@ public class Slider extends AbstractControl<Slider> {
 		this.size = size;
 	}
 
-	protected void drawChoice(MinecraftClient mc, ItemRenderer itemRender, float partialTicks) {
+	protected void drawChoice(MatrixStack matrixStack, MinecraftClient mc, ItemRenderer itemRender, float partialTicks) {
 		// not drawn in base implementation
 	}
 
 	@Override
-	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (size == 0) {
 			return;
 		}
@@ -105,12 +106,12 @@ public class Slider extends AbstractControl<Slider> {
 
 		// draw label if there is one
 		if (label != null && labelWidth > 0) {
-			GuiUtil.drawAlignedStringNoShadow(renderContext.fontRenderer(), label, left, top, labelWidth, height, theme.textColorLabel,
+			GuiUtil.drawAlignedStringNoShadow(matrixStack, renderContext.fontRenderer(), label, left, top, labelWidth, height, theme.textColorLabel,
 					HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 		}
 
 		if (choiceWidthFactor > 0) {
-			drawChoice(renderContext.minecraft(), renderContext.renderItem(), partialTicks);
+			drawChoice(matrixStack, renderContext.minecraft(), renderContext.renderItem(), partialTicks);
 		}
 
 		// skip drawing tabs if there is only one
@@ -250,7 +251,7 @@ public class Slider extends AbstractControl<Slider> {
 	}
 
 	@Override
-	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

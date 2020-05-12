@@ -15,6 +15,7 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.api.EnvType;
@@ -36,7 +37,7 @@ public class ItemPreview extends AbstractControl<ItemPreview> {
 	private float contentSize;
 
 	@Override
-	public void drawContent(int mouseX, int mouseY, float partialTicks) {
+	public void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (previewItem != null) {
 			GuiUtil.renderItemAndEffectIntoGui(renderContext, previewItem, contentLeft, contentTop, contentSize);
 		}
@@ -44,13 +45,13 @@ public class ItemPreview extends AbstractControl<ItemPreview> {
 
 	@Override
 	protected void handleCoordinateUpdate() {
-		contentSize = (float) Math.min(width, height);
-		contentLeft = (float) (left + (width - contentSize) / 2);
-		contentTop = (float) (top + (height - contentSize) / 2);
+		contentSize = Math.min(width, height);
+		contentLeft = left + (width - contentSize) / 2;
+		contentTop = top + (height - contentSize) / 2;
 	}
 
 	@Override
-	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

@@ -17,6 +17,7 @@ package grondag.fermion.gui.control;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -46,14 +47,14 @@ public class BrightnessSlider extends Slider {
 	}
 
 	@Override
-	protected void drawChoice(MinecraftClient mc, ItemRenderer itemRender, float partialTicks) {
+	protected void drawChoice(MatrixStack matrixStack, MinecraftClient mc, ItemRenderer itemRender, float partialTicks) {
 		final int color = 0xFFFECE | (((255 * selectedTabIndex / 15) & 0xFF) << 24);
 
 		GuiUtil.drawRect(labelRight, top, labelRight + choiceWidth, bottom, color);
 
 		final int textColor = selectedTabIndex > 6 ? 0xFF000000 : 0xFFFFFFFF;
 
-		GuiUtil.drawAlignedStringNoShadow(mc.textRenderer, Integer.toString(selectedTabIndex), labelRight, top, choiceWidth, height,
+		GuiUtil.drawAlignedStringNoShadow(matrixStack, mc.textRenderer, Integer.toString(selectedTabIndex), labelRight, top, choiceWidth, height,
 				textColor, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 	}
 

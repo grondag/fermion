@@ -24,8 +24,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.options.ControlsOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import grondag.fermion.modkeys.ModKeysConfigScreen;
 
@@ -40,7 +40,7 @@ public class MixinControlsOptionsScreen extends Screen {
 	public void drawMenuButton(CallbackInfo info) {
 		final Screen thisScreen =  this;
 
-		addButton(new ButtonWidget(width - 100, 10, 90, 20, I18n.translate("config.modkeys.button"), (buttonWidget) -> {
+		addButton(new ButtonWidget(width - 100, 10, 90, 20, new TranslatableText("config.modkeys.button"), (buttonWidget) -> {
 			client.openScreen(new ModKeysConfigScreen(thisScreen));
 		}));
 	}

@@ -18,6 +18,7 @@ package grondag.fermion.gui.control;
 import java.util.Arrays;
 
 import net.minecraft.client.gui.ParentElement;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -58,13 +59,13 @@ public class Panel extends AbstractParentControl<Panel> implements ParentElement
 	}
 
 	@Override
-	protected void drawContent(int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (getBackgroundColor() != 0) {
 			GuiUtil.drawRect(left, top, right, bottom, getBackgroundColor());
 		}
 
 		for (final AbstractControl<?> control : children) {
-			control.drawControl(mouseX, mouseY, partialTicks);
+			control.drawControl(matrixStack, mouseX, mouseY, partialTicks);
 		}
 	}
 
@@ -243,7 +244,7 @@ public class Panel extends AbstractParentControl<Panel> implements ParentElement
 	}
 
 	@Override
-	public void drawToolTip(int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}
