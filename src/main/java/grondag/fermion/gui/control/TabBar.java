@@ -183,12 +183,12 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 			final T item = this.get(this.currentMouseIndex);
 
 			if (item != null) {
-				this.drawItemToolTip(item, renderContext, mouseX, mouseY, partialTicks);
+				this.drawItemToolTip(matrixStack, item, renderContext, mouseX, mouseY, partialTicks);
 			}
 		}
 	}
 
-	protected abstract void drawItemToolTip(T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks);
+	protected abstract void drawItemToolTip(MatrixStack matrixStack, T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks);
 
 	/**
 	 *

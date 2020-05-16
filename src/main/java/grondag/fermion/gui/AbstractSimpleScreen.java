@@ -23,6 +23,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
@@ -143,5 +144,10 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 	@Override
 	public Optional<Element> hoveredElement(double double_1, double double_2) {
 		return Optional.ofNullable(hoverControl);
+	}
+
+	@Override
+	public void renderTooltip(MatrixStack matrixStack, ItemStack itemStack, int i, int j) {
+		super.renderTooltip(matrixStack,  itemStack, i, j);
 	}
 }

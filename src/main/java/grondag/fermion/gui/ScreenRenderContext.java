@@ -16,7 +16,6 @@
 package grondag.fermion.gui;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -38,27 +37,18 @@ public interface ScreenRenderContext {
 
 	TextRenderer fontRenderer();
 
-	void drawToolTip(ItemStack hoverStack, int mouseX, int mouseY);
-
 	/**
 	 * controls that are being hovered over while rendering should call this to
 	 * receive a callback after all controls have been rendered to draw a tooltip.
 	 */
 	void setHoverControl(AbstractControl<?> control);
 
-	/**
-	 * Draws the given text as a tooltip.
-	 */
-	default void drawToolTip(MatrixStack matrixStack, Text text, int mouseX, int mouseY) {
-		screen().renderTooltip(matrixStack, text, mouseX, mouseY);
-	}
-
-	default void drawToolTip(MatrixStack matrixStack, List<Text> textLines, int mouseX, int mouseY) {
-		screen().renderTooltip(matrixStack, textLines, mouseX, mouseY);
+	default void renderTooltip(MatrixStack matrixStack, ItemStack itemStack, int i, int j) {
+		screen().renderTooltip(matrixStack, screen().getTooltipFromItem(itemStack), i, j);
 	}
 
 	default void drawLocalizedToolTip(MatrixStack matrixStack, String lang_key, int mouseX, int mouseY) {
-		this.drawToolTip(matrixStack, new TranslatableText(lang_key), mouseX, mouseY);
+		screen().renderTooltip(matrixStack, new TranslatableText(lang_key), mouseX, mouseY);
 	}
 
 	default void drawLocalizedToolTip(MatrixStack matrixStack, int mouseX, int mouseY, String... lang_keys) {
@@ -71,11 +61,11 @@ public interface ScreenRenderContext {
 		for (final String key : lang_keys) {
 			list.add(new TranslatableText(key));
 		}
-		this.drawToolTip(matrixStack, list, mouseX, mouseY);
+		screen().renderTooltip(matrixStack, list, mouseX, mouseY);
 	}
 
 	default void drawLocalizedToolTipBoolean(MatrixStack matrixStack, boolean bool, String true_key, String false_key, int mouseX, int mouseY) {
-		this.drawToolTip(matrixStack, new TranslatableText(bool ? true_key : false_key), mouseX, mouseY);
+		screen().renderTooltip(matrixStack, new TranslatableText(bool ? true_key : false_key), mouseX, mouseY);
 	}
 
 	int screenLeft();

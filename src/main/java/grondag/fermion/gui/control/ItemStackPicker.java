@@ -153,7 +153,7 @@ public class ItemStackPicker<T> extends TabBar<T> {
 	}
 
 	@Override
-	protected void drawItemToolTip(T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
-		renderContext.drawToolTip(stackFunc.apply(item), mouseX, mouseY);
+	protected void drawItemToolTip(MatrixStack matrixStack, T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
+		renderContext.renderTooltip(matrixStack, stackFunc.apply(item), mouseX, mouseY);
 	}
 }
