@@ -17,6 +17,7 @@
 package grondag.fermion.world;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
 import net.minecraft.world.World;
 
 /**
@@ -39,7 +40,7 @@ public abstract class WorldMap<T> extends Int2ObjectOpenHashMap<T> {
 	}
 
 	public T get(World world) {
-		return this.get(world.dimension.getType().getRawId());
+		return this.get(world.getDimension().getType().getRawId());
 	}
 
 	protected abstract T load(int dimension);

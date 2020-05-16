@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import grondag.fermion.modkeys.ModKeysConfig.Option;
@@ -96,10 +97,14 @@ public class ModKeysConfigScreen extends Screen {
 	public void render(MatrixStack matrixStack, int i, int j, float f) {
 		renderBackground(matrixStack, 0);
 		drawCenteredText(matrixStack, textRenderer, title, width / 2, 5, 16777215);
-		textRenderer.drawWithShadow(matrixStack, new TranslatableText("config.modkeys.label.primary"), width / 2 - 5, 105, 16777215);
-		textRenderer.drawWithShadow(matrixStack, new TranslatableText("config.modkeys.label.secondary"), width / 2 - 5, 135, 16777215);
-		textRenderer.drawWithShadow(matrixStack, new TranslatableText("config.modkeys.label.tertiary"), width / 2 - 5, 165, 16777215);
+		drawRightAlignedText(matrixStack, new TranslatableText("config.modkeys.label.primary"), width / 2 - 5, 105, 16777215);
+		drawRightAlignedText(matrixStack, new TranslatableText("config.modkeys.label.secondary"), width / 2 - 5, 135, 16777215);
+		drawRightAlignedText(matrixStack, new TranslatableText("config.modkeys.label.tertiary"), width / 2 - 5, 165, 16777215);
 
 		super.render(matrixStack, i, j, f);
+	}
+
+	private void drawRightAlignedText(MatrixStack matrices, Text text, int x, int y, int color) {
+		textRenderer.drawWithShadow(matrices, text, x - textRenderer.getWidth(text), y, color);
 	}
 }

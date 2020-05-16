@@ -111,7 +111,7 @@ public class ItemStackPicker<T> extends TabBar<T> {
 
 		final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
 		final float x = (left + 8 - fontRenderer.getWidth(qtyLabel) * 0.5f * fontDrawScale) / fontDrawScale;
-		final float y = (top + 16.5f) / fontDrawScale;
+		final float y = (top + 17.5f) / fontDrawScale;
 		fontRenderer.draw(qtyLabel, x + 0.15f, y, theme.itemCaptionColor, false, fontMatrix, immediate, true, 0, 15728880);
 		fontRenderer.draw(qtyLabel, x - 0.15f, y, theme.itemCaptionColor, false, fontMatrix, immediate, true, 0, 15728880);
 		immediate.draw();
