@@ -25,11 +25,6 @@ public class ModKeysConfigScreen extends Screen {
 	}
 
 	@Override
-	public void removed() {
-		client.options.write();
-	}
-
-	@Override
 	public void onClose() {
 		client.openScreen(parent);
 	}

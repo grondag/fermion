@@ -159,7 +159,7 @@ public class ModKeysConfig {
 		try (FileOutputStream stream = new FileOutputStream(configFile)) {
 			properties.store(stream, "Fermion ModKeys properties file");
 		} catch (final IOException e) {
-			Fermion.LOG.warn("[Fluidity] Could not store property file '" + configFile.getAbsolutePath() + "'", e);
+			Fermion.LOG.warn("[Fermion ModKeys] Could not store property file '" + configFile.getAbsolutePath() + "'", e);
 		}
 	}
 
