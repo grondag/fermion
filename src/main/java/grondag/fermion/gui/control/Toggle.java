@@ -55,6 +55,7 @@ public class Toggle extends AbstractControl<Toggle> {
 				labelHeight, theme.textColorLabel, HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	protected void handleCoordinateUpdate() {
 		final int fontHeight = MinecraftClient.getInstance().textRenderer.fontHeight;

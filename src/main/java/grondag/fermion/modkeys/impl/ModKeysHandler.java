@@ -24,6 +24,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -74,6 +75,7 @@ public class ModKeysHandler {
 
 		if (f != lastFlags) {
 			lastFlags = f;
+			@SuppressWarnings("resource")
 			final ClientPlayerEntity player = MinecraftClient.getInstance().player;
 			if (player != null) {
 				((ModKeysAccess) player).mk_flags(f);

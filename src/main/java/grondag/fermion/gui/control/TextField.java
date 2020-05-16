@@ -264,6 +264,7 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 		setCursor(text.length());
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public boolean keyPressed(int c, int j, int k) {
 		if (!isActive()) {
