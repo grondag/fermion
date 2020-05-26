@@ -16,32 +16,36 @@
 
 package grondag.fermion.world;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.util.IdentityHashMap;
 
 import net.minecraft.world.World;
 
 /**
  * Keeps lazily-loaded objects, one-per dimension. Not thread-safe.
  */
-public abstract class WorldMap<T> extends Int2ObjectOpenHashMap<T> {
+public abstract class WorldMap<T> extends IdentityHashMap<World, T> {
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 318003886323074885L;
 
 	@Override
-	public synchronized T get(int dimension) {
-		T result = super.get(dimension);
+	public T get(Object world) {
+		return getInner((World) world);
+	}
+
+	private synchronized T getInner(World world) {
+		T result = super.get(world);
 		if (result == null) {
-			result = load(dimension);
-			super.put(dimension, result);
+			result = load(world);
+			super.put(world, result);
 		}
 		return result;
 	}
 
 	public T get(World world) {
-		return this.get(world.getDimension().getType().getRawId());
+		return getInner(world);
 	}
 
-	protected abstract T load(int dimension);
+	protected abstract T load(World world);
 }

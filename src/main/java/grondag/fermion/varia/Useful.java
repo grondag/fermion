@@ -331,7 +331,7 @@ public class Useful {
 	 * Returns volume of given AABB
 	 */
 	public static double volumeAABB(Box box) {
-		return (box.x2 - box.x1) * (box.y2 - box.y1) * (box.z2 - box.z1);
+		return (box.maxX - box.minX) * (box.maxY - box.minY) * (box.maxZ - box.minZ);
 	}
 
 	/**
@@ -356,29 +356,29 @@ public class Useful {
 		double t1, t2;
 
 		if (direction.x != 0) {
-			t1 = (box.x1 - origin.x) / direction.x;
-			t2 = (box.x2 - origin.x) / direction.x;
+			t1 = (box.minX - origin.x) / direction.x;
+			t2 = (box.maxX - origin.x) / direction.x;
 			tmin = Math.max(tmin, Math.min(t1, t2));
 			tmax = Math.min(tmax, Math.max(t1, t2));
-		} else if (origin.x <= box.x1 || origin.x >= box.x2) {
+		} else if (origin.x <= box.minX || origin.x >= box.maxX) {
 			return false;
 		}
 
 		if (direction.y != 0) {
-			t1 = (box.y1 - origin.y) / direction.y;
-			t2 = (box.y2 - origin.y) / direction.y;
+			t1 = (box.minY - origin.y) / direction.y;
+			t2 = (box.maxY - origin.y) / direction.y;
 			tmin = Math.max(tmin, Math.min(t1, t2));
 			tmax = Math.min(tmax, Math.max(t1, t2));
-		} else if (origin.y <= box.y1 || origin.y >= box.y2) {
+		} else if (origin.y <= box.minY || origin.y >= box.maxY) {
 			return false;
 		}
 
 		if (direction.z != 0) {
-			t1 = (box.z1 - origin.z) / direction.z;
-			t2 = (box.z1 - origin.z) / direction.z;
+			t1 = (box.minZ - origin.z) / direction.z;
+			t2 = (box.maxZ - origin.z) / direction.z;
 			tmin = Math.max(tmin, Math.min(t1, t2));
 			tmax = Math.min(tmax, Math.max(t1, t2));
-		} else if (origin.z <= box.z1 || origin.z >= box.z2) {
+		} else if (origin.z <= box.minZ || origin.z >= box.maxZ) {
 			return false;
 		}
 

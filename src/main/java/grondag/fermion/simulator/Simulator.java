@@ -29,17 +29,18 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.PersistentState;
+import net.minecraft.world.dimension.DimensionType;
+
 import grondag.fermion.Fermion;
 import grondag.fermion.sc.concurrency.ScatterGatherThreadPool;
 import grondag.fermion.simulator.persistence.AssignedNumbersAuthority;
 import grondag.fermion.simulator.persistence.DirtKeeper;
 import grondag.fermion.simulator.persistence.SimulationTopNode;
 import grondag.fermion.varia.NBTDictionary;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.dimension.DimensionType;
 
 /**
  * Events are processed from a queue in the order they arrive.
@@ -135,7 +136,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 
 	private final IdentityHashMap<Class<? extends SimulationTopNode>, SimulationTopNode> nodes = new IdentityHashMap<>();
 
-	private final List<SimulationTickable> tickables = new ArrayList<SimulationTickable>();
+	private final List<SimulationTickable> tickables = new ArrayList<>();
 
 	private @Nullable Future<?> lastTickFuture = null;
 
@@ -180,7 +181,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 
 	public static void start(MinecraftServer serverIn) {
 		server = serverIn;
-		world = serverIn.getWorld(DimensionType.OVERWORLD);
+		world = serverIn.getWorld(DimensionType.OVERWORLD_REGISTRY_KEY);
 		instance = world.getPersistentStateManager().getOrCreate(Simulator::new, NBT_TAG_SIMULATOR);
 		instance.initialize(serverIn);
 	}
@@ -199,7 +200,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 			nodes.clear();
 			nodeTypes.forEach((s, t) -> {
 				try {
-					final SimulationTopNode node = server.getWorld(DimensionType.OVERWORLD).getPersistentStateManager().getOrCreate(t, s);
+					final SimulationTopNode node = server.getWorld(DimensionType.OVERWORLD_REGISTRY_KEY).getPersistentStateManager().getOrCreate(t, s);
 					nodes.put(node.getClass(), node);
 					node.afterCreated(this);
 				} catch (final Exception e) {
