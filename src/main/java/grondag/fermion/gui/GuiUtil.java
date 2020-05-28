@@ -45,9 +45,7 @@ import net.minecraft.util.math.MathHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-import grondag.fermion.spatial.HorizontalAlignment;
-import grondag.fermion.spatial.Rotation;
-import grondag.fermion.spatial.VerticalAlignment;
+import grondag.fermion.orientation.api.ClockwiseRotation;
 
 @Environment(EnvType.CLIENT)
 public class GuiUtil {
@@ -229,11 +227,11 @@ public class GuiUtil {
 	 * Draws a rectangle using the provide texture sprite and color
 	 */
 	public static void drawTexturedRectWithColor(double xCoord, double yCoord, double zLevel, Sprite textureSprite, double widthIn, double heightIn, int color,
-			Rotation rotation, boolean useAlpha) {
+			ClockwiseRotation rotation, boolean useAlpha) {
 		drawTexturedRectWithColor(heightIn, heightIn, heightIn, textureSprite, heightIn, heightIn, color, 1, rotation, useAlpha);
 	}
 
-	private static float[][] rotatedUV(float minU, float minV, float maxU, float maxV, Rotation rotation) {
+	private static float[][] rotatedUV(float minU, float minV, float maxU, float maxV, ClockwiseRotation rotation) {
 		final float[][] result = new float[2][4];
 
 		int i;
@@ -273,7 +271,7 @@ public class GuiUtil {
 	}
 
 	public static void drawTexturedRectWithColor(double xCoord, double yCoord, double zLevel, Sprite textureSprite, double widthIn, double heightIn, int color,
-			int textureDivision, Rotation rotation, boolean useAlpha) {
+			int textureDivision, ClockwiseRotation rotation, boolean useAlpha) {
 		final float alpha = (color >> 24 & 255) / 255.0F;
 		final float red = (color >> 16 & 255) / 255.0F;
 		final float green = (color >> 8 & 255) / 255.0F;

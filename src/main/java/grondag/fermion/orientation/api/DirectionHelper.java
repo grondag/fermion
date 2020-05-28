@@ -1,4 +1,4 @@
-package grondag.fermion.spatial;
+package grondag.fermion.orientation.api;
 
 import static net.minecraft.util.math.Direction.DOWN;
 import static net.minecraft.util.math.Direction.EAST;

@@ -15,8 +15,8 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import static grondag.fermion.spatial.HorizontalAlignment.CENTER;
-import static grondag.fermion.spatial.VerticalAlignment.MIDDLE;
+import static grondag.fermion.gui.HorizontalAlignment.CENTER;
+import static grondag.fermion.gui.VerticalAlignment.MIDDLE;
 
 import net.minecraft.client.util.math.MatrixStack;
 

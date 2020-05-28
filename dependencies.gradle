@@ -29,5 +29,6 @@ dependencies {
 	    include "grondag:fermion-simulator-${project.mc_tag}:${project.fermion_simulator_version}.+"
 	    include "grondag:special-circumstances-${project.mc_tag}:${project.special_circumstances_version}.+"
       	include "grondag:fermion-gui-${project.mc_tag}:${project.fermion_gui_version}.+"
+      	include "grondag:fermion-orientation-${project.mc_tag}:${project.fermion_orientation_version}.+"
  	}
 }

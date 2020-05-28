@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "fermion-simulator",
+  "id": "fermion-orientation",
   "version": "${version}",
-  "name": "Fermion Simulator",
-  "description": "Grondag core utility library - simulation",
+  "name": "Fermion Orientation",
+  "description": "Utility API for describing in-world orientation with human-friendly semantics",
   "authors": [
     "Grondag"
   ],
@@ -16,9 +16,6 @@
   "icon": "assets/fermion/fermion_icon.png",
   
   "environment": "*",
-  "entrypoints": {
-    "main": [ "grondag.fermion.simulator.SimulatorMod" ]
-  },
   "depends": {
     "fabricloader": "\u003e\u003d0.8.4",
     "minecraft": "~1.16-alpha",

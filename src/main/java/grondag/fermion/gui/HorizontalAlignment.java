@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package grondag.fermion.spatial;
+package grondag.fermion.gui;
 
 public enum HorizontalAlignment {
 	LEFT, CENTER, RIGHT

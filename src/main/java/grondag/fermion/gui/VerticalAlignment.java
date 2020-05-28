@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package grondag.fermion.spatial;
+package grondag.fermion.gui;
 
 public enum VerticalAlignment {
 	TOP, MIDDLE, BOTTOM

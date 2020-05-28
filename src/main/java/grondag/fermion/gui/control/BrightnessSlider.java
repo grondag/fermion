@@ -23,9 +23,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.HorizontalAlignment;
 import grondag.fermion.gui.ScreenRenderContext;
-import grondag.fermion.spatial.HorizontalAlignment;
-import grondag.fermion.spatial.VerticalAlignment;
+import grondag.fermion.gui.VerticalAlignment;
 
 @Environment(EnvType.CLIENT)
 public class BrightnessSlider extends Slider {

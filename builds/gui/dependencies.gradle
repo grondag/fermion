@@ -26,4 +26,5 @@ dependencies {
 	modImplementation ("grondag:fermion-${project.mc_tag}:${project.fermion_version}.+") { transitive = false }
     
     modImplementation ("grondag:fermion-varia-${project.mc_tag}:${project.fermion_varia_version}.+") { transitive = false }
+    modImplementation ("grondag:fermion-orientation-${project.mc_tag}:${project.fermion_orientation_version}.+") { transitive = false }
 }
