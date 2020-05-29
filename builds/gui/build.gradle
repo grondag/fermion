@@ -93,7 +93,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 sourceSets {
 	main {
 	        java {
-							srcDirs = ['../../src/main/java/grondag/fermion']
+				srcDirs = ['../../src/main/java/grondag/fermion']
 	            include 'gui/**/*'
 	            exclude '*.DS_Store'
 	        }
