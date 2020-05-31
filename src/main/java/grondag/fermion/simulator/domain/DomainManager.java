@@ -21,6 +21,11 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.server.network.ServerPlayerEntity;
+
 import grondag.fermion.Fermion;
 import grondag.fermion.simulator.Simulator;
 import grondag.fermion.simulator.persistence.AssignedNumber;
@@ -28,16 +33,12 @@ import grondag.fermion.simulator.persistence.Numbered;
 import grondag.fermion.simulator.persistence.NumberedIndex;
 import grondag.fermion.simulator.persistence.SimulationTopNode;
 import grondag.fermion.varia.NBTDictionary;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 public class DomainManager extends SimulationTopNode {
-	private static final String NBT_DOMAIN_MANAGER = NBTDictionary.claim("domMgr");
-	private static final String NBT_DOMAIN_MANAGER_DOMAINS = NBTDictionary.claim("domMgrAll");
-	private static final String NBT_DOMAIN_PLAYER_DOMAINS = NBTDictionary.claim("domMgrPlayer");
-	private static final String NBT_DOMAIN_ACTIVE_DOMAINS = NBTDictionary.claim("domMgrActive");
+	private static final String NBT_DOMAIN_MANAGER = NBTDictionary.GLOBAL.claim("domMgr");
+	private static final String NBT_DOMAIN_MANAGER_DOMAINS = NBTDictionary.GLOBAL.claim("domMgrAll");
+	private static final String NBT_DOMAIN_PLAYER_DOMAINS = NBTDictionary.GLOBAL.claim("domMgrPlayer");
+	private static final String NBT_DOMAIN_ACTIVE_DOMAINS = NBTDictionary.GLOBAL.claim("domMgrActive");
 
 	/**
 	 * Set to null when Simulator creates singleton and when it shuts down to force

@@ -17,14 +17,16 @@ package grondag.fermion.simulator.persistence;
 
 import javax.annotation.Nullable;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
+import net.minecraft.nbt.CompoundTag;
+
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.nbt.CompoundTag;
 
 public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 
-	private static final String NBT_TAG = NBTDictionary.claim("assignedNumAuth");
+	private static final String NBT_TAG = NBTDictionary.GLOBAL.claim("assignedNumAuth");
 
 	private DirtListener dirtKeeper = NullDirtListener.INSTANCE;
 	private final Object2ObjectOpenHashMap<String, NumberedIndex> indexes = new Object2ObjectOpenHashMap<>();

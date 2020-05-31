@@ -20,9 +20,9 @@ import grondag.fermion.varia.NBTDictionary;
 public enum AssignedNumber {
 	;
 
-	public static String DOMAIN = NBTDictionary.claim("anDom");
-	public static String JOB = NBTDictionary.claim("anJob");
-	public static String TASK = NBTDictionary.claim("anTsk");
-	public static String BUILD = NBTDictionary.claim("anBld");
-	public static String DEVICE = NBTDictionary.claim("anDev");
+	public static String DOMAIN = NBTDictionary.GLOBAL.claim("anDom");
+	public static String JOB = NBTDictionary.GLOBAL.claim("anJob");
+	public static String TASK = NBTDictionary.GLOBAL.claim("anTsk");
+	public static String BUILD = NBTDictionary.GLOBAL.claim("anBld");
+	public static String DEVICE = NBTDictionary.GLOBAL.claim("anDev");
 }

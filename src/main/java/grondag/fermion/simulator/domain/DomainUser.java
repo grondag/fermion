@@ -20,11 +20,12 @@ import java.util.IdentityHashMap;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundTag;
+
 import grondag.fermion.Fermion;
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
 
 public class DomainUser implements ReadWriteNBT, IDomainMember {
 	private static final HashSet<Class<? extends IUserCapability>> capabilityTypes = new HashSet<>();
@@ -33,9 +34,9 @@ public class DomainUser implements ReadWriteNBT, IDomainMember {
 		capabilityTypes.add(capabilityType);
 	}
 
-	private static final String DOMAIN_USER_NAME = NBTDictionary.claim("domUserName");
-	private static final String DOMAIN_USER_UUID = NBTDictionary.claim("domUserUUID");
-	private static final String DOMAIN_USER_FLAGS = NBTDictionary.claim("domUserFlags");
+	private static final String DOMAIN_USER_NAME = NBTDictionary.GLOBAL.claim("domUserName");
+	private static final String DOMAIN_USER_UUID = NBTDictionary.GLOBAL.claim("domUserUUID");
+	private static final String DOMAIN_USER_FLAGS = NBTDictionary.GLOBAL.claim("domUserFlags");
 
 	private final IDomain domain;
 

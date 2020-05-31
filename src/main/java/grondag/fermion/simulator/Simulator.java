@@ -33,7 +33,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
-import net.minecraft.world.dimension.DimensionType;
 
 import grondag.fermion.Fermion;
 import grondag.fermion.sc.concurrency.ScatterGatherThreadPool;
@@ -70,9 +69,9 @@ public class Simulator extends PersistentState implements DirtKeeper {
 	// STATIC MEMBERS
 	////////////////////////////////////////////////////////////
 
-	private static final String NBT_TAG_SIMULATOR = NBTDictionary.claim("emSimulator");
-	private static final String NBT_TAG_LAST_TICK = NBTDictionary.claim("simLastTick");
-	private static final String NBT_TAG_WORLD_TICK_OFFSET = NBTDictionary.claim("simTickOffset");
+	private static final String NBT_TAG_SIMULATOR = NBTDictionary.GLOBAL.claim("emSimulator");
+	private static final String NBT_TAG_LAST_TICK = NBTDictionary.GLOBAL.claim("simLastTick");
+	private static final String NBT_TAG_WORLD_TICK_OFFSET = NBTDictionary.GLOBAL.claim("simTickOffset");
 
 	/**
 	 * Only use if need a reference before it starts.
@@ -181,7 +180,14 @@ public class Simulator extends PersistentState implements DirtKeeper {
 
 	public static void start(MinecraftServer serverIn) {
 		server = serverIn;
-		world = serverIn.getWorld(DimensionType.OVERWORLD_REGISTRY_KEY);
+
+		for (final ServerWorld w : serverIn.getWorlds()) {
+			if (w.getDimension().isOverworld())  {
+				world = w;
+				break;
+			}
+		}
+
 		instance = world.getPersistentStateManager().getOrCreate(Simulator::new, NBT_TAG_SIMULATOR);
 		instance.initialize(serverIn);
 	}
@@ -200,7 +206,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 			nodes.clear();
 			nodeTypes.forEach((s, t) -> {
 				try {
-					final SimulationTopNode node = server.getWorld(DimensionType.OVERWORLD_REGISTRY_KEY).getPersistentStateManager().getOrCreate(t, s);
+					final SimulationTopNode node = world.getPersistentStateManager().getOrCreate(t, s);
 					nodes.put(node.getClass(), node);
 					node.afterCreated(this);
 				} catch (final Exception e) {

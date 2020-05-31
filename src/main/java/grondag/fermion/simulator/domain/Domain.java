@@ -25,6 +25,10 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+
 import grondag.fermion.Fermion;
 import grondag.fermion.simulator.persistence.AssignedNumber;
 import grondag.fermion.simulator.persistence.DirtListener;
@@ -32,14 +36,11 @@ import grondag.fermion.simulator.persistence.DirtListenerProvider;
 import grondag.fermion.simulator.persistence.Numbered;
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 
 public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDomain {
-	private static final String NBT_DOMAIN_SECURITY_ENABLED = NBTDictionary.claim("domSecOn");
-	private static final String NBT_DOMAIN_NAME = NBTDictionary.claim("domName");
-	private static final String NBT_DOMAIN_USERS = NBTDictionary.claim("domUsers");
+	private static final String NBT_DOMAIN_SECURITY_ENABLED = NBTDictionary.GLOBAL.claim("domSecOn");
+	private static final String NBT_DOMAIN_NAME = NBTDictionary.GLOBAL.claim("domName");
+	private static final String NBT_DOMAIN_USERS = NBTDictionary.GLOBAL.claim("domUsers");
 
 	private static final HashSet<Class<? extends IDomainCapability>> capabilityTypes = new HashSet<>();
 

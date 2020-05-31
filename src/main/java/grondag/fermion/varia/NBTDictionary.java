@@ -25,17 +25,18 @@ import java.util.HashSet;
  * the tag.
  */
 public class NBTDictionary {
-	private static final HashSet<String> tagNames = new HashSet<>();
+	public static final NBTDictionary GLOBAL = new NBTDictionary();
+
+	private final HashSet<String> tagNames = new HashSet<>();
 
 	/**
 	 * Returns tag name that is passed in, raising an assertion error if was used
 	 * before. Future version may attempt to deduplicate so retain result instead of
 	 * paramter.
 	 */
-	public static String claim(String tagName) {
+	public String claim(String tagName) {
 		assert !tagNames.contains(tagName) : "Duplicate NBT Tag name";
 		tagNames.add(tagName);
 		return tagName;
 	}
-
 }
