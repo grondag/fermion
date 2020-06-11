@@ -33,6 +33,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
+import net.minecraft.world.World;
 
 import grondag.fermion.Fermion;
 import grondag.fermion.sc.concurrency.ScatterGatherThreadPool;
@@ -182,7 +183,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 		server = serverIn;
 
 		for (final ServerWorld w : serverIn.getWorlds()) {
-			if (w.getDimension().isOverworld())  {
+			if (w.getRegistryKey() == World.OVERWORLD)  {
 				world = w;
 				break;
 			}
