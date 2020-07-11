@@ -8,12 +8,8 @@ repositories {
     //maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
     
  	maven {
-    	name = "grondag"
-    	url = "https://grondag-repo.appspot.com"
-    	credentials {
-            username "guest"
-            password ""
-		}
+    	name = "dblsaiko"
+    	uril = "https://maven.dblsaiko.net/"
     }
 }
 
