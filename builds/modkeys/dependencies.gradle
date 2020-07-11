@@ -9,7 +9,7 @@ repositories {
     
  	maven {
     	name = "dblsaiko"
-    	uril = "https://maven.dblsaiko.net/"
+    	url = "https://maven.dblsaiko.net/"
     }
 }
 
