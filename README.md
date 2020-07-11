@@ -10,17 +10,13 @@ Other parts of Fermion may become "officially" supported in the future.
 
 # Build setup
 
-Add my terrible, bad, crappy maven repo to your repostiories section in `build.gradle`
+Add the maven repo where my libraries live to your repostiories section in `build.gradle`
 
 ```gradle
 repositories {
   maven {
-    name = "grondag"
-    url = "https://grondag-repo.appspot.com"
-    credentials {
-      username "guest"
-      password ""
-    }
+    name = "dblsaiko"
+    url = "https://maven.dblsaiko.net/"
   }
 }
 ```
