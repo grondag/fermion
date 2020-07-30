@@ -88,7 +88,7 @@ public class ItemStackPicker<T> extends TabBar<T> {
 		setZOffset(200);
 		itemRenderer.zOffset = 200.0F;
 
-		GuiUtil.renderItemAndEffectIntoGui(mc, itemRenderer, itemStack, x, y, theme.itemSize);
+		GuiUtil.renderItemAndEffectIntoGui(mc, itemRenderer, itemStack, x, y, itemSize);
 		// TODO: support for dragging
 
 		drawQuantity(matrixStack, countFunc.applyAsLong(item), x, y);
@@ -115,7 +115,6 @@ public class ItemStackPicker<T> extends TabBar<T> {
 		fontRenderer.draw(qtyLabel, x + 0.15f, y, theme.itemCaptionColor, false, fontMatrix, immediate, true, 0, 15728880);
 		fontRenderer.draw(qtyLabel, x - 0.15f, y, theme.itemCaptionColor, false, fontMatrix, immediate, true, 0, 15728880);
 		immediate.draw();
-
 	}
 
 	@Override

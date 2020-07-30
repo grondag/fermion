@@ -35,9 +35,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
@@ -327,12 +325,23 @@ public class GuiUtil {
 		return renderItemAndEffectIntoGui(renderContext.minecraft(), renderContext.renderItem(), itm, x, y, contentSize);
 	}
 
+	public static boolean renderItemAndEffectIntoGui(ScreenRenderContext renderContext, ItemStack itm, BakedModel model, float x, float y, float contentSize) {
+		return renderItemAndEffectIntoGui(renderContext.minecraft(), renderContext.renderItem(), itm, model, x, y, contentSize);
+	}
+
+	public static boolean renderItemAndEffectIntoGui(MinecraftClient mc, ItemRenderer itemRender, ItemStack itemStack, float x, float y, float contentSize) {
+		if (itemStack != null && itemStack.getItem() != null) {
+			return renderItemAndEffectIntoGui(mc, itemRender, itemStack, itemRender.getHeldItemModel(itemStack, null, null), x, y, contentSize);
+		}
+
+		return false;
+	}
+
 	/**
 	 * Size is in pixels. Hat tip to McJty.
 	 */
-	public static boolean renderItemAndEffectIntoGui(MinecraftClient mc, ItemRenderer itemRender, ItemStack itemStack, float x, float y, float contentSize) {
+	public static boolean renderItemAndEffectIntoGui(MinecraftClient mc, ItemRenderer itemRender, ItemStack itemStack, BakedModel model, float x, float y, float contentSize) {
 		if (itemStack != null && itemStack.getItem() != null) {
-			final BakedModel bakedModel = itemRender.getHeldItemModel(itemStack, null, null);
 
 			RenderSystem.pushMatrix();
 			mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
@@ -347,18 +356,17 @@ public class GuiUtil {
 
 			final float half = contentSize * 0.5f;
 
-			RenderSystem.translatef(half, half, 0.0F);
+			RenderSystem.translatef(half, half, contentSize * 2);
 			RenderSystem.scalef(contentSize, -contentSize, contentSize);
 			final MatrixStack matrixStack = new MatrixStack();
 			final VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-			final Item item = itemStack.getItem();
-			final boolean frontLit = !bakedModel.isSideLit() || item == Items.SHIELD || item == Items.TRIDENT;
+			final boolean frontLit = !model.isSideLit();
 
 			if (frontLit) {
 				DiffuseLighting.disableGuiDepthLighting();
 			}
 
-			itemRender.renderItem(itemStack, ModelTransformation.Mode.GUI, false, matrixStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, bakedModel);
+			itemRender.renderItem(itemStack, ModelTransformation.Mode.GUI, false, matrixStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, model);
 			immediate.draw();
 
 			if (frontLit) {
