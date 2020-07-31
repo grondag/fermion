@@ -450,7 +450,7 @@ public class GuiUtil {
 		fontRendererIn.draw(matrixStack, text, x, y, color);
 	}
 
-	public static void drawAlignedStringNoShadow(MatrixStack matrixStack, TextRenderer fontRendererIn, String text, double x, double y, double width, double height, int color,
+	public static void drawAlignedStringNoShadow(MatrixStack matrixStack, TextRenderer fontRendererIn, Text text, double x, double y, double width, double height, int color,
 			HorizontalAlignment hAlign, VerticalAlignment vAlign) {
 		drawAlignedStringNoShadow(matrixStack, fontRendererIn, text, (float) x, (float) y, (float) width, (float) height, color, hAlign, vAlign);
 	}

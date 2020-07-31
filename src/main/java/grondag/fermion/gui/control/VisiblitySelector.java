@@ -19,6 +19,7 @@ import static grondag.fermion.gui.HorizontalAlignment.CENTER;
 import static grondag.fermion.gui.VerticalAlignment.MIDDLE;
 
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -44,7 +45,7 @@ public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 		final int hoverIndex = getButtonIndex(mouseX, mouseY);
 
 		for (int i = 0; i < target.size(); i++) {
-			final String label = target.getLabel(i);
+			final Text label = target.getLabel(i);
 
 			GuiUtil.drawBoxRightBottom(left, y, right, y + buttonHeight, 1, theme.buttonColorActive);
 			final int buttonColor = i == hoverIndex ? theme.buttonColorFocus : i == target.getVisiblityIndex() ? theme.buttonColorActive : theme.buttonColorInactive;

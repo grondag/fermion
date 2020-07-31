@@ -18,16 +18,19 @@ package grondag.fermion.gui.control;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import grondag.fermion.gui.ScreenRenderContext;
+import net.minecraft.text.Text;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import grondag.fermion.gui.ScreenRenderContext;
 
 @Environment(EnvType.CLIENT)
 public class VisibilityPanel extends Panel {
 
-	private final ArrayList<ArrayList<AbstractControl<?>>> groups = new ArrayList<ArrayList<AbstractControl<?>>>();
+	private final ArrayList<ArrayList<AbstractControl<?>>> groups = new ArrayList<>();
 
-	private final ArrayList<String> labels = new ArrayList<String>();
+	private final ArrayList<Text> labels = new ArrayList<>();
 
 	private int visiblityIndex = VisiblitySelector.NO_SELECTION;
 
@@ -50,7 +53,7 @@ public class VisibilityPanel extends Panel {
 	 * Creates a new visibility group with the given caption and returns its index.
 	 * Must call this before adding controls using the index.
 	 */
-	public int createVisiblityGroup(String label) {
+	public int createVisiblityGroup(Text label) {
 		labels.add(label);
 		groups.add(new ArrayList<AbstractControl<?>>());
 		return labels.size() - 1;
@@ -74,7 +77,7 @@ public class VisibilityPanel extends Panel {
 		return this;
 	}
 
-	public String getLabel(int visiblityIndex) {
+	public Text getLabel(int visiblityIndex) {
 		return labels.get(visiblityIndex);
 	}
 

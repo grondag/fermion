@@ -15,9 +15,12 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
+import it.unimi.dsi.fastutil.ints.IntConsumer;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.api.EnvType;
@@ -36,7 +39,7 @@ public class Slider extends AbstractControl<Slider> {
 	public static final int ITEM_SPACING = 4;
 
 	protected int size;
-	protected String label;
+	protected Text label;
 
 	/** in range 0-1, how much of pixelWidth to allow for label */
 	protected float labelWidthFactor = 0;
@@ -71,15 +74,16 @@ public class Slider extends AbstractControl<Slider> {
 		NONE, CHOICE, LEFT_ARROW, RIGHT_ARROW, TAB
 	}
 
-	private MouseLocation currentMouseLocation;
-	private int currentMouseIndex;
+	protected MouseLocation currentMouseLocation;
+	protected int currentMouseIndex;
+	protected IntConsumer onChanged;
 
 	/**
 	 * Size refers to the number of choices in the slider. Minecraft reference is
 	 * needed to set height to font height. labelWidth is in range 0-1 and allows
 	 * for alignment of stacked controls.
 	 */
-	public Slider(ScreenRenderContext renderContext, int size, String label, float labelWidthFactor) {
+	public Slider(ScreenRenderContext renderContext, int size, Text label, float labelWidthFactor) {
 		super(renderContext);
 		this.size = size;
 		this.label = label;
@@ -130,7 +134,7 @@ public class Slider extends AbstractControl<Slider> {
 			// to the right so that we keep our margins with the arrows
 			final float selectionCenterX = tabStartX + TAB_WIDTH * 0.5f + (scrollWidth - TAB_WIDTH) * selectedTabIndex / (size - 1);
 
-			GuiUtil.drawRect(selectionCenterX - TAB_WIDTH * 0.5f, tabTop, selectionCenterX - TAB_WIDTH * 0.5f, tabBottom, theme.buttonColorActive);
+			GuiUtil.drawRect(selectionCenterX - TAB_WIDTH * 0.5f, tabTop, selectionCenterX + TAB_WIDTH * 0.5f, tabBottom, theme.buttonColorActive);
 		} else {
 			final int highlightIndex = currentMouseLocation == MouseLocation.TAB ? currentMouseIndex : -1;
 
@@ -194,20 +198,23 @@ public class Slider extends AbstractControl<Slider> {
 		switch (currentMouseLocation) {
 		case LEFT_ARROW:
 			if (selectedTabIndex > 0) {
-				selectedTabIndex--;
+				--selectedTabIndex;
+				onChanged.accept(selectedTabIndex);
 			}
 			GuiUtil.playPressedSound();
 			break;
 
 		case RIGHT_ARROW:
 			if (selectedTabIndex < size - 1) {
-				selectedTabIndex++;
+				++selectedTabIndex;
+				onChanged.accept(selectedTabIndex);
 			}
 			GuiUtil.playPressedSound();
 			break;
 
 		case TAB:
 			selectedTabIndex = currentMouseIndex;
+			onChanged.accept(selectedTabIndex);
 			break;
 
 		case NONE:
@@ -224,8 +231,10 @@ public class Slider extends AbstractControl<Slider> {
 		}
 
 		updateMouseLocation(mouseX, mouseY);
+
 		if (currentMouseLocation == MouseLocation.TAB) {
 			selectedTabIndex = currentMouseIndex;
+			onChanged.accept(selectedTabIndex);
 		}
 	}
 
@@ -235,7 +244,12 @@ public class Slider extends AbstractControl<Slider> {
 			return;
 		}
 
+		final int oldIndex = selectedTabIndex;
 		selectedTabIndex = MathHelper.clamp(selectedTabIndex + mouseIncrementDelta(), 0, size - 1);
+
+		if(oldIndex != selectedTabIndex) {
+			onChanged.accept(selectedTabIndex);
+		}
 	}
 
 	public int size() {
@@ -256,4 +270,7 @@ public class Slider extends AbstractControl<Slider> {
 
 	}
 
+	public void onChanged(IntConsumer onChanged) {
+		this.onChanged = onChanged;
+	}
 }

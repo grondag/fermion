@@ -15,6 +15,7 @@
  ******************************************************************************/
 package grondag.fermion.gui;
 
+import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.client.MinecraftClient;
@@ -89,7 +90,18 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 		}
 	}
 
-	protected abstract void drawControls(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks);
+	protected void drawControls(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		final List<Element> children = this.children;
+		final int limit = children.size();
+
+		for (int i = 0; i < limit; ++i) {
+			final Element e = children.get(i);
+
+			if (e instanceof AbstractControl) {
+				((AbstractControl<?>) children.get(i)).drawControl(matrixStack, mouseX, mouseY, partialTicks);
+			}
+		}
+	}
 
 	@Override
 	public void addControls() {

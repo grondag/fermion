@@ -18,6 +18,8 @@ package grondag.fermion.gui.control;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -29,7 +31,8 @@ import grondag.fermion.gui.VerticalAlignment;
 
 @Environment(EnvType.CLIENT)
 public class BrightnessSlider extends Slider {
-	private static final String LABEL = "Brightness";
+	// TODO: localize or remove this class
+	private static final Text LABEL = new LiteralText("Brightness");
 
 	public BrightnessSlider(ScreenRenderContext renderContext) {
 		super(renderContext, 16, LABEL, 0.22f);
@@ -54,7 +57,7 @@ public class BrightnessSlider extends Slider {
 
 		final int textColor = selectedTabIndex > 6 ? 0xFF000000 : 0xFFFFFFFF;
 
-		GuiUtil.drawAlignedStringNoShadow(matrixStack, mc.textRenderer, Integer.toString(selectedTabIndex), labelRight, top, choiceWidth, height,
+		GuiUtil.drawAlignedStringNoShadow(matrixStack, mc.textRenderer, new LiteralText(Integer.toString(selectedTabIndex)), labelRight, top, choiceWidth, height,
 				textColor, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 	}
 

@@ -15,8 +15,12 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -33,12 +37,14 @@ public class Toggle extends AbstractControl<Toggle> {
 	}
 
 	protected boolean isOn = false;
-	protected String label = "unlabedl toggle";
+	protected Text label = new LiteralText("yes?");
 
 	protected int targetAreaTop;
 	protected int targetAreaBottom;
 	protected int labelWidth;
 	protected int labelHeight;
+
+	protected BooleanConsumer onChanged = b -> {};
 
 	@Override
 	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
@@ -52,7 +58,7 @@ public class Toggle extends AbstractControl<Toggle> {
 		}
 
 		GuiUtil.drawAlignedStringNoShadow(matrixStack, renderContext.fontRenderer(), label, boxRight + theme.internalMargin, targetAreaTop, labelWidth,
-				labelHeight, theme.textColorLabel, HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+				height, theme.textColorLabel, HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
 	}
 
 	@SuppressWarnings("resource")
@@ -67,7 +73,7 @@ public class Toggle extends AbstractControl<Toggle> {
 
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
-		return !(mouseX < left || mouseX > left + labelHeight + theme.internalMargin + labelWidth || mouseY < targetAreaTop
+		return !(mouseX < left || mouseX > left + theme.internalMargin + labelHeight + labelWidth || mouseY < targetAreaTop
 				|| mouseY > targetAreaBottom);
 	}
 
@@ -76,9 +82,13 @@ public class Toggle extends AbstractControl<Toggle> {
 		if (isMouseOver(mouseX, mouseY)) {
 			isOn = !isOn;
 			GuiUtil.playPressedSound();
+			onChanged.accept(isOn);
 		}
 	}
 
+	public void onChanged(BooleanConsumer onChanged) {
+		this.onChanged = onChanged;
+	}
 
 	public boolean isOn() {
 		return isOn;
@@ -89,11 +99,11 @@ public class Toggle extends AbstractControl<Toggle> {
 		return this;
 	}
 
-	public String getLabel() {
+	public Text getLabel() {
 		return label;
 	}
 
-	public Toggle setLabel(String label) {
+	public Toggle setLabel(Text label) {
 		this.label = label;
 		isDirty = true;
 		return this;
