@@ -15,6 +15,13 @@ import net.minecraft.util.math.Direction;
 public class DirectionHelper {
 	private DirectionHelper() {}
 
+	public static final int UP_BIT = 1 << Direction.UP.ordinal();
+	public static final int DOWN_BIT = 1 << Direction.DOWN.ordinal();
+	public static final int EAST_BIT = 1 << Direction.EAST.ordinal();
+	public static final int WEST_BIT = 1 << Direction.WEST.ordinal();
+	public static final int NORTH_BIT = 1 << Direction.NORTH.ordinal();
+	public static final int SOUTH_BIT = 1 << Direction.SOUTH.ordinal();
+
 	public static Direction clockwise(Direction face, Direction.Axis axis) {
 		switch(axis) {
 		case X:

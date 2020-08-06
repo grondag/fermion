@@ -2,6 +2,10 @@ package grondag.fermion.color;
 
 import net.minecraft.client.resource.language.I18n;
 
+/**
+ * @deprecated  use ColorUtil
+ */
+@Deprecated
 public enum Luminance
 {
 	BRILLIANT(90),

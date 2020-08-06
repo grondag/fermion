@@ -24,7 +24,10 @@ import net.minecraft.util.math.MathHelper;
  *
  * Hat tip to http://easyrgb.com for their reference page on conversion
  * formulas.
+ *
+ * @deprecated  use ColorUtil
  */
+@Deprecated
 public class Color {
 	public final static int HCL_MAX = 999;
 
@@ -178,7 +181,7 @@ public class Color {
 			IS_VISIBLE = false;
 		} else
 			// Convert to sRGB
-			{
+		{
 			final double x0 = x / 100;
 			final double y0 = y / 100;
 			final double z0 = z / 100;
@@ -192,7 +195,7 @@ public class Color {
 			final double b1 = (b0 > 0.0031308) ? (1.055 * Math.pow(b0, 1 / 2.4) - 0.055) : 12.92 * b0;
 
 			if (r1 >= -0.000001 && r1 <= 1.000001 && g1 >= -0.000001 && g1 <= 1.000001 && b1 >= -0.000001
-				&& b1 <= 1.000001) {
+					&& b1 <= 1.000001) {
 				red = (int) Math.round(r1 * 255);
 				green = (int) Math.round(g1 * 255);
 				blue = (int) Math.round(b1 * 255);
@@ -205,7 +208,7 @@ public class Color {
 				ARGB = 0;
 				IS_VISIBLE = false;
 			}
-			}
+		}
 
 		// Convert to HSV
 		{

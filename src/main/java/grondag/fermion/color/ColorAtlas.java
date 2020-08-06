@@ -11,7 +11,10 @@ import grondag.fermion.Fermion;
 import grondag.fermion.color.Color.HCLMode;
 import grondag.fermion.color.ColorSet.Tone;
 
-
+/**
+ * @deprecated  use ColorUtil
+ */
+@Deprecated
 public class ColorAtlas
 {
 	public static final ColorAtlas INSTANCE = new ColorAtlas();
@@ -24,7 +27,7 @@ public class ColorAtlas
 	protected ColorAtlas()
 	{
 
-		final ArrayList<ColorSet> colorMaps = new ArrayList<ColorSet>(allColors.length);
+		final ArrayList<ColorSet> colorMaps = new ArrayList<>(allColors.length);
 		int i=0;
 
 		for(int h = 0; h < Hue.COUNT; h++)

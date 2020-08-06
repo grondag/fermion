@@ -86,6 +86,21 @@ public enum FaceEdge implements StringIdentifiable {
 		}
 	}
 
+	public FaceEdge opposite() {
+		switch (this) {
+		case BOTTOM_EDGE:
+			return TOP_EDGE;
+		case LEFT_EDGE:
+			return RIGHT_EDGE;
+		case RIGHT_EDGE:
+			return LEFT_EDGE;
+		case TOP_EDGE:
+			return BOTTOM_EDGE;
+		default:
+			return null;
+		}
+	}
+
 	/**
 	 * Returns the block face next to this FaceSide on the given block face.
 	 */

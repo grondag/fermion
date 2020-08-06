@@ -1,8 +1,13 @@
 package grondag.fermion.color;
 
-import grondag.fermion.color.Color.HCLMode;
 import net.minecraft.client.resource.language.I18n;
 
+import grondag.fermion.color.Color.HCLMode;
+
+/**
+ * @deprecated  use ColorUtil
+ */
+@Deprecated
 public class ColorSet
 {
 	public final int ordinal;
@@ -53,9 +58,9 @@ public class ColorSet
 
 		// BORDERS
 		final Color whichColor = Color.fromHCL(hue.hueDegrees() + 15,
-			chroma < 10 ? chroma + 10 : chroma * 0.5,
-				luminance < 60 ? luminance + 15 : luminance - 15,
-					HCLMode.REDUCE_CHROMA);
+				chroma < 10 ? chroma + 10 : chroma * 0.5,
+						luminance < 60 ? luminance + 15 : luminance - 15,
+								HCLMode.REDUCE_CHROMA);
 		assert whichColor.IS_VISIBLE : "makeColorMap produced invisible border color for " + newColorMap.localizedName();
 
 		newColorMap.setColor(Tone.BORDER, whichColor.ARGB | 0xFF000000);

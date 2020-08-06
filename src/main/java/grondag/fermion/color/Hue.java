@@ -2,6 +2,10 @@ package grondag.fermion.color;
 
 import net.minecraft.client.resource.language.I18n;
 
+/**
+ * @deprecated  use ColorUtil
+ */
+@Deprecated
 public enum Hue
 {
 	INFRARED,
@@ -73,7 +77,7 @@ public enum Hue
 	 * to tweak which colors we actually get.
 	 * A purely aesthetic choice.
 	 */
-	 private static final double HUE_SALT = 0;
+	private static final double HUE_SALT = 0;
 
 	public static Hue[] VALUES = Hue.values();
 	public static int COUNT = VALUES.length;

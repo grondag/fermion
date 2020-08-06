@@ -16,6 +16,10 @@
 
 package grondag.fermion.color;
 
+/**
+ * @deprecated  use ColorUtil
+ */
+@Deprecated
 public class ColorHelper {
 	public static float red(int colorARGB) {
 		return (float) ((colorARGB >> 16) & 0xFF) / 255;
