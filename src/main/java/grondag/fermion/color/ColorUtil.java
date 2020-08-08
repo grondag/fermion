@@ -65,4 +65,15 @@ public class ColorUtil {
 			}
 		}
 	}
+
+	public static int hcToSrgbGlow(double hue, double chroma) {
+		int l = 100;
+		int result = ColorUtil.hclToSrgb(hue, chroma, l);
+
+		while (result == ColorUtil.NO_COLOR) {
+			result = ColorUtil.hclToSrgb(hue, chroma, --l);
+		}
+
+		return result;
+	}
 }
