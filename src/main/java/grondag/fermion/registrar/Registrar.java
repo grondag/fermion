@@ -16,6 +16,7 @@
 
 package grondag.fermion.registrar;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -87,6 +88,10 @@ public class Registrar extends AbstractRegistrar {
 
 	public <T extends Block> T block(String name, T block, Function<T, BlockItem> itemFactory) {
 		return block(name, block, itemFactory.apply(block));
+	}
+
+	public <T extends Block> T block(String name, T block, BiFunction<T, Item.Settings, BlockItem> itemFactory) {
+		return block(name, block, itemFactory.apply(block, itemSettings()));
 	}
 
 	public <T extends Block> T block(String name, T block, BlockItem item) {
