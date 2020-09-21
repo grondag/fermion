@@ -2,11 +2,15 @@ package grondag.fermion.intstream;
 
 import java.nio.IntBuffer;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 import net.minecraft.util.math.MathHelper;
 
 public class IntStreamProvider {
 	final int blockSize;
+	final int blockPoolSize;
+	final int streamPoolSize;
+
 	int blockMask;
 	final int blockShift;
 	final int[] emptyBlock;
@@ -14,22 +18,74 @@ public class IntStreamProvider {
 	final ArrayBlockingQueue<IntStreamImpl> streams;
 	final ArrayBlockingQueue<int[]> blockPool;
 
+	private volatile int streamUseCount = 0;
+	private volatile int blockUseCount = 0;
+	private volatile int maxStreamBlockCount = 1;
+
+	private static final AtomicIntegerFieldUpdater<IntStreamProvider> streamUseUpdater = AtomicIntegerFieldUpdater.newUpdater(IntStreamProvider.class, "streamUseCount");
+	private static final AtomicIntegerFieldUpdater<IntStreamProvider> blockUseUpdater = AtomicIntegerFieldUpdater.newUpdater(IntStreamProvider.class, "blockUseCount");
+	private static final AtomicIntegerFieldUpdater<IntStreamProvider> maxBlockCountUpdater = AtomicIntegerFieldUpdater.newUpdater(IntStreamProvider.class, "maxStreamBlockCount");
+
 	public IntStreamProvider(int blockSizeIn, int streamPoolSize, int blockPoolSize) {
 		blockSize = MathHelper.smallestEncompassingPowerOfTwo(blockSizeIn);
 		blockMask = blockSize - 1;
 		blockShift = Integer.bitCount(blockMask);
 		emptyBlock = new int[blockSize];
-
+		streamPoolSize = MathHelper.smallestEncompassingPowerOfTwo(streamPoolSize);
+		blockPoolSize = MathHelper.smallestEncompassingPowerOfTwo(blockPoolSize);
+		this.streamPoolSize = streamPoolSize;
+		this.blockPoolSize = blockPoolSize;
 		streams = new ArrayBlockingQueue<>(MathHelper.smallestEncompassingPowerOfTwo(streamPoolSize));
 		blockPool = new ArrayBlockingQueue<>(MathHelper.smallestEncompassingPowerOfTwo(blockPoolSize));
 	}
 
+	public int streamUseCount() {
+		return streamUseCount;
+	}
+
+	public int blockUseCount() {
+		return blockUseCount;
+	}
+
+	public int streamPoolCount() {
+		return streams.size();
+	}
+
+	public int blockPoolCount() {
+		return blockPool.size();
+	}
+
+	public int streamPoolMaxCount() {
+		return streamPoolSize;
+	}
+
+	public int blockPoolMaxCount() {
+		return blockPoolSize;
+	}
+
+	public int blockSize() {
+		return blockSize;
+	}
+
+	public int maxStreamBlockCount() {
+		return maxStreamBlockCount;
+	}
+
+	public String report() {
+		return String.format("Streams: %d used, %d / %d pooled    %dkB Blocks: %d used, %d / %d pooled   Max Blocks/Stream: %d",
+			streamUseCount(), streamPoolCount(), streamPoolMaxCount(),
+			blockSize / 256,
+			blockUseCount(), blockPoolCount(), blockPoolMaxCount(), maxStreamBlockCount());
+	}
+
 	int[] claimBlock() {
+		blockUseUpdater.incrementAndGet(this);
 		final int[] result = blockPool.poll();
 		return result == null ? new int[blockSize] : result;
 	}
 
 	public IntStreamImpl claim(int sizeHint) {
+		streamUseUpdater.incrementAndGet(this);
 		IntStreamImpl result = streams.poll();
 
 		if (result == null) {
@@ -69,22 +125,28 @@ public class IntStreamProvider {
 						return;
 				}
 
-				final int currentBlocks = capacity >> blockShift;
-					final int blocksNeeded = (address >> blockShift) + 1;
+				final int currentBlocks = (capacity >> blockShift);
+				final int blocksNeeded = (address >> blockShift) + 1;
 
-					if (blocksNeeded > blocks.length) {
-						final int newMax = MathHelper.smallestEncompassingPowerOfTwo(blocksNeeded);
-						final int[][] newBlocks = new int[newMax][];
-						System.arraycopy(blocks, 0, newBlocks, 0, blocks.length);
-						blocks = newBlocks;
-					}
+				if (blocksNeeded > blocks.length) {
+					final int newMax = MathHelper.smallestEncompassingPowerOfTwo(blocksNeeded);
+					final int[][] newBlocks = new int[newMax][];
+					System.arraycopy(blocks, 0, newBlocks, 0, blocks.length);
+					blocks = newBlocks;
+				}
 
-					for (int i = currentBlocks; i < blocksNeeded; i++) {
-						blocks[i] = claimBlock();
-					}
+				for (int i = currentBlocks; i < blocksNeeded; i++) {
+					blocks[i] = claimBlock();
+				}
 
-					capacity = blocksNeeded << blockShift;
-					blockCount = blocksNeeded;
+				capacity = blocksNeeded << blockShift;
+				blockCount = blocksNeeded;
+
+				final int oldMax = maxBlockCountUpdater.get(IntStreamProvider.this);
+
+				if (oldMax < blockCount) {
+					maxBlockCountUpdater.compareAndSet(IntStreamProvider.this, oldMax, blockCount);
+				}
 			}
 		}
 
@@ -121,6 +183,7 @@ public class IntStreamProvider {
 			blocks[blockIndex] = null;
 			System.arraycopy(emptyBlock, 0, block, 0, blockSize);
 			blockPool.offer(block);
+			blockUseUpdater.decrementAndGet(IntStreamProvider.this);
 		}
 
 		@Override
@@ -154,6 +217,8 @@ public class IntStreamProvider {
 		 */
 		public void reset() {
 			if (blockCount > 1) {
+				blockUseUpdater.addAndGet(IntStreamProvider.this, 1 - blockCount);
+
 				for (int i = 1; i < blockCount; i++) {
 					blockPool.offer(blocks[i]);
 					blocks[i] = null;
@@ -168,6 +233,7 @@ public class IntStreamProvider {
 		public void release() {
 			releaseBlocks();
 			streams.offer(this);
+			streamUseUpdater.decrementAndGet(IntStreamProvider.this);
 		}
 
 		protected int blockIndex(int address) {
