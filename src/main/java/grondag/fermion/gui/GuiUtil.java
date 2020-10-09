@@ -17,6 +17,7 @@ package grondag.fermion.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import grondag.fermion.orientation.api.ClockwiseRotation;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.MinecraftClient;
@@ -42,8 +43,6 @@ import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
-import grondag.fermion.orientation.api.ClockwiseRotation;
 
 @Environment(EnvType.CLIENT)
 public class GuiUtil {
@@ -225,7 +224,7 @@ public class GuiUtil {
 	 * Draws a rectangle using the provide texture sprite and color
 	 */
 	public static void drawTexturedRectWithColor(double xCoord, double yCoord, double zLevel, Sprite textureSprite, double widthIn, double heightIn, int color,
-			ClockwiseRotation rotation, boolean useAlpha) {
+	ClockwiseRotation rotation, boolean useAlpha) {
 		drawTexturedRectWithColor(heightIn, heightIn, heightIn, textureSprite, heightIn, heightIn, color, 1, rotation, useAlpha);
 	}
 
@@ -235,22 +234,22 @@ public class GuiUtil {
 		int i;
 
 		switch (rotation) {
-		case ROTATE_NONE:
-		default:
-			i = 0;
-			break;
+			case ROTATE_NONE:
+			default:
+				i = 0;
+				break;
 
-		case ROTATE_90:
-			i = 3;
-			break;
+			case ROTATE_90:
+				i = 3;
+				break;
 
-		case ROTATE_180:
-			i = 2;
-			break;
+			case ROTATE_180:
+				i = 2;
+				break;
 
-		case ROTATE_270:
-			i = 1;
-			break;
+			case ROTATE_270:
+				i = 1;
+				break;
 		}
 
 		result[0][i] = minU;
@@ -269,7 +268,7 @@ public class GuiUtil {
 	}
 
 	public static void drawTexturedRectWithColor(double xCoord, double yCoord, double zLevel, Sprite textureSprite, double widthIn, double heightIn, int color,
-			int textureDivision, ClockwiseRotation rotation, boolean useAlpha) {
+	int textureDivision, ClockwiseRotation rotation, boolean useAlpha) {
 		final float alpha = (color >> 24 & 255) / 255.0F;
 		final float red = (color >> 16 & 255) / 255.0F;
 		final float green = (color >> 8 & 255) / 255.0F;
@@ -282,8 +281,8 @@ public class GuiUtil {
 		final float uv[][] = rotatedUV(minU, minV, maxU, maxV, rotation);
 
 		final TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
-		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-		textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).setFilter(false, false);
+		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+		textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
 
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexbuffer = tessellator.getBuffer();
@@ -313,7 +312,7 @@ public class GuiUtil {
 			RenderSystem.enableAlphaTest();
 		}
 
-		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
 	}
 
@@ -344,8 +343,8 @@ public class GuiUtil {
 		if (itemStack != null && itemStack.getItem() != null) {
 
 			RenderSystem.pushMatrix();
-			mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-			mc.getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).setFilter(false, false);
+			mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+			mc.getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
 			RenderSystem.enableRescaleNormal();
 			RenderSystem.enableAlphaTest();
 			RenderSystem.defaultAlphaFunc();
@@ -416,42 +415,42 @@ public class GuiUtil {
 	 * string, x, y, color
 	 */
 	public static void drawAlignedStringNoShadow(MatrixStack matrixStack, TextRenderer fontRendererIn, Text text, float x, float y, float width, float height, int color,
-			HorizontalAlignment hAlign, VerticalAlignment vAlign) {
+	HorizontalAlignment hAlign, VerticalAlignment vAlign) {
 
 		switch (hAlign) {
-		case RIGHT:
-			x += width - fontRendererIn.getWidth(text);
-			break;
+			case RIGHT:
+				x += width - fontRendererIn.getWidth(text);
+				break;
 
-		case CENTER:
-			x += (width - fontRendererIn.getWidth(text)) / 2;
-			break;
+			case CENTER:
+				x += (width - fontRendererIn.getWidth(text)) / 2;
+				break;
 
-		case LEFT:
-		default:
-			break;
+			case LEFT:
+			default:
+				break;
 
 		}
 
 		switch (vAlign) {
-		case BOTTOM:
-			y += height - fontRendererIn.fontHeight;
-			break;
+			case BOTTOM:
+				y += height - fontRendererIn.fontHeight;
+				break;
 
-		case MIDDLE:
-			y += (height - fontRendererIn.fontHeight) / 2;
-			break;
+			case MIDDLE:
+				y += (height - fontRendererIn.fontHeight) / 2;
+				break;
 
-		case TOP:
-		default:
-			break;
+			case TOP:
+			default:
+				break;
 
 		}
 		fontRendererIn.draw(matrixStack, text, x, y, color);
 	}
 
 	public static void drawAlignedStringNoShadow(MatrixStack matrixStack, TextRenderer fontRendererIn, Text text, double x, double y, double width, double height, int color,
-			HorizontalAlignment hAlign, VerticalAlignment vAlign) {
+	HorizontalAlignment hAlign, VerticalAlignment vAlign) {
 		drawAlignedStringNoShadow(matrixStack, fontRendererIn, text, (float) x, (float) y, (float) width, (float) height, color, hAlign, vAlign);
 	}
 

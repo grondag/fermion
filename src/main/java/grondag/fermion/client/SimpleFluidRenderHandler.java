@@ -18,7 +18,6 @@ package grondag.fermion.client;
 
 import java.util.function.Function;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -26,6 +25,8 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
+
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 
 class SimpleFluidRenderHandler implements FluidRenderHandler {
 	private final int color;
@@ -50,7 +51,7 @@ class SimpleFluidRenderHandler implements FluidRenderHandler {
 	}
 
 	public void reload() {
-		final Function<Identifier, Sprite> atlas = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		final Function<Identifier, Sprite> atlas = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 		sprites[0] = atlas.apply(stillSpriteName);
 		sprites[1] = atlas.apply(flowingSpriteName);
 	}
