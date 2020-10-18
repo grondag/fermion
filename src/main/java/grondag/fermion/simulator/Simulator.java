@@ -27,20 +27,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.World;
-
 import grondag.fermion.Fermion;
 import grondag.fermion.sc.concurrency.ScatterGatherThreadPool;
 import grondag.fermion.simulator.persistence.AssignedNumbersAuthority;
 import grondag.fermion.simulator.persistence.DirtKeeper;
 import grondag.fermion.simulator.persistence.SimulationTopNode;
 import grondag.fermion.varia.NBTDictionary;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.PersistentState;
+import net.minecraft.world.World;
 
 /**
  * Events are processed from a queue in the order they arrive.

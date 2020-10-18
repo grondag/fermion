@@ -15,27 +15,23 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
-
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-
+import grondag.fermion.orientation.impl.HorizontalEdgeHelper;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apiguardian.api.API;
+import org.jetbrains.annotations.ApiStatus.Experimental;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 
-import grondag.fermion.orientation.impl.HorizontalEdgeHelper;
-
 /**
  * A subset of {@link CubeEdge}, includes only the edges in the horizontal
  * plane.
  */
-@API(status = EXPERIMENTAL)
+@Experimental
 public enum HorizontalEdge implements StringIdentifiable {
 	NORTH_EAST(HorizontalFace.NORTH, HorizontalFace.EAST),
 	NORTH_WEST(HorizontalFace.WEST, HorizontalFace.NORTH),
@@ -54,7 +50,7 @@ public enum HorizontalEdge implements StringIdentifiable {
 		this.left = left;
 		this.right = right;
 		vector = new Vec3i(left.face.getVector().getX() + right.face.getVector().getX(), 0,
-				left.face.getVector().getZ() + right.face.getVector().getZ());
+			left.face.getVector().getZ() + right.face.getVector().getZ());
 	}
 
 	public HorizontalEdge rotate(BlockRotation rotation) {

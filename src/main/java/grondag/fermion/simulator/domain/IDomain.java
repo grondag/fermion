@@ -17,13 +17,12 @@ package grondag.fermion.simulator.domain;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.google.common.eventbus.EventBus;
-
 import grondag.fermion.simulator.persistence.DirtListenerProvider;
 import grondag.fermion.simulator.persistence.Numbered;
 import grondag.fermion.simulator.persistence.SimulationNode;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.entity.player.PlayerEntity;
 
 public interface IDomain extends SimulationNode, DirtListenerProvider, Numbered {

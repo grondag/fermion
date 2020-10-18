@@ -15,14 +15,12 @@
  ******************************************************************************/
 package grondag.fermion.simulator.persistence;
 
-import javax.annotation.Nullable;
-
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
-import net.minecraft.nbt.CompoundTag;
-
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
 
 public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 

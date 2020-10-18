@@ -3,12 +3,11 @@ package grondag.fermion.gui.control;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
+import grondag.fermion.gui.ScreenRenderContext;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.ParentElement;
-
-import grondag.fermion.gui.ScreenRenderContext;
 
 public abstract class AbstractParentControl <T extends AbstractParentControl<T>> extends AbstractControl<T> implements ParentElement {
 	@Nullable

@@ -3,11 +3,12 @@ package grondag.fermion.gui.control;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Predicates;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import grondag.fermion.gui.ScreenRenderContext;
+import grondag.fermion.gui.ScreenTheme;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
@@ -29,9 +30,6 @@ import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
-import grondag.fermion.gui.ScreenRenderContext;
-import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
 public class TextField extends AbstractButtonWidget implements Drawable, Element {
@@ -293,53 +291,53 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 				return true;
 			} else {
 				switch(c) {
-				case 259:
-					if (editable) {
-						selecting = false;
-						erase(-1);
-						selecting = Screen.hasShiftDown();
-					}
+					case 259:
+						if (editable) {
+							selecting = false;
+							erase(-1);
+							selecting = Screen.hasShiftDown();
+						}
 
-					return true;
-				case 256: // esv
-					return false;
-				case 260:
-				case 264:
-				case 265:
-				case 266:
-				case 267:
-				default:
-					return Character.isLetterOrDigit(c) || Character.isWhitespace(c);
-				case 261:
-					if (editable) {
-						selecting = false;
-						erase(1);
-						selecting = Screen.hasShiftDown();
-					}
+						return true;
+					case 256: // esv
+						return false;
+					case 260:
+					case 264:
+					case 265:
+					case 266:
+					case 267:
+					default:
+						return Character.isLetterOrDigit(c) || Character.isWhitespace(c);
+					case 261:
+						if (editable) {
+							selecting = false;
+							erase(1);
+							selecting = Screen.hasShiftDown();
+						}
 
-					return true;
-				case 262:
-					if (Screen.hasControlDown()) {
-						setCursor(this.getWordSkipPosition(1));
-					} else {
-						moveCursor(1);
-					}
+						return true;
+					case 262:
+						if (Screen.hasControlDown()) {
+							setCursor(this.getWordSkipPosition(1));
+						} else {
+							moveCursor(1);
+						}
 
-					return true;
-				case 263:
-					if (Screen.hasControlDown()) {
-						setCursor(this.getWordSkipPosition(-1));
-					} else {
-						moveCursor(-1);
-					}
+						return true;
+					case 263:
+						if (Screen.hasControlDown()) {
+							setCursor(this.getWordSkipPosition(-1));
+						} else {
+							moveCursor(-1);
+						}
 
-					return true;
-				case 268:
-					setCursorToStart();
-					return true;
-				case 269:
-					setCursorToEnd();
-					return true;
+						return true;
+					case 268:
+						setCursorToStart();
+						return true;
+					case 269:
+						setCursorToEnd();
+						return true;
 				}
 			}
 		}

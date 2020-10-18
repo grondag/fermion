@@ -18,14 +18,13 @@ package grondag.fermion.simulator.domain;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-
 import grondag.fermion.Fermion;
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundTag;
 
 public class DomainUser implements ReadWriteNBT, IDomainMember {
 	private static final HashSet<Class<? extends IUserCapability>> capabilityTypes = new HashSet<>();
@@ -88,7 +87,7 @@ public class DomainUser implements ReadWriteNBT, IDomainMember {
 	 */
 	public boolean hasPrivilege(Privilege p) {
 		return !domain.isSecurityEnabled() || Privilege.PRIVILEGE_FLAG_SET.isFlagSetForValue(Privilege.ADMIN, privilegeFlags)
-				|| Privilege.PRIVILEGE_FLAG_SET.isFlagSetForValue(p, privilegeFlags);
+		|| Privilege.PRIVILEGE_FLAG_SET.isFlagSetForValue(p, privilegeFlags);
 	}
 
 	public void grantPrivilege(Privilege p, boolean hasPrivilege) {

@@ -15,6 +15,12 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
+import java.util.function.Consumer;
+
+import grondag.fermion.orientation.impl.CubeEdgeHelper;
+import org.apiguardian.api.API;
+import org.jetbrains.annotations.Nullable;
+
 import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_180;
 import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_270;
 import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_90;
@@ -22,18 +28,9 @@ import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_NONE;
 import static org.apiguardian.api.API.Status.EXPERIMENTAL;
 import static org.apiguardian.api.API.Status.INTERNAL;
 
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-
-import org.apiguardian.api.API;
-
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
-
-import grondag.fermion.orientation.impl.CubeEdgeHelper;
-
 import net.minecraft.util.math.Vec3i;
 
 /**

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package grondag.fermion.simulator.domain;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public interface IDomainMember {
 	@Nullable IDomain getDomain();

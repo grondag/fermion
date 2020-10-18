@@ -15,19 +15,17 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
-
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-
+import grondag.fermion.orientation.impl.HorizontalFaceHelper;
 import org.apiguardian.api.API;
+import org.jetbrains.annotations.Nullable;
+
+import static org.apiguardian.api.API.Status.EXPERIMENTAL;
 
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
-
-import grondag.fermion.orientation.impl.HorizontalFaceHelper;
 
 /**
  * A subset of {@link Direction}, includes only the face in the horizontal

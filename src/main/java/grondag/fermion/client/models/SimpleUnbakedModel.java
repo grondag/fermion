@@ -22,9 +22,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Pair;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;

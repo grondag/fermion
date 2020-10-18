@@ -15,22 +15,20 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
-import static org.apiguardian.api.API.Status.INTERNAL;
-
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-
+import grondag.fermion.orientation.impl.CubeCornerHelper;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apiguardian.api.API;
+import org.jetbrains.annotations.Nullable;
+
+import static org.apiguardian.api.API.Status.EXPERIMENTAL;
+import static org.apiguardian.api.API.Status.INTERNAL;
 
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
-
-import grondag.fermion.orientation.impl.CubeCornerHelper;
 
 /**
  * Defines the eight corners of a block and the relative positions of the

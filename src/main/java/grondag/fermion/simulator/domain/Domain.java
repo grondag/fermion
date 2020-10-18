@@ -20,15 +20,8 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-
 import grondag.fermion.Fermion;
 import grondag.fermion.simulator.persistence.AssignedNumber;
 import grondag.fermion.simulator.persistence.DirtListener;
@@ -36,6 +29,11 @@ import grondag.fermion.simulator.persistence.DirtListenerProvider;
 import grondag.fermion.simulator.persistence.Numbered;
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDomain {
 	private static final String NBT_DOMAIN_SECURITY_ENABLED = NBTDictionary.GLOBAL.claim("domSecOn");

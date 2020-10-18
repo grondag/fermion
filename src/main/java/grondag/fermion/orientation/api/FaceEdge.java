@@ -15,27 +15,23 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
+import java.util.function.Consumer;
+
+import grondag.fermion.orientation.impl.FaceEdgeHelper;
+import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Nullable;
+
 import static net.minecraft.util.math.Direction.DOWN;
 import static net.minecraft.util.math.Direction.EAST;
 import static net.minecraft.util.math.Direction.NORTH;
 import static net.minecraft.util.math.Direction.SOUTH;
 import static net.minecraft.util.math.Direction.UP;
 import static net.minecraft.util.math.Direction.WEST;
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
-import static org.apiguardian.api.API.Status.INTERNAL;
-
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-
-import org.apiguardian.api.API;
 
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 
-import grondag.fermion.orientation.impl.FaceEdgeHelper;
-
-@API(status = EXPERIMENTAL)
+@Internal
 public enum FaceEdge implements StringIdentifiable {
 	TOP_EDGE(SOUTH, NORTH, UP, UP, UP, UP),
 	BOTTOM_EDGE(NORTH, SOUTH, DOWN, DOWN, DOWN, DOWN),
@@ -45,7 +41,7 @@ public enum FaceEdge implements StringIdentifiable {
 	// for a given face, which face is at the position identified by this enum?
 	private final Direction relativeLookup[];
 
-	@API(status = INTERNAL)
+	@Internal
 	public final int ordinalBit;
 
 	public final String name;
@@ -58,46 +54,46 @@ public enum FaceEdge implements StringIdentifiable {
 
 	public FaceEdge clockwise() {
 		switch (this) {
-		case BOTTOM_EDGE:
-			return LEFT_EDGE;
-		case LEFT_EDGE:
-			return TOP_EDGE;
-		case RIGHT_EDGE:
-			return BOTTOM_EDGE;
-		case TOP_EDGE:
-			return RIGHT_EDGE;
-		default:
-			return null;
+			case BOTTOM_EDGE:
+				return LEFT_EDGE;
+			case LEFT_EDGE:
+				return TOP_EDGE;
+			case RIGHT_EDGE:
+				return BOTTOM_EDGE;
+			case TOP_EDGE:
+				return RIGHT_EDGE;
+			default:
+				return null;
 		}
 	}
 
 	public FaceEdge counterClockwise() {
 		switch (this) {
-		case BOTTOM_EDGE:
-			return RIGHT_EDGE;
-		case LEFT_EDGE:
-			return BOTTOM_EDGE;
-		case RIGHT_EDGE:
-			return TOP_EDGE;
-		case TOP_EDGE:
-			return LEFT_EDGE;
-		default:
-			return null;
+			case BOTTOM_EDGE:
+				return RIGHT_EDGE;
+			case LEFT_EDGE:
+				return BOTTOM_EDGE;
+			case RIGHT_EDGE:
+				return TOP_EDGE;
+			case TOP_EDGE:
+				return LEFT_EDGE;
+			default:
+				return null;
 		}
 	}
 
 	public FaceEdge opposite() {
 		switch (this) {
-		case BOTTOM_EDGE:
-			return TOP_EDGE;
-		case LEFT_EDGE:
-			return RIGHT_EDGE;
-		case RIGHT_EDGE:
-			return LEFT_EDGE;
-		case TOP_EDGE:
-			return BOTTOM_EDGE;
-		default:
-			return null;
+			case BOTTOM_EDGE:
+				return TOP_EDGE;
+			case LEFT_EDGE:
+				return RIGHT_EDGE;
+			case RIGHT_EDGE:
+				return LEFT_EDGE;
+			case TOP_EDGE:
+				return BOTTOM_EDGE;
+			default:
+				return null;
 		}
 	}
 

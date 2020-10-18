@@ -22,9 +22,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
@@ -52,8 +51,8 @@ public abstract class SimpleModel extends AbstractModel {
 	protected final ItemProxy itemProxy = new ItemProxy();
 
 	public SimpleModel(
-			Sprite sprite,
-			ModelTransformation transformation) {
+	Sprite sprite,
+	ModelTransformation transformation) {
 		super(sprite, transformation);
 	}
 
