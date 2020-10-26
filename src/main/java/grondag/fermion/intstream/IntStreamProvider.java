@@ -161,13 +161,19 @@ public class IntStreamProvider {
 
 		private void releaseBlocks() {
 			if (blockCount > 0) {
-				// don't reuse last block if it isn't a block size
-				final int skipIndex = isCompact ? -1 : blockCount - 1;
 
-				for (int i = 0; i < blockCount; i++) {
-					if (i != skipIndex) {
-						zeroAndReleaseBlock(i);
-					}
+				// don't reuse last block if it isn't full size
+				final int limit;
+
+				if (isCompact) {
+					limit = blockCount - 1;
+					blocks[blockCount] = null;
+				} else {
+					limit = blockCount;
+				}
+
+				for (int i = 0; i < limit; i++) {
+					zeroAndReleaseBlock(i);
 
 					blocks[i] = null;
 				}
