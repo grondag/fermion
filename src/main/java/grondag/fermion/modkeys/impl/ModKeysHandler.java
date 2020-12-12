@@ -21,14 +21,16 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 import grondag.fermion.modkeys.ModKeysConfig;
 
@@ -86,13 +88,14 @@ public class ModKeysHandler {
 
 	@Environment(EnvType.CLIENT)
 	private static void sendUpdatePacket(byte flags) {
-		final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeByte(flags);
-		ClientSidePacketRegistry.INSTANCE.sendToServer(PACKET_ID, buf);
+		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+			final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+			buf.writeByte(flags);
+			ClientPlayNetworking.send(PACKET_ID, buf);
+		}
 	}
 
-	public static void accept(PacketContext context, PacketByteBuf buf) {
-		final PlayerEntity player = context.getPlayer();
+	public static void accept(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
 		if (player != null) {
 			((ModKeysAccess) player).mk_flags(buf.readByte());
 		}

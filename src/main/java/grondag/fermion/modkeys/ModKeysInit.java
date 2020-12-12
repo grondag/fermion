@@ -15,13 +15,14 @@
  ******************************************************************************/
 package grondag.fermion.modkeys;
 
-import grondag.fermion.modkeys.impl.ModKeysHandler;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+
+import grondag.fermion.modkeys.impl.ModKeysHandler;
 
 public class ModKeysInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ServerSidePacketRegistry.INSTANCE.register(ModKeysHandler.PACKET_ID, ModKeysHandler::accept);
+		ServerPlayNetworking.registerGlobalReceiver(ModKeysHandler.PACKET_ID, ModKeysHandler::accept);
 	}
 }
