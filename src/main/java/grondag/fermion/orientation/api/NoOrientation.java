@@ -15,11 +15,9 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
+import org.jetbrains.annotations.ApiStatus.Experimental;
 
-import org.apiguardian.api.API;
-
-@API(status = EXPERIMENTAL)
+@Experimental
 public enum NoOrientation {
 	NONE
 }

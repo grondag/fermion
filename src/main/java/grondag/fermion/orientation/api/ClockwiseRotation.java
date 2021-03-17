@@ -15,16 +15,14 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
-
 import java.util.function.Consumer;
 
-import org.apiguardian.api.API;
+import org.jetbrains.annotations.ApiStatus.Experimental;
 
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 
-@API(status = EXPERIMENTAL)
+@Experimental
 public enum ClockwiseRotation implements StringIdentifiable {
 	ROTATE_NONE(0),
 	ROTATE_90(90),
@@ -44,7 +42,7 @@ public enum ClockwiseRotation implements StringIdentifiable {
 	 */
 	public final int degreesInverse;
 
-	private ClockwiseRotation(int degrees) {
+	ClockwiseRotation(int degrees) {
 		name = name().toLowerCase();
 		this.degrees = degrees;
 		degreesInverse = (360 - degrees) % 360;

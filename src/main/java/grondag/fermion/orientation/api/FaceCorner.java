@@ -15,18 +15,16 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
-import static org.apiguardian.api.API.Status.INTERNAL;
-
 import java.util.function.Consumer;
 
-import org.apiguardian.api.API;
+import org.jetbrains.annotations.ApiStatus.Experimental;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 import net.minecraft.util.StringIdentifiable;
 
 import grondag.fermion.orientation.impl.FaceCornerHelper;
 
-@API(status = EXPERIMENTAL)
+@Experimental
 public enum FaceCorner implements StringIdentifiable {
 	TOP_LEFT(FaceEdge.LEFT_EDGE, FaceEdge.TOP_EDGE), TOP_RIGHT(FaceEdge.TOP_EDGE, FaceEdge.RIGHT_EDGE), BOTTOM_LEFT(FaceEdge.BOTTOM_EDGE, FaceEdge.LEFT_EDGE),
 	BOTTOM_RIGHT(FaceEdge.RIGHT_EDGE, FaceEdge.BOTTOM_EDGE);
@@ -43,10 +41,10 @@ public enum FaceCorner implements StringIdentifiable {
 
 	public final String name;
 
-	@API(status = INTERNAL)
+	@Internal
 	public final int ordinalBit;
 
-	private FaceCorner(FaceEdge leftSide, FaceEdge rightSide) {
+	FaceCorner(FaceEdge leftSide, FaceEdge rightSide) {
 		name = name().toLowerCase();
 		this.leftSide = leftSide;
 		this.rightSide = rightSide;

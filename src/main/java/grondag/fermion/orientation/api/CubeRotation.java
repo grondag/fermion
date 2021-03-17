@@ -17,18 +17,17 @@ package grondag.fermion.orientation.api;
 
 import java.util.function.Consumer;
 
-import grondag.fermion.orientation.impl.CubeRotationHelper;
-import org.apiguardian.api.API;
+import org.jetbrains.annotations.ApiStatus.Experimental;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
-
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
-import static org.apiguardian.api.API.Status.INTERNAL;
 
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.Vec3i;
+
+import grondag.fermion.orientation.impl.CubeRotationHelper;
 
 /**
  * Defines the twelve edges of a block and the relative position of neighboring
@@ -40,7 +39,7 @@ import net.minecraft.util.math.Vec3i;
  *
  * Components of the name are bottom and back face.
  */
-@API(status = EXPERIMENTAL)
+@Experimental
 public enum CubeRotation implements StringIdentifiable {
 	DOWN_SOUTH(Direction.DOWN, Direction.SOUTH),
 	DOWN_WEST(Direction.DOWN, Direction.WEST),
@@ -77,10 +76,10 @@ public enum CubeRotation implements StringIdentifiable {
 	 * Ordinal sequence that includes all faces, corner and far corners. Used to
 	 * index them in a mixed array.
 	 */
-	@API(status = INTERNAL)
+	@Internal
 	public final int superOrdinal;
 
-	@API(status = INTERNAL)
+	@Internal
 	public final int superOrdinalBit;
 
 	/**
@@ -89,7 +88,7 @@ public enum CubeRotation implements StringIdentifiable {
 	@Nullable
 	public final HorizontalEdge horizontalEdge;
 
-	private CubeRotation(Direction bottom, Direction back) {
+	CubeRotation(Direction bottom, Direction back) {
 		name = name().toLowerCase();
 		this.bottom = bottom;
 		this.back = back;

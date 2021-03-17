@@ -15,15 +15,13 @@
  ******************************************************************************/
 package grondag.fermion.orientation.impl;
 
-import static org.apiguardian.api.API.Status.INTERNAL;
-
 import java.util.function.Consumer;
 
-import org.apiguardian.api.API;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 import grondag.fermion.orientation.api.ClockwiseRotation;
 
-@API(status = INTERNAL)
+@Internal
 public abstract class ClockwiseRotationHelper {
 	private ClockwiseRotationHelper() {
 	}

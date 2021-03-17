@@ -17,21 +17,20 @@ package grondag.fermion.orientation.api;
 
 import java.util.function.Consumer;
 
-import grondag.fermion.orientation.impl.HorizontalFaceHelper;
-import org.apiguardian.api.API;
+import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.Nullable;
-
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
 
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 
+import grondag.fermion.orientation.impl.HorizontalFaceHelper;
+
 /**
  * A subset of {@link Direction}, includes only the face in the horizontal
  * plane.
  */
-@API(status = EXPERIMENTAL)
+@Experimental
 public enum HorizontalFace implements StringIdentifiable {
 	NORTH(Direction.NORTH),
 	EAST(Direction.EAST),
@@ -44,7 +43,7 @@ public enum HorizontalFace implements StringIdentifiable {
 
 	public final String name;
 
-	private HorizontalFace(Direction face) {
+	HorizontalFace(Direction face) {
 		name = name().toLowerCase();
 		this.face = face;
 		vector = face.getVector();

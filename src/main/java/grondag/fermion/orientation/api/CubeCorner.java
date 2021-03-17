@@ -17,24 +17,23 @@ package grondag.fermion.orientation.api;
 
 import java.util.function.Consumer;
 
-import grondag.fermion.orientation.impl.CubeCornerHelper;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apiguardian.api.API;
+import org.jetbrains.annotations.ApiStatus.Experimental;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
-
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
-import static org.apiguardian.api.API.Status.INTERNAL;
 
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 
+import grondag.fermion.orientation.impl.CubeCornerHelper;
+
 /**
  * Defines the eight corners of a block and the relative positions of the
  * neighboring blocks diagonally adjacent to those corners.
  */
-@API(status = EXPERIMENTAL)
+@Experimental
 public enum CubeCorner implements StringIdentifiable {
 	UP_NORTH_EAST(Direction.UP, Direction.EAST, Direction.NORTH),
 	UP_NORTH_WEST(Direction.UP, Direction.WEST, Direction.NORTH),
@@ -55,12 +54,12 @@ public enum CubeCorner implements StringIdentifiable {
 	 * Ordinal sequence that includes all faces, corner and far corners. Use to
 	 * index them in a mixed array.
 	 */
-	@API(status = INTERNAL)
+	@Internal
 	public final int superOrdinal;
-	@API(status = INTERNAL)
+	@Internal
 	public final int superOrdinalBit;
 
-	private CubeCorner(Direction face1, Direction face2, Direction face3) {
+	CubeCorner(Direction face1, Direction face2, Direction face3) {
 		name = name().toLowerCase();
 		this.face1 = face1;
 		this.face2 = face2;

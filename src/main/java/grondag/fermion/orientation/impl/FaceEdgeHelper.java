@@ -17,15 +17,14 @@ package grondag.fermion.orientation.impl;
 
 import java.util.function.Consumer;
 
-import grondag.fermion.orientation.api.FaceEdge;
-import org.apiguardian.api.API;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
-
-import static org.apiguardian.api.API.Status.INTERNAL;
 
 import net.minecraft.util.math.Direction;
 
-@API(status = INTERNAL)
+import grondag.fermion.orientation.api.FaceEdge;
+
+@Internal
 public abstract class FaceEdgeHelper {
 	private FaceEdgeHelper() {
 	}

@@ -15,18 +15,16 @@
  ******************************************************************************/
 package grondag.fermion.orientation.impl;
 
-import static org.apiguardian.api.API.Status.INTERNAL;
-
 import java.util.function.Consumer;
 
-import org.apiguardian.api.API;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 import net.minecraft.util.math.MathHelper;
 
 import grondag.fermion.orientation.api.HorizontalEdge;
 import grondag.fermion.orientation.api.HorizontalFace;
 
-@API(status = INTERNAL)
+@Internal
 public abstract class HorizontalEdgeHelper {
 	private HorizontalEdgeHelper() {
 	}

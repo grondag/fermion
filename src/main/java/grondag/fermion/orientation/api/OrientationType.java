@@ -15,13 +15,11 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
-
-import org.apiguardian.api.API;
+import org.jetbrains.annotations.ApiStatus.Experimental;
 
 import net.minecraft.util.math.Direction;
 
-@API(status = EXPERIMENTAL)
+@Experimental
 @SuppressWarnings("rawtypes")
 public enum OrientationType {
 	NONE(NoOrientation.class),
@@ -35,7 +33,7 @@ public enum OrientationType {
 
 	public final Class<? extends Enum> enumClass;
 
-	private OrientationType(Class<? extends Enum> enumClass) {
+	OrientationType(Class<? extends Enum> enumClass) {
 		this.enumClass = enumClass;
 	}
 }

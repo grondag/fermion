@@ -15,30 +15,30 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
-import java.util.function.Consumer;
-
-import grondag.fermion.orientation.impl.CubeEdgeHelper;
-import org.apiguardian.api.API;
-import org.jetbrains.annotations.Nullable;
-
 import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_180;
 import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_270;
 import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_90;
 import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_NONE;
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
-import static org.apiguardian.api.API.Status.INTERNAL;
+
+import java.util.function.Consumer;
+
+import org.jetbrains.annotations.ApiStatus.Experimental;
+import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.Vec3i;
 
+import grondag.fermion.orientation.impl.CubeEdgeHelper;
+
 /**
  * Defines the twelve edges of a block and the relative position of neighboring
  * blocks diagonally adjacent to those edges. Use when shape is symmetrical with
  * respect to that edge.
  */
-@API(status = EXPERIMENTAL)
+@Experimental
 public enum CubeEdge implements StringIdentifiable {
 	DOWN_SOUTH(Direction.DOWN, Direction.SOUTH, ROTATE_180),
 	DOWN_WEST(Direction.DOWN, Direction.WEST, ROTATE_270),
@@ -72,10 +72,10 @@ public enum CubeEdge implements StringIdentifiable {
 	 * Ordinal sequence that includes all faces, corner and far corners. Used to
 	 * index them in a mixed array.
 	 */
-	@API(status = INTERNAL)
+	@Internal
 	public final int superOrdinal;
 
-	@API(status = INTERNAL)
+	@Internal
 	public final int superOrdinalBit;
 
 	/**
@@ -84,7 +84,7 @@ public enum CubeEdge implements StringIdentifiable {
 	@Nullable
 	public final HorizontalEdge horizontalEdge;
 
-	private CubeEdge(Direction face1, Direction face2, ClockwiseRotation rotation) {
+	CubeEdge(Direction face1, Direction face2, ClockwiseRotation rotation) {
 		name = name().toLowerCase();
 		this.face1 = face1;
 		this.face2 = face2;
