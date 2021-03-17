@@ -70,10 +70,6 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-		RenderSystem.disableRescaleNormal();
-		RenderSystem.disableDepthTest();
-		RenderSystem.pushMatrix();
-
 		for(int k = 0; k < buttons.size(); ++k) {
 			buttons.get(k).render(matrixStack, mouseX, mouseY, partialTicks);
 		}
@@ -83,12 +79,6 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 		if (hoverControl != null) {
 			hoverControl.drawToolTip(matrixStack, mouseX, mouseY, partialTicks);
 		}
-
-		RenderSystem.popMatrix();
-		RenderSystem.enableDepthTest();
-		RenderSystem.enableRescaleNormal();
-		RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		RenderSystem.disableBlend();
 

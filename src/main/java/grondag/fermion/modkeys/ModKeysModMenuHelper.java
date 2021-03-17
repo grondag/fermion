@@ -16,24 +16,18 @@
 
 package grondag.fermion.modkeys;
 
-import java.util.function.Function;
-
-import io.github.prospector.modmenu.api.ModMenuApi;
-
-import net.minecraft.client.gui.screen.Screen;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-public class ModKeysModMenuHelper implements ModMenuApi {
-	@Override
-	public Function<Screen, ? extends Screen> getConfigScreenFactory() {
-		return ModKeysConfigScreen::new;
-	}
-
-	@Override
-	public String getModId() {
-		return "fermion-modkeys";
-	}
+public class ModKeysModMenuHelper { //implements ModMenuApi {
+	//	@Override
+	//	public Function<Screen, ? extends Screen> getConfigScreenFactory() {
+	//		return ModKeysConfigScreen::new;
+	//	}
+	//
+	//	@Override
+	//	public String getModId() {
+	//		return "fermion-modkeys";
+	//	}
 }

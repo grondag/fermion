@@ -106,7 +106,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 		final int itemHighlightIndex = this.currentMouseLocation == MouseLocation.ITEM ? this.currentMouseIndex : NO_SELECTION;
 
-		RenderSystem.disableLighting();
+		// FIX: remove or repair
+//		RenderSystem.disableLighting();
 		RenderSystem.disableDepthTest();
 
 		// really doesn't look good

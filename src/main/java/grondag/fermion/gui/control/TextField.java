@@ -4,10 +4,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import com.google.common.base.Predicates;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import grondag.fermion.gui.ScreenRenderContext;
-import grondag.fermion.gui.ScreenTheme;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
@@ -18,9 +14,6 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -30,6 +23,9 @@ import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import grondag.fermion.gui.ScreenRenderContext;
+import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
 public class TextField extends AbstractButtonWidget implements Drawable, Element {
@@ -488,20 +484,21 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 			i = x + width;
 		}
 
-		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
-		RenderSystem.disableTexture();
-		RenderSystem.enableColorLogicOp();
-		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferBuilder.begin(7, VertexFormats.POSITION);
-		bufferBuilder.vertex(i, l, 0.0D).next();
-		bufferBuilder.vertex(k, l, 0.0D).next();
-		bufferBuilder.vertex(k, j, 0.0D).next();
-		bufferBuilder.vertex(i, j, 0.0D).next();
-		tessellator.draw();
-		RenderSystem.disableColorLogicOp();
-		RenderSystem.enableTexture();
+		// FIX: remove or repair
+//		final Tessellator tessellator = Tessellator.getInstance();
+//		final BufferBuilder bufferBuilder = tessellator.getBuffer();
+//		RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
+//		RenderSystem.disableTexture();
+//		RenderSystem.enableColorLogicOp();
+//		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
+//		bufferBuilder.begin(7, VertexFormats.POSITION);
+//		bufferBuilder.vertex(i, l, 0.0D).next();
+//		bufferBuilder.vertex(k, l, 0.0D).next();
+//		bufferBuilder.vertex(k, j, 0.0D).next();
+//		bufferBuilder.vertex(i, j, 0.0D).next();
+//		tessellator.draw();
+//		RenderSystem.disableColorLogicOp();
+//		RenderSystem.enableTexture();
 	}
 
 	public void setMaxLength(int i) {

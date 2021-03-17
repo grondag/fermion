@@ -101,7 +101,7 @@ public abstract class SimpleModel extends AbstractModel {
 		}
 
 		@Override
-		public BakedModel apply(BakedModel bakedModel, ItemStack itemStack, @Nullable ClientWorld clientWorld, @Nullable LivingEntity livingEntity) {
+		public BakedModel apply(BakedModel bakedModel, ItemStack itemStack, @Nullable ClientWorld clientWorld, @Nullable LivingEntity livingEntity, int seed) {
 			return SimpleModel.this;
 		}
 	}

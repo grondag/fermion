@@ -15,37 +15,27 @@
  ******************************************************************************/
 package grondag.fermion.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import grondag.fermion.orientation.api.ClockwiseRotation;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+import grondag.fermion.orientation.api.ClockwiseRotation;
+
 @Environment(EnvType.CLIENT)
 public class GuiUtil {
+
+	// FIX: replace these - they currently don't do anything
 
 	public static final int MOUSE_LEFT = 0;
 	public static final int MOUSE_MIDDLE = 2;
@@ -59,80 +49,80 @@ public class GuiUtil {
 	 * causes problems because it doesn't know what to restore it to.
 	 */
 	public static void drawRect(float left, float top, float right, float bottom, int color) {
-		if (left < right) {
-			final float i = left;
-			left = right;
-			right = i;
-		}
-
-		if (top < bottom) {
-			final float j = top;
-			top = bottom;
-			bottom = j;
-		}
-
-		final float alpha = (color >> 24 & 255) / 255.0F;
-		final float red = (color >> 16 & 255) / 255.0F;
-		final float green = (color >> 8 & 255) / 255.0F;
-		final float blue = (color & 255) / 255.0F;
-		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder vertexbuffer = tessellator.getBuffer();
-
-		RenderSystem.disableTexture();
-		RenderSystem.color4f(red, green, blue, alpha);
-		vertexbuffer.begin(7, VertexFormats.POSITION);
-		vertexbuffer.vertex(left, bottom, 0.0D).next();
-		vertexbuffer.vertex(right, bottom, 0.0D).next();
-		vertexbuffer.vertex(right, top, 0.0D).next();
-		vertexbuffer.vertex(left, top, 0.0D).next();
-		tessellator.draw();
-		RenderSystem.color4f(1, 1, 1, 1);
-		RenderSystem.enableTexture();
+	//		if (left < right) {
+	//			final float i = left;
+	//			left = right;
+	//			right = i;
+	//		}
+	//
+	//		if (top < bottom) {
+	//			final float j = top;
+	//			top = bottom;
+	//			bottom = j;
+	//		}
+	//
+	//		final float alpha = (color >> 24 & 255) / 255.0F;
+	//		final float red = (color >> 16 & 255) / 255.0F;
+	//		final float green = (color >> 8 & 255) / 255.0F;
+	//		final float blue = (color & 255) / 255.0F;
+	//		final Tessellator tessellator = Tessellator.getInstance();
+	//		final BufferBuilder vertexbuffer = tessellator.getBuffer();
+	//
+	//		RenderSystem.disableTexture();
+	//		RenderSystem.color4f(red, green, blue, alpha);
+	//		vertexbuffer.begin(7, VertexFormats.POSITION);
+	//		vertexbuffer.vertex(left, bottom, 0.0D).next();
+	//		vertexbuffer.vertex(right, bottom, 0.0D).next();
+	//		vertexbuffer.vertex(right, top, 0.0D).next();
+	//		vertexbuffer.vertex(left, top, 0.0D).next();
+	//		tessellator.draw();
+	//		RenderSystem.color4f(1, 1, 1, 1);
+	//		RenderSystem.enableTexture();
 	}
 
 	public static void drawGradientRect(float left, float top, float right, float bottom, int color1, int color2) {
-		if (left < right) {
-			final float i = left;
-			left = right;
-			right = i;
-		}
-
-		if (top < bottom) {
-			final float j = top;
-			top = bottom;
-			bottom = j;
-		}
-
-		final float alpha1 = ((color1 >> 24) & 255) / 255.0F;
-		final float red1 = ((color1 >> 16) & 255) / 255.0F;
-		final float green1 = ((color1 >> 8) & 255) / 255.0F;
-		final float blue1 = (color1 & 255) / 255.0F;
-
-		final float alpha2 = ((color2 >> 24) & 255) / 255.0F;
-		final float red2 = ((color2 >> 16) & 255) / 255.0F;
-		final float green2 = ((color2 >> 8) & 255) / 255.0F;
-		final float blue2 = (color2 & 255) / 255.0F;
-
-		RenderSystem.disableTexture();
-		RenderSystem.enableBlend();
-		RenderSystem.disableAlphaTest();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.shadeModel(7425);
-
-		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder vertexbuffer = tessellator.getBuffer();
-
-		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
-		vertexbuffer.vertex(left, bottom, 0.0D).color(red1, green1, blue1, alpha1).next();
-		vertexbuffer.vertex(right, bottom, 0.0D).color(red1, green1, blue1, alpha1).next();
-		vertexbuffer.vertex(right, top, 0.0D).color(red2, green2, blue2, alpha2).next();
-		vertexbuffer.vertex(left, top, 0.0D).color(red2, green2, blue2, alpha2).next();
-		tessellator.draw();
-		RenderSystem.color4f(1, 1, 1, 1);
-		RenderSystem.shadeModel(7424);
-		RenderSystem.disableBlend();
-		RenderSystem.enableAlphaTest();
-		RenderSystem.enableTexture();
+	//		if (left < right) {
+	//			final float i = left;
+	//			left = right;
+	//			right = i;
+	//		}
+	//
+	//		if (top < bottom) {
+	//			final float j = top;
+	//			top = bottom;
+	//			bottom = j;
+	//		}
+	//
+	//		final float alpha1 = ((color1 >> 24) & 255) / 255.0F;
+	//		final float red1 = ((color1 >> 16) & 255) / 255.0F;
+	//		final float green1 = ((color1 >> 8) & 255) / 255.0F;
+	//		final float blue1 = (color1 & 255) / 255.0F;
+	//
+	//		final float alpha2 = ((color2 >> 24) & 255) / 255.0F;
+	//		final float red2 = ((color2 >> 16) & 255) / 255.0F;
+	//		final float green2 = ((color2 >> 8) & 255) / 255.0F;
+	//		final float blue2 = (color2 & 255) / 255.0F;
+	//
+	//		RenderSystem.disableTexture();
+	//		RenderSystem.enableBlend();
+	//		RenderSystem.disableAlphaTest();
+	//		RenderSystem.defaultBlendFunc();
+	//		RenderSystem.shadeModel(7425);
+	//
+	//		final Tessellator tessellator = Tessellator.getInstance();
+	//		final BufferBuilder vertexbuffer = tessellator.getBuffer();
+	//
+	//		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
+	//		vertexbuffer.vertex(left, bottom, 0.0D).color(red1, green1, blue1, alpha1).next();
+	//		vertexbuffer.vertex(right, bottom, 0.0D).color(red1, green1, blue1, alpha1).next();
+	//		vertexbuffer.vertex(right, top, 0.0D).color(red2, green2, blue2, alpha2).next();
+	//		vertexbuffer.vertex(left, top, 0.0D).color(red2, green2, blue2, alpha2).next();
+	//		tessellator.draw();
+	//		RenderSystem.color4f(1, 1, 1, 1);
+	//		RenderSystem.shadeModel(7424);
+	//		RenderSystem.disableBlend();
+	//		RenderSystem.enableAlphaTest();
+	//		RenderSystem.enableTexture();
 	}
 
 	/**
@@ -200,24 +190,24 @@ public class GuiUtil {
 	}
 
 	public static void drawQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, int color) {
-		final float f3 = (color >> 24 & 255) / 255.0F;
-		final float f = (color >> 16 & 255) / 255.0F;
-		final float f1 = (color >> 8 & 255) / 255.0F;
-		final float f2 = (color & 255) / 255.0F;
-		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder vertexbuffer = tessellator.getBuffer();
-		RenderSystem.enableBlend();
-		RenderSystem.disableTexture();
-		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-		RenderSystem.color4f(f, f1, f2, f3);
-		vertexbuffer.begin(7, VertexFormats.POSITION);
-		vertexbuffer.vertex(x0, y0, 0.0D).next();
-		vertexbuffer.vertex(x1, y1, 0.0D).next();
-		vertexbuffer.vertex(x2, y2, 0.0D).next();
-		vertexbuffer.vertex(x3, y3, 0.0D).next();
-		tessellator.draw();
-		RenderSystem.enableTexture();
-		RenderSystem.disableBlend();
+	//		final float f3 = (color >> 24 & 255) / 255.0F;
+	//		final float f = (color >> 16 & 255) / 255.0F;
+	//		final float f1 = (color >> 8 & 255) / 255.0F;
+	//		final float f2 = (color & 255) / 255.0F;
+	//		final Tessellator tessellator = Tessellator.getInstance();
+	//		final BufferBuilder vertexbuffer = tessellator.getBuffer();
+	//		RenderSystem.enableBlend();
+	//		RenderSystem.disableTexture();
+	//		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+	//		RenderSystem.color4f(f, f1, f2, f3);
+	//		vertexbuffer.begin(7, VertexFormats.POSITION);
+	//		vertexbuffer.vertex(x0, y0, 0.0D).next();
+	//		vertexbuffer.vertex(x1, y1, 0.0D).next();
+	//		vertexbuffer.vertex(x2, y2, 0.0D).next();
+	//		vertexbuffer.vertex(x3, y3, 0.0D).next();
+	//		tessellator.draw();
+	//		RenderSystem.enableTexture();
+	//		RenderSystem.disableBlend();
 	}
 
 	/**
@@ -269,50 +259,50 @@ public class GuiUtil {
 
 	public static void drawTexturedRectWithColor(double xCoord, double yCoord, double zLevel, Sprite textureSprite, double widthIn, double heightIn, int color,
 	int textureDivision, ClockwiseRotation rotation, boolean useAlpha) {
-		final float alpha = (color >> 24 & 255) / 255.0F;
-		final float red = (color >> 16 & 255) / 255.0F;
-		final float green = (color >> 8 & 255) / 255.0F;
-		final float blue = (color & 255) / 255.0F;
-
-		final float minU = textureSprite.getMinU();
-		final float minV = textureSprite.getMinV();
-		final float maxU = minU + (textureSprite.getMaxU() - minU) / textureDivision;
-		final float maxV = minV + (textureSprite.getMaxV() - minV) / textureDivision;
-		final float uv[][] = rotatedUV(minU, minV, maxU, maxV, rotation);
-
-		final TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
-		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-		textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
-
-		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder vertexbuffer = tessellator.getBuffer();
-		RenderSystem.enableTexture();
-
-		if (useAlpha) {
-			RenderSystem.enableAlphaTest(); // should already be, but make sure
-			RenderSystem.enableBlend();
-			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-		} else {
-			RenderSystem.disableBlend();
-			RenderSystem.disableAlphaTest();
-		}
-
-		RenderSystem.color4f(1, 1, 1, 1);
-
-		vertexbuffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
-		vertexbuffer.vertex(xCoord + 0, yCoord + heightIn, zLevel).texture(uv[0][0], uv[1][0]).color(red, green, blue, alpha).next();
-		vertexbuffer.vertex(xCoord + widthIn, yCoord + heightIn, zLevel).texture(uv[0][1], uv[1][1]).color(red, green, blue, alpha).next();
-		vertexbuffer.vertex(xCoord + widthIn, yCoord + 0, zLevel).texture(uv[0][2], uv[1][2]).color(red, green, blue, alpha).next();
-		vertexbuffer.vertex(xCoord + 0, yCoord + 0, zLevel).texture(uv[0][3], uv[1][3]).color(red, green, blue, alpha).next();
-		tessellator.draw();
-
-		if (useAlpha) {
-			RenderSystem.disableBlend();
-		} else {
-			RenderSystem.enableAlphaTest();
-		}
-
-		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+	//		final float alpha = (color >> 24 & 255) / 255.0F;
+	//		final float red = (color >> 16 & 255) / 255.0F;
+	//		final float green = (color >> 8 & 255) / 255.0F;
+	//		final float blue = (color & 255) / 255.0F;
+	//
+	//		final float minU = textureSprite.getMinU();
+	//		final float minV = textureSprite.getMinV();
+	//		final float maxU = minU + (textureSprite.getMaxU() - minU) / textureDivision;
+	//		final float maxV = minV + (textureSprite.getMaxV() - minV) / textureDivision;
+	//		final float uv[][] = rotatedUV(minU, minV, maxU, maxV, rotation);
+	//
+	//		final TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
+	//		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+	//		textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
+	//
+	//		final Tessellator tessellator = Tessellator.getInstance();
+	//		final BufferBuilder vertexbuffer = tessellator.getBuffer();
+	//		RenderSystem.enableTexture();
+	//
+	//		if (useAlpha) {
+	//			RenderSystem.enableAlphaTest(); // should already be, but make sure
+	//			RenderSystem.enableBlend();
+	//			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+	//		} else {
+	//			RenderSystem.disableBlend();
+	//			RenderSystem.disableAlphaTest();
+	//		}
+	//
+	//		RenderSystem.color4f(1, 1, 1, 1);
+	//
+	//		vertexbuffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+	//		vertexbuffer.vertex(xCoord + 0, yCoord + heightIn, zLevel).texture(uv[0][0], uv[1][0]).color(red, green, blue, alpha).next();
+	//		vertexbuffer.vertex(xCoord + widthIn, yCoord + heightIn, zLevel).texture(uv[0][1], uv[1][1]).color(red, green, blue, alpha).next();
+	//		vertexbuffer.vertex(xCoord + widthIn, yCoord + 0, zLevel).texture(uv[0][2], uv[1][2]).color(red, green, blue, alpha).next();
+	//		vertexbuffer.vertex(xCoord + 0, yCoord + 0, zLevel).texture(uv[0][3], uv[1][3]).color(red, green, blue, alpha).next();
+	//		tessellator.draw();
+	//
+	//		if (useAlpha) {
+	//			RenderSystem.disableBlend();
+	//		} else {
+	//			RenderSystem.enableAlphaTest();
+	//		}
+	//
+	//		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
 	}
 
@@ -329,9 +319,9 @@ public class GuiUtil {
 	}
 
 	public static boolean renderItemAndEffectIntoGui(MinecraftClient mc, ItemRenderer itemRender, ItemStack itemStack, float x, float y, float contentSize) {
-		if (itemStack != null && itemStack.getItem() != null) {
-			return renderItemAndEffectIntoGui(mc, itemRender, itemStack, itemRender.getHeldItemModel(itemStack, null, null), x, y, contentSize);
-		}
+//		if (itemStack != null && itemStack.getItem() != null) {
+//			return renderItemAndEffectIntoGui(mc, itemRender, itemStack, itemRender.getHeldItemModel(itemStack, null, null), x, y, contentSize);
+//		}
 
 		return false;
 	}
@@ -340,74 +330,75 @@ public class GuiUtil {
 	 * Size is in pixels. Hat tip to McJty.
 	 */
 	public static boolean renderItemAndEffectIntoGui(MinecraftClient mc, ItemRenderer itemRender, ItemStack itemStack, BakedModel model, float x, float y, float contentSize) {
-		if (itemStack != null && itemStack.getItem() != null) {
-
-			RenderSystem.pushMatrix();
-			mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-			mc.getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
-			RenderSystem.enableRescaleNormal();
-			RenderSystem.enableAlphaTest();
-			RenderSystem.defaultAlphaFunc();
-			RenderSystem.enableBlend();
-			RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-			RenderSystem.translatef(x, y, itemRender.zOffset);
-
-			final float half = contentSize * 0.5f;
-
-			RenderSystem.translatef(half, half, contentSize * 2);
-			RenderSystem.scalef(contentSize, -contentSize, contentSize);
-			final MatrixStack matrixStack = new MatrixStack();
-			final VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-			final boolean frontLit = !model.isSideLit();
-
-			if (frontLit) {
-				DiffuseLighting.disableGuiDepthLighting();
-			}
-
-			itemRender.renderItem(itemStack, ModelTransformation.Mode.GUI, false, matrixStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, model);
-			immediate.draw();
-
-			if (frontLit) {
-				DiffuseLighting.enableGuiDepthLighting();
-			}
-
-			RenderSystem.disableRescaleNormal();
-			RenderSystem.popMatrix();
-
-			RenderSystem.disableAlphaTest();
-			RenderSystem.disableBlend();
-
-			if (itemStack.isDamaged()) {
-				final float scale = contentSize / 16f;
-				RenderSystem.disableTexture();
-				final Tessellator tessellator = Tessellator.getInstance();
-				final BufferBuilder bufferBuilder = tessellator.getBuffer();
-				final float dmg = itemStack.getDamage();
-				final float maxDmg = itemStack.getMaxDamage();
-				final float ratio = Math.max(0.0F, (maxDmg - dmg) / maxDmg);
-				final int width = Math.round(13.0F - dmg * 13.0F / maxDmg);
-				final int color = MathHelper.hsvToRgb(ratio / 3.0F, 1.0F, 1.0F);
-				bufferGuiQuad(bufferBuilder, x + 2 * scale, y + 13 * scale, 13 * scale, 2 * scale, 0, 0, 0, 255);
-				tessellator.draw();
-				bufferGuiQuad(bufferBuilder, x + 2 * scale, y + 13.5f * scale, width * scale, scale, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
-				tessellator.draw();
-
-				RenderSystem.enableTexture();
-			}
-
-			return true;
-		} else {
-			return false;
-		}
+	//		if (itemStack != null && itemStack.getItem() != null) {
+	//
+	//			RenderSystem.pushMatrix();
+	//			mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+	//			mc.getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
+	//			RenderSystem.enableRescaleNormal();
+	//			RenderSystem.enableAlphaTest();
+	//			RenderSystem.defaultAlphaFunc();
+	//			RenderSystem.enableBlend();
+	//			RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+	//			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+	//			RenderSystem.translatef(x, y, itemRender.zOffset);
+	//
+	//			final float half = contentSize * 0.5f;
+	//
+	//			RenderSystem.translatef(half, half, contentSize * 2);
+	//			RenderSystem.scalef(contentSize, -contentSize, contentSize);
+	//			final MatrixStack matrixStack = new MatrixStack();
+	//			final VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+	//			final boolean frontLit = !model.isSideLit();
+	//
+	//			if (frontLit) {
+	//				DiffuseLighting.disableGuiDepthLighting();
+	//			}
+	//
+	//			itemRender.renderItem(itemStack, ModelTransformation.Mode.GUI, false, matrixStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, model);
+	//			immediate.draw();
+	//
+	//			if (frontLit) {
+	//				DiffuseLighting.enableGuiDepthLighting();
+	//			}
+	//
+	//			RenderSystem.disableRescaleNormal();
+	//			RenderSystem.popMatrix();
+	//
+	//			RenderSystem.disableAlphaTest();
+	//			RenderSystem.disableBlend();
+	//
+	//			if (itemStack.isDamaged()) {
+	//				final float scale = contentSize / 16f;
+	//				RenderSystem.disableTexture();
+	//				final Tessellator tessellator = Tessellator.getInstance();
+	//				final BufferBuilder bufferBuilder = tessellator.getBuffer();
+	//				final float dmg = itemStack.getDamage();
+	//				final float maxDmg = itemStack.getMaxDamage();
+	//				final float ratio = Math.max(0.0F, (maxDmg - dmg) / maxDmg);
+	//				final int width = Math.round(13.0F - dmg * 13.0F / maxDmg);
+	//				final int color = MathHelper.hsvToRgb(ratio / 3.0F, 1.0F, 1.0F);
+	//				bufferGuiQuad(bufferBuilder, x + 2 * scale, y + 13 * scale, 13 * scale, 2 * scale, 0, 0, 0, 255);
+	//				tessellator.draw();
+	//				bufferGuiQuad(bufferBuilder, x + 2 * scale, y + 13.5f * scale, width * scale, scale, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
+	//				tessellator.draw();
+	//
+	//				RenderSystem.enableTexture();
+	//			}
+	//
+	//			return true;
+	//		} else {
+	//			return false;
+	//		}
+		return false;
 	}
 
 	private static void bufferGuiQuad(BufferBuilder bufferBuilder, float left, float top, float width, float height, int r, int g, int b, int a) {
-		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
-		bufferBuilder.vertex(left, top, 0).color(r, g, b, a).next();
-		bufferBuilder.vertex(left, top + height, 0).color(r, g, b, a).next();
-		bufferBuilder.vertex(left + width, top + height, 0).color(r, g, b, a).next();
-		bufferBuilder.vertex(left + width, top, 0).color(r, g, b, a).next();
+	//		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
+	//		bufferBuilder.vertex(left, top, 0).color(r, g, b, a).next();
+	//		bufferBuilder.vertex(left, top + height, 0).color(r, g, b, a).next();
+	//		bufferBuilder.vertex(left + width, top + height, 0).color(r, g, b, a).next();
+	//		bufferBuilder.vertex(left + width, top, 0).color(r, g, b, a).next();
 	}
 
 	/**

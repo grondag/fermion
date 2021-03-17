@@ -19,10 +19,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import grondag.fermion.gui.GuiUtil;
-import grondag.fermion.gui.ScreenRenderContext;
-import grondag.fermion.gui.ScreenTheme;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
@@ -36,6 +32,10 @@ import net.minecraft.util.math.Matrix4f;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import grondag.fermion.gui.GuiUtil;
+import grondag.fermion.gui.ScreenRenderContext;
+import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
 public class ItemStackPicker<T> extends TabBar<T> {
@@ -121,19 +121,20 @@ public class ItemStackPicker<T> extends TabBar<T> {
 		super.handleCoordinateUpdate();
 	}
 
+	// FIX: remove or repair
 	@Override
 	protected void setupItemRendering() {
-		RenderSystem.disableDepthTest();
-		RenderSystem.enableRescaleNormal();
-		RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//		RenderSystem.disableDepthTest();
+//		RenderSystem.enableRescaleNormal();
+//		RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
+//		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override
 	protected void tearDownItemRendering() {
-		RenderSystem.disableDepthTest();
-		RenderSystem.disableRescaleNormal();
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//		RenderSystem.disableDepthTest();
+//		RenderSystem.disableRescaleNormal();
+//		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override

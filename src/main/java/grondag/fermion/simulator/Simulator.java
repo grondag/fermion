@@ -25,14 +25,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
-import grondag.fermion.Fermion;
-import grondag.fermion.sc.concurrency.ScatterGatherThreadPool;
-import grondag.fermion.simulator.persistence.AssignedNumbersAuthority;
-import grondag.fermion.simulator.persistence.DirtKeeper;
-import grondag.fermion.simulator.persistence.SimulationTopNode;
-import grondag.fermion.varia.NBTDictionary;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -40,6 +34,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
+
+import grondag.fermion.Fermion;
+import grondag.fermion.sc.concurrency.ScatterGatherThreadPool;
+import grondag.fermion.simulator.persistence.AssignedNumbersAuthority;
+import grondag.fermion.simulator.persistence.DirtKeeper;
+import grondag.fermion.simulator.persistence.SimulationTopNode;
+import grondag.fermion.varia.NBTDictionary;
 
 /**
  * Events are processed from a queue in the order they arrive.
@@ -92,9 +93,9 @@ public class Simulator extends PersistentState implements DirtKeeper {
 		return currentTick;
 	}
 
-	private static final HashMap<String, Supplier<SimulationTopNode>> nodeTypes = new HashMap<>();
+	private static final HashMap<String, Function<CompoundTag, SimulationTopNode>> nodeTypes = new HashMap<>();
 
-	public static void register(String id, Supplier<SimulationTopNode> nodeType) {
+	public static void register(String id, Function<CompoundTag, SimulationTopNode> nodeType) {
 		nodeTypes.put(id, nodeType);
 	}
 
@@ -166,10 +167,15 @@ public class Simulator extends PersistentState implements DirtKeeper {
 	private volatile long worldTickOffset = 0;
 
 	public Simulator() {
-		super(NBT_TAG_SIMULATOR);
+		super();
 		// defaults for new simulation - will be overwritten if deserialized from tag
 		lastSimTick = 0;
 		worldTickOffset = -world.getTime();
+	}
+
+	public Simulator(CompoundTag tag) {
+		this();
+		readNbt(tag);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -188,7 +194,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 			}
 		}
 
-		instance = world.getPersistentStateManager().getOrCreate(Simulator::new, NBT_TAG_SIMULATOR);
+		instance = world.getPersistentStateManager().getOrCreate(Simulator::new, Simulator::new, NBT_TAG_SIMULATOR);
 		instance.initialize(serverIn);
 	}
 
@@ -206,7 +212,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 			nodes.clear();
 			nodeTypes.forEach((s, t) -> {
 				try {
-					final SimulationTopNode node = world.getPersistentStateManager().getOrCreate(t, s);
+					final SimulationTopNode node = world.getPersistentStateManager().get(t, s);
 					nodes.put(node.getClass(), node);
 					node.afterCreated(this);
 				} catch (final Exception e) {
@@ -295,15 +301,14 @@ public class Simulator extends PersistentState implements DirtKeeper {
 		}
 	}
 
-	@Override
-	public void fromTag(CompoundTag nbt) {
+	public void readNbt(CompoundTag nbt) {
 		assignedNumbersAuthority.writeTag(nbt);
 		lastSimTick = nbt.getInt(NBT_TAG_LAST_TICK);
 		worldTickOffset = nbt.getLong(NBT_TAG_WORLD_TICK_OFFSET);
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag nbt) {
+	public CompoundTag writeNbt(CompoundTag nbt) {
 		assignedNumbersAuthority.readTag(nbt);
 		nbt.putInt(NBT_TAG_LAST_TICK, lastSimTick);
 		nbt.putLong(NBT_TAG_WORLD_TICK_OFFSET, worldTickOffset);

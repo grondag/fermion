@@ -163,8 +163,7 @@ public class DomainManager extends SimulationTopNode {
 		makeDirty(isDirty);
 	}
 
-	@Override
-	public void fromTag(CompoundTag tag) {
+	public void readNbt(CompoundTag tag) {
 		isDeserializationInProgress = true;
 
 		unload();
@@ -208,7 +207,7 @@ public class DomainManager extends SimulationTopNode {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public CompoundTag writeNbt(CompoundTag tag) {
 		final ListTag nbtDomains = new ListTag();
 
 		final NumberedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
