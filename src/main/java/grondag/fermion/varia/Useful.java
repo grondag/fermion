@@ -25,7 +25,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -318,10 +318,10 @@ public class Useful {
 	/**
 	 * Creates stack tag if it doesn't exist
 	 */
-	public static CompoundTag getOrCreateTagCompound(ItemStack stack) {
-		CompoundTag tag = stack.getTag();
+	public static NbtCompound getOrCreateTagCompound(ItemStack stack) {
+		NbtCompound tag = stack.getTag();
 		if (tag == null) {
-			tag = new CompoundTag();
+			tag = new NbtCompound();
 			stack.setTag(tag);
 		}
 		return tag;
@@ -485,15 +485,15 @@ public class Useful {
 	/**
 	 * Returns start given default value if ordinal is out of range or not present.
 	 */
-	public static <T extends Enum<?>> T safeEnumFromTag(CompoundTag tag, String tagName, T defaultValue) {
+	public static <T extends Enum<?>> T safeEnumFromTag(NbtCompound tag, String tagName, T defaultValue) {
 		return (tag == null) ? defaultValue : safeEnumFromOrdinal(tag.getInt(tagName), defaultValue);
 	}
 
 	/**
 	 * Writes tag value for later reading by
-	 * {@link #safeEnumFromTag(CompoundTag, String, Enum)}
+	 * {@link #safeEnumFromTag(NbtCompound, String, Enum)}
 	 */
-	public static void saveEnumToTag(CompoundTag tag, String tagName, Enum<?> enumValue) {
+	public static void saveEnumToTag(NbtCompound tag, String tagName, Enum<?> enumValue) {
 		tag.putInt(tagName, enumValue == null ? 0 : enumValue.ordinal());
 	}
 

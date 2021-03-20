@@ -18,13 +18,14 @@ package grondag.fermion.simulator.domain;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 
-import grondag.fermion.Fermion;
-import grondag.fermion.varia.NBTDictionary;
-import grondag.fermion.varia.ReadWriteNBT;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
+
+import grondag.fermion.Fermion;
+import grondag.fermion.varia.NBTDictionary;
+import grondag.fermion.varia.ReadWriteNBT;
 
 public class DomainUser implements ReadWriteNBT, IDomainMember {
 	private static final HashSet<Class<? extends IUserCapability>> capabilityTypes = new HashSet<>();
@@ -54,7 +55,7 @@ public class DomainUser implements ReadWriteNBT, IDomainMember {
 		createCapabilities();
 	}
 
-	public DomainUser(IDomain domain, CompoundTag tag) {
+	public DomainUser(IDomain domain, NbtCompound tag) {
 		this.domain = domain;
 		createCapabilities();
 		writeTag(tag);
@@ -103,7 +104,7 @@ public class DomainUser implements ReadWriteNBT, IDomainMember {
 	}
 
 	@Override
-	public void readTag(CompoundTag nbt) {
+	public void readTag(NbtCompound nbt) {
 		nbt.putString(DOMAIN_USER_NAME, userName);
 		nbt.putString(DOMAIN_USER_UUID, uuid);
 		nbt.putInt(DOMAIN_USER_FLAGS, privilegeFlags);
@@ -118,7 +119,7 @@ public class DomainUser implements ReadWriteNBT, IDomainMember {
 	}
 
 	@Override
-	public void writeTag(@Nullable CompoundTag nbt) {
+	public void writeTag(@Nullable NbtCompound nbt) {
 		userName = nbt.getString(DOMAIN_USER_NAME);
 		uuid = nbt.getString(DOMAIN_USER_UUID);
 		privilegeFlags = nbt.getInt(DOMAIN_USER_FLAGS);

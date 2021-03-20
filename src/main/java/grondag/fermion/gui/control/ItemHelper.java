@@ -18,7 +18,7 @@ package grondag.fermion.gui.control;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public class ItemHelper {
 	// for unit testing
@@ -26,10 +26,10 @@ public class ItemHelper {
 
 		public Item item;
 		public int size;
-		public CompoundTag tag;
+		public NbtCompound tag;
 		public int meta;
 
-		public TestItemStack(Item item, int size, int meta, CompoundTag tag) {
+		public TestItemStack(Item item, int size, int meta, NbtCompound tag) {
 			this.item = item;
 			this.size = size;
 			this.meta = meta;
@@ -44,7 +44,7 @@ public class ItemHelper {
 			return tag != null;
 		}
 
-		public CompoundTag getTagCompound() {
+		public NbtCompound getTagCompound() {
 			return tag;
 		}
 
@@ -58,10 +58,10 @@ public class ItemHelper {
 
 	}
 
-	public static CompoundTag getOrCreateStackTag(ItemStack stack) {
-		CompoundTag result = stack.getTag();
+	public static NbtCompound getOrCreateStackTag(ItemStack stack) {
+		NbtCompound result = stack.getTag();
 		if (result == null) {
-			result = new CompoundTag();
+			result = new NbtCompound();
 			stack.setTag(result);
 		}
 		return result;

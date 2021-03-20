@@ -15,8 +15,9 @@
  ******************************************************************************/
 package grondag.fermion.simulator.persistence;
 
+import net.minecraft.nbt.NbtCompound;
+
 import grondag.fermion.simulator.Simulator;
-import net.minecraft.nbt.CompoundTag;
 
 /**
  * The "number" here is similar to raw ID in Mojang registries, except it persists.
@@ -85,7 +86,7 @@ public interface Numbered {
 	 * Use this in serializeNBT of implementing class. Will cause ID to be generated
 	 * if it has not already been.
 	 */
-	default void serializeNumber(CompoundTag tag) {
+	default void serializeNumber(NbtCompound tag) {
 		final int number = getAssignedNumber();
 		if (number > 0) {
 			tag.putInt(numberType(), number);
@@ -95,7 +96,7 @@ public interface Numbered {
 	/**
 	 * Use this in deserializeNBT of implementing class.
 	 */
-	default void deserializeNumber(CompoundTag tag) {
+	default void deserializeNumber(NbtCompound tag) {
 		setAssignedNumber(tag.contains(numberType()) ? tag.getInt(numberType()) : UNASSIGNED_NUM);
 	}
 }

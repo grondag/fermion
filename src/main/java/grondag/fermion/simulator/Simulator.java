@@ -29,7 +29,7 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
@@ -93,9 +93,9 @@ public class Simulator extends PersistentState implements DirtKeeper {
 		return currentTick;
 	}
 
-	private static final HashMap<String, Function<CompoundTag, SimulationTopNode>> nodeTypes = new HashMap<>();
+	private static final HashMap<String, Function<NbtCompound, SimulationTopNode>> nodeTypes = new HashMap<>();
 
-	public static void register(String id, Function<CompoundTag, SimulationTopNode> nodeType) {
+	public static void register(String id, Function<NbtCompound, SimulationTopNode> nodeType) {
 		nodeTypes.put(id, nodeType);
 	}
 
@@ -173,7 +173,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 		worldTickOffset = -world.getTime();
 	}
 
-	public Simulator(CompoundTag tag) {
+	public Simulator(NbtCompound tag) {
 		this();
 		readNbt(tag);
 	}
@@ -301,14 +301,14 @@ public class Simulator extends PersistentState implements DirtKeeper {
 		}
 	}
 
-	public void readNbt(CompoundTag nbt) {
+	public void readNbt(NbtCompound nbt) {
 		assignedNumbersAuthority.writeTag(nbt);
 		lastSimTick = nbt.getInt(NBT_TAG_LAST_TICK);
 		worldTickOffset = nbt.getLong(NBT_TAG_WORLD_TICK_OFFSET);
 	}
 
 	@Override
-	public CompoundTag writeNbt(CompoundTag nbt) {
+	public NbtCompound writeNbt(NbtCompound nbt) {
 		assignedNumbersAuthority.readTag(nbt);
 		nbt.putInt(NBT_TAG_LAST_TICK, lastSimTick);
 		nbt.putLong(NBT_TAG_WORLD_TICK_OFFSET, worldTickOffset);

@@ -22,6 +22,12 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+
 import grondag.fermion.Fermion;
 import grondag.fermion.simulator.persistence.AssignedNumber;
 import grondag.fermion.simulator.persistence.DirtListener;
@@ -29,11 +35,6 @@ import grondag.fermion.simulator.persistence.DirtListenerProvider;
 import grondag.fermion.simulator.persistence.Numbered;
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 
 public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDomain {
 	private static final String NBT_DOMAIN_SECURITY_ENABLED = NBTDictionary.GLOBAL.claim("domSecOn");
@@ -75,7 +76,7 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 		}
 	}
 
-	Domain(DomainManager domainManager, CompoundTag tag) {
+	Domain(DomainManager domainManager, NbtCompound tag) {
 		this(domainManager);
 		writeTag(tag);
 	}
@@ -171,12 +172,12 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 	}
 
 	@Override
-	public void readTag(CompoundTag tag) {
+	public void readTag(NbtCompound tag) {
 		serializeNumber(tag);
 		tag.putBoolean(NBT_DOMAIN_SECURITY_ENABLED, isSecurityEnabled);
 		tag.putString(NBT_DOMAIN_NAME, name);
 
-		final ListTag nbtUsers = new ListTag();
+		final NbtList nbtUsers = new NbtList();
 
 		if (!users.isEmpty()) {
 			for (final DomainUser user : users.values()) {
@@ -187,12 +188,12 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 	}
 
 	@Override
-	public void writeTag(@Nullable CompoundTag tag) {
+	public void writeTag(@Nullable NbtCompound tag) {
 		deserializeNumber(tag);
 		isSecurityEnabled = tag.getBoolean(NBT_DOMAIN_SECURITY_ENABLED);
 		name = tag.getString(NBT_DOMAIN_NAME);
 
-		final ListTag nbtUsers = tag.getList(NBT_DOMAIN_USERS, 10);
+		final NbtList nbtUsers = tag.getList(NBT_DOMAIN_USERS, 10);
 		if (nbtUsers != null && !nbtUsers.isEmpty()) {
 			for (int i = 0; i < nbtUsers.size(); ++i) {
 				final DomainUser user = new DomainUser(this, nbtUsers.getCompound(i));

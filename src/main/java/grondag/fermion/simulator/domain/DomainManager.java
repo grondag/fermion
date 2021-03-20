@@ -22,8 +22,8 @@ import java.util.Map.Entry;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import grondag.fermion.Fermion;
@@ -163,7 +163,7 @@ public class DomainManager extends SimulationTopNode {
 		makeDirty(isDirty);
 	}
 
-	public void readNbt(CompoundTag tag) {
+	public void readNbt(NbtCompound tag) {
 		isDeserializationInProgress = true;
 
 		unload();
@@ -175,7 +175,7 @@ public class DomainManager extends SimulationTopNode {
 			return;
 		}
 
-		final ListTag nbtDomains = tag.getList(NBT_DOMAIN_MANAGER_DOMAINS, 10);
+		final NbtList nbtDomains = tag.getList(NBT_DOMAIN_MANAGER_DOMAINS, 10);
 		if (nbtDomains != null && !nbtDomains.isEmpty()) {
 			for (int i = 0; i < nbtDomains.size(); ++i) {
 				final Domain domain = new Domain(this, nbtDomains.getCompound(i));
@@ -183,7 +183,7 @@ public class DomainManager extends SimulationTopNode {
 			}
 		}
 
-		final CompoundTag nbtPlayerDomains = tag.getCompound(NBT_DOMAIN_PLAYER_DOMAINS);
+		final NbtCompound nbtPlayerDomains = tag.getCompound(NBT_DOMAIN_PLAYER_DOMAINS);
 		if (nbtPlayerDomains != null && !nbtPlayerDomains.isEmpty()) {
 			for (final String playerName : nbtPlayerDomains.getKeys()) {
 				final IDomain d = domainFromId(nbtPlayerDomains.getInt(playerName));
@@ -193,7 +193,7 @@ public class DomainManager extends SimulationTopNode {
 			}
 		}
 
-		final CompoundTag nbtActiveDomains = tag.getCompound(NBT_DOMAIN_ACTIVE_DOMAINS);
+		final NbtCompound nbtActiveDomains = tag.getCompound(NBT_DOMAIN_ACTIVE_DOMAINS);
 		if (nbtActiveDomains != null && !nbtActiveDomains.isEmpty()) {
 			for (final String playerName : nbtActiveDomains.getKeys()) {
 				final IDomain d = domainFromId(nbtActiveDomains.getInt(playerName));
@@ -207,8 +207,8 @@ public class DomainManager extends SimulationTopNode {
 	}
 
 	@Override
-	public CompoundTag writeNbt(CompoundTag tag) {
-		final ListTag nbtDomains = new ListTag();
+	public NbtCompound writeNbt(NbtCompound tag) {
+		final NbtList nbtDomains = new NbtList();
 
 		final NumberedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
 
@@ -220,7 +220,7 @@ public class DomainManager extends SimulationTopNode {
 		tag.put(NBT_DOMAIN_MANAGER_DOMAINS, nbtDomains);
 
 		if (!playerIntrinsicDomains.isEmpty()) {
-			final CompoundTag nbtPlayerDomains = new CompoundTag();
+			final NbtCompound nbtPlayerDomains = new NbtCompound();
 			for (final Entry<String, IDomain> entry : playerIntrinsicDomains.entrySet()) {
 				nbtPlayerDomains.putInt(entry.getKey(), entry.getValue().getAssignedNumber());
 			}
@@ -228,7 +228,7 @@ public class DomainManager extends SimulationTopNode {
 		}
 
 		if (!playerActiveDomains.isEmpty()) {
-			final CompoundTag nbtActiveDomains = new CompoundTag();
+			final NbtCompound nbtActiveDomains = new NbtCompound();
 			for (final Entry<String, IDomain> entry : playerActiveDomains.entrySet()) {
 				nbtActiveDomains.putInt(entry.getKey(), entry.getValue().getAssignedNumber());
 			}

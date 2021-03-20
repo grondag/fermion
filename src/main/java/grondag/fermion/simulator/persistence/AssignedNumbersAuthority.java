@@ -15,12 +15,13 @@
  ******************************************************************************/
 package grondag.fermion.simulator.persistence;
 
-import grondag.fermion.varia.NBTDictionary;
-import grondag.fermion.varia.ReadWriteNBT;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
+
+import grondag.fermion.varia.NBTDictionary;
+import grondag.fermion.varia.ReadWriteNBT;
 
 public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 
@@ -78,8 +79,8 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 	}
 
 	@Override
-	public synchronized void writeTag(CompoundTag tag) {
-		final CompoundTag myTag = new CompoundTag();
+	public synchronized void writeTag(NbtCompound tag) {
+		final NbtCompound myTag = new NbtCompound();
 
 		indexes.forEach((id, idx) -> {
 			myTag.putInt(id, idx.lastId);
@@ -89,9 +90,9 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 	}
 
 	@Override
-	public synchronized void readTag(CompoundTag tag) {
+	public synchronized void readTag(NbtCompound tag) {
 		clear();
-		final CompoundTag myTag = tag.getCompound(NBT_TAG);
+		final NbtCompound myTag = tag.getCompound(NBT_TAG);
 
 		if (myTag == null || myTag.isEmpty()) return;
 

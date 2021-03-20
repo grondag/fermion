@@ -16,19 +16,19 @@
 
 package grondag.fermion.varia;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 /**
  * Slightly more flexible version of INBTSerializable that allows for writing to
  * an existing tag instead of always creating a new one.
  */
 public interface ReadWriteNBT {
-	void writeTag(CompoundTag tag);
+	void writeTag(NbtCompound tag);
 
-	void readTag(CompoundTag tag);
+	void readTag(NbtCompound tag);
 
-	default CompoundTag toTag() {
-		final CompoundTag result = new CompoundTag();
+	default NbtCompound toTag() {
+		final NbtCompound result = new NbtCompound();
 		readTag(result);
 		return result;
 	}
