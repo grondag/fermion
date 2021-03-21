@@ -47,7 +47,7 @@ public class Button extends AbstractButtonWidget {
 			final int i = getYImage(hovered);
 			final int color = i == 0 ? theme.buttonColorInactive : i == 2 ? theme.buttonColorFocus : theme.buttonColorActive;
 
-			GuiUtil.drawRect(x, y, x + width - 1, y + height - 1, color);
+			GuiUtil.drawRect(matrixStack.peek().getModel(), x, y, x + width - 1, y + height - 1, color);
 			GuiUtil.drawAlignedStringNoShadow(matrixStack, renderContext.fontRenderer(), getMessage(), x, y, width, height, theme.textColorActive, CENTER, MIDDLE);
 		}
 	}

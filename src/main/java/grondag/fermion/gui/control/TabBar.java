@@ -24,6 +24,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Matrix4f;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -121,6 +122,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 		final float halfTabWidth  = theme.tabWidth * 0.5f;
 
+		final Matrix4f matrix = matrixStack.peek().getModel();
+
 		// skip drawing tabs if there is only one
 		if (this.tabCount > 1) {
 			// if tabs are too small, just do a continuous bar
@@ -128,21 +131,21 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 			if (this.tabSize == 0.0) {
 
-				GuiUtil.drawRect(right - theme.tabWidth, tabCenter, right, tabCenter + this.scrollHeight, theme.buttonColorInactive);
+				GuiUtil.drawRect(matrix, right - theme.tabWidth, tabCenter, right, tabCenter + this.scrollHeight, theme.buttonColorInactive);
 
 				// box pixelWidth is same as tab height, so need to have it be half that extra
 				// to the right so that we keep our margins with the arrows
 				final float selectionCenter = tabCenter + halfTabWidth
 						+ (this.scrollHeight - theme.tabWidth) * this.selectedTabIndex / (this.tabCount - 1);
 
-				GuiUtil.drawRect(right - theme.tabWidth, selectionCenter - halfTabWidth, right, selectionCenter + halfTabWidth,
+				GuiUtil.drawRect(matrix, right - theme.tabWidth, selectionCenter - halfTabWidth, right, selectionCenter + halfTabWidth,
 						theme.buttonColorActive);
 
 			} else {
 				final int tabHighlightIndex = this.currentMouseLocation == MouseLocation.TAB ? this.currentMouseIndex : NO_SELECTION;
 
 				for (int i = 0; i < this.tabCount; i++) {
-					GuiUtil.drawRect(right - theme.tabWidth, tabCenter, right, tabCenter + this.tabSize,
+					GuiUtil.drawRect(matrix, right - theme.tabWidth, tabCenter, right, tabCenter + this.tabSize,
 							i == tabHighlightIndex ? theme.buttonColorFocus : i == this.selectedTabIndex ? theme.buttonColorActive : theme.buttonColorInactive);
 					tabCenter += (this.tabSize + theme.tabMargin);
 				}
@@ -150,10 +153,10 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 			final float arrowCenterX = right - halfTabWidth;
 
-			GuiUtil.drawQuad(arrowCenterX, top, right - theme.tabWidth, top + theme.tabWidth, right, top + theme.tabWidth, arrowCenterX,
+			GuiUtil.drawQuad(matrix, arrowCenterX, top, right - theme.tabWidth, top + theme.tabWidth, right, top + theme.tabWidth, arrowCenterX,
 					top, this.currentMouseLocation == MouseLocation.TOP_ARROW ? theme.buttonColorFocus : theme.buttonColorInactive);
 
-			GuiUtil.drawQuad(arrowCenterX, scrollBottom + theme.tabWidth, right, scrollBottom, right - theme.tabWidth, scrollBottom,
+			GuiUtil.drawQuad(matrix, arrowCenterX, scrollBottom + theme.tabWidth, right, scrollBottom, right - theme.tabWidth, scrollBottom,
 					arrowCenterX, scrollBottom + theme.tabWidth, this.currentMouseLocation == MouseLocation.BOTTOM_ARROW ? theme.buttonColorFocus : theme.buttonColorInactive);
 		}
 
@@ -233,7 +236,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	 * selected.
 	 */
 	protected void drawHighlight(MatrixStack matrixStack, int index, float x, float y, boolean isHighlight) {
-		GuiUtil.drawBoxRightBottom(x - itemSelectionMargin, y - itemSelectionMargin, x + itemSize + itemSelectionMargin,
+		GuiUtil.drawBoxRightBottom(matrixStack.peek().getModel(), x - itemSelectionMargin, y - itemSelectionMargin, x + itemSize + itemSelectionMargin,
 				y + itemSize + itemSelectionMargin, 1, isHighlight ? theme.buttonColorFocus : theme.buttonColorActive);
 	}
 

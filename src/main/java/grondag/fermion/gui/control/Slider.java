@@ -128,18 +128,18 @@ public class Slider extends AbstractControl<Slider> {
 		final float tabTop = top + (height - TAB_WIDTH) / 2;
 		final float tabBottom = tabTop + TAB_WIDTH;
 		if (tabSize == 0.0) {
-			GuiUtil.drawRect(tabStartX, tabTop, tabStartX + scrollWidth, tabBottom, theme.buttonColorInactive);
+			GuiUtil.drawRect(matrixStack.peek().getModel(), tabStartX, tabTop, tabStartX + scrollWidth, tabBottom, theme.buttonColorInactive);
 
 			// box pixelWidth is same as tab height, so need to have it be half that extra
 			// to the right so that we keep our margins with the arrows
 			final float selectionCenterX = tabStartX + TAB_WIDTH * 0.5f + (scrollWidth - TAB_WIDTH) * selectedTabIndex / (size - 1);
 
-			GuiUtil.drawRect(selectionCenterX - TAB_WIDTH * 0.5f, tabTop, selectionCenterX + TAB_WIDTH * 0.5f, tabBottom, theme.buttonColorActive);
+			GuiUtil.drawRect(matrixStack.peek().getModel(), selectionCenterX - TAB_WIDTH * 0.5f, tabTop, selectionCenterX + TAB_WIDTH * 0.5f, tabBottom, theme.buttonColorActive);
 		} else {
 			final int highlightIndex = currentMouseLocation == MouseLocation.TAB ? currentMouseIndex : -1;
 
 			for (int i = 0; i < size; i++) {
-				GuiUtil.drawRect(tabStartX, tabTop, tabStartX + tabSize, tabBottom,
+				GuiUtil.drawRect(matrixStack.peek().getModel(), tabStartX, tabTop, tabStartX + tabSize, tabBottom,
 						i == highlightIndex ? theme.buttonColorFocus : i == selectedTabIndex ? theme.buttonColorActive : theme.buttonColorInactive);
 				tabStartX += (tabSize + TAB_MARGIN);
 			}
@@ -147,10 +147,10 @@ public class Slider extends AbstractControl<Slider> {
 
 		final float arrowCenterY = tabTop + TAB_WIDTH * 0.5f;
 
-		GuiUtil.drawQuad(choiceRight, arrowCenterY, choiceRight + TAB_WIDTH, tabBottom, choiceRight + TAB_WIDTH, tabTop, choiceRight,
+		GuiUtil.drawQuad(matrixStack.peek().getModel(), choiceRight, arrowCenterY, choiceRight + TAB_WIDTH, tabBottom, choiceRight + TAB_WIDTH, tabTop, choiceRight,
 				arrowCenterY, currentMouseLocation == MouseLocation.LEFT_ARROW ? theme.buttonColorFocus : theme.buttonColorInactive);
 
-		GuiUtil.drawQuad(right, arrowCenterY, right - TAB_WIDTH, tabTop, right - TAB_WIDTH, tabBottom, right, arrowCenterY,
+		GuiUtil.drawQuad(matrixStack.peek().getModel(), right, arrowCenterY, right - TAB_WIDTH, tabTop, right - TAB_WIDTH, tabBottom, right, arrowCenterY,
 				currentMouseLocation == MouseLocation.RIGHT_ARROW ? theme.buttonColorFocus : theme.buttonColorInactive);
 
 	}

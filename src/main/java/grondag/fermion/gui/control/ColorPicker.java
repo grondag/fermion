@@ -15,6 +15,7 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.EnvType;
@@ -92,7 +93,7 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 			final double x3 = centerX;// + Math.sin(arcEnd) * radiusInner;
 			final double y3 = centerY;// + Math.cos(arcEnd) * radiusInner;
 
-			GuiUtil.drawQuad((float) x0, (float) y0, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, Hue.VALUES[h].hueSample());
+			GuiUtil.drawQuad(matrixStack.peek().getModel(), (float) x0, (float) y0, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, Hue.VALUES[h].hueSample());
 		}
 
 		float left;
@@ -109,7 +110,7 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 				right = left + gridIncrementX;
 				final ColorSet colormap = ColorAtlas.INSTANCE.getColorMap(selectedHue, Chroma.VALUES[c], Luminance.VALUES[l]);
 				if (colormap != null) {
-					GuiUtil.drawRect(left, top, right, bottom, colormap.getColor(map));
+					DrawableHelper.fill(matrixStack, Math.round(left), Math.round(top), Math.round(right), Math.round(bottom), colormap.getColor(map));
 				}
 				left = right;
 			}
@@ -121,8 +122,8 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 		final float sLeft = gridLeft + selectedColormap.chroma.ordinal() * gridIncrementX;
 		final float sTop = gridTop + selectedColormap.luminance.ordinal() * gridIncrementY;
 
-		GuiUtil.drawRect(sLeft - 1, sTop - 1, sLeft + gridIncrementX + 1, sTop + gridIncrementY + 1, showLampColors ? Color.BLACK : Color.WHITE);
-		GuiUtil.drawRect(sLeft - 0.5f, sTop - 0.5f, sLeft + gridIncrementX + 0.5f, sTop + gridIncrementY + 0.5f, selectedColormap.getColor(map));
+		GuiUtil.drawRect(matrixStack.peek().getModel(), sLeft - 1, sTop - 1, sLeft + gridIncrementX + 1, sTop + gridIncrementY + 1, showLampColors ? Color.BLACK : Color.WHITE);
+		GuiUtil.drawRect(matrixStack.peek().getModel(), sLeft - 0.5f, sTop - 0.5f, sLeft + gridIncrementX + 0.5f, sTop + gridIncrementY + 0.5f, selectedColormap.getColor(map));
 	}
 
 	private void changeHueIfDifferent(Hue newHue) {

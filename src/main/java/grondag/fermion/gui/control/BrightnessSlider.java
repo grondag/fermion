@@ -53,7 +53,7 @@ public class BrightnessSlider extends Slider {
 	protected void drawChoice(MatrixStack matrixStack, MinecraftClient mc, ItemRenderer itemRender, float partialTicks) {
 		final int color = 0xFFFECE | (((255 * selectedTabIndex / 15) & 0xFF) << 24);
 
-		GuiUtil.drawRect(labelRight, top, labelRight + choiceWidth, bottom, color);
+		GuiUtil.drawRect(matrixStack.peek().getModel(), labelRight, top, labelRight + choiceWidth, bottom, color);
 
 		final int textColor = selectedTabIndex > 6 ? 0xFF000000 : 0xFFFFFFFF;
 

@@ -85,7 +85,7 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 		if (focusedSlot != null) {
 			final int sx = x + focusedSlot.x;
 			final int sy = y + focusedSlot.y;
-			GuiUtil.drawBoxRightBottom(sx - theme.itemSelectionMargin, sy - theme.itemSelectionMargin, sx + theme.itemSize + theme.itemSelectionMargin,
+			GuiUtil.drawBoxRightBottom(matrixStack.peek().getModel(), sx - theme.itemSelectionMargin, sy - theme.itemSelectionMargin, sx + theme.itemSize + theme.itemSelectionMargin,
 					sy + theme.itemSize + theme.itemSelectionMargin, 1, theme.buttonColorFocus);
 		}
 

@@ -50,11 +50,11 @@ public class Toggle extends AbstractControl<Toggle> {
 	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		final float boxRight = left + labelHeight;
 
-		GuiUtil.drawBoxRightBottom(left, targetAreaTop, boxRight, targetAreaBottom, 1,
+		GuiUtil.drawBoxRightBottom(matrixStack.peek().getModel(), left, targetAreaTop, boxRight, targetAreaBottom, 1,
 				isMouseOver(mouseX, mouseY) ? theme.buttonColorFocus : theme.buttonColorActive);
 
 		if (isOn) {
-			GuiUtil.drawRect(left + 2, targetAreaTop + 2, boxRight - 2, targetAreaBottom - 2, theme.buttonColorActive);
+			GuiUtil.drawRect(matrixStack.peek().getModel(), left + 2, targetAreaTop + 2, boxRight - 2, targetAreaBottom - 2, theme.buttonColorActive);
 		}
 
 		GuiUtil.drawAlignedStringNoShadow(matrixStack, renderContext.fontRenderer(), label, boxRight + theme.internalMargin, targetAreaTop, labelWidth,

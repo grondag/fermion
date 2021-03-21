@@ -61,7 +61,7 @@ public class Panel extends AbstractParentControl<Panel> implements ParentElement
 	@Override
 	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (getBackgroundColor() != 0) {
-			GuiUtil.drawRect(left, top, right, bottom, getBackgroundColor());
+			GuiUtil.drawRect(matrixStack.peek().getModel(), left, top, right, bottom, getBackgroundColor());
 		}
 
 		for (final AbstractControl<?> control : children) {
