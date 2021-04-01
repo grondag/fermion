@@ -21,13 +21,15 @@ import java.util.HashMap;
 
 import com.google.common.collect.ImmutableList;
 
-import grondag.fermion.Fermion;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+
+import grondag.fermion.Fermion;
 
 class SimpleFluidRenderRegistry implements SimpleSynchronousResourceReloadListener {
 	static final SimpleSynchronousResourceReloadListener LISTENER = new SimpleFluidRenderRegistry();
@@ -57,7 +59,7 @@ class SimpleFluidRenderRegistry implements SimpleSynchronousResourceReloadListen
 	}
 
 	@Override
-	public void apply(ResourceManager resourceManager) {
+	public void reload(ResourceManager resourceManager) {
 		HANDLERS.values().forEach(h -> h.reload());
 	}
 }

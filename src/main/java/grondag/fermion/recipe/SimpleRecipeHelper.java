@@ -7,8 +7,6 @@ import java.util.IdentityHashMap;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeManager;
@@ -16,6 +14,9 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
 public class SimpleRecipeHelper implements SimpleSynchronousResourceReloadListener {
 	private final ImmutableSet<RecipeType<?>> recipeTypes;
@@ -39,7 +40,7 @@ public class SimpleRecipeHelper implements SimpleSynchronousResourceReloadListen
 	}
 
 	@Override
-	public void apply(ResourceManager resourceManager) {
+	public void reload(ResourceManager resourceManager) {
 		recipes.clear();
 		reload();
 	}
@@ -55,7 +56,7 @@ public class SimpleRecipeHelper implements SimpleSynchronousResourceReloadListen
 
 			for (final Recipe<?> r : rm.values()) {
 				if (recipeTypes.contains(r.getType())) {
-					recipes.computeIfAbsent(r.getType(), k -> new ArrayList<SimpleRecipe<?>>()).add((SimpleRecipe<?>) r);
+					recipes.computeIfAbsent(r.getType(), k -> new ArrayList<>()).add((SimpleRecipe<?>) r);
 				}
 			}
 		}
