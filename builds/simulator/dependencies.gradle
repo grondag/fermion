@@ -15,10 +15,6 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
-	// dev env annotation support
-	compile "org.apiguardian:apiguardian-api:1.0.0"
-	compile "com.google.code.findbugs:jsr305:3.0.2"
-		
 	modImplementation ("grondag:fermion-${project.mc_tag}:${project.fermion_version}.+") { transitive = false }
     
     modImplementation ("grondag:fermion-varia-${project.mc_tag}:${project.fermion_varia_version}.+") { transitive = false }

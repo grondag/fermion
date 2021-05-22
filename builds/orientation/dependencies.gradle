@@ -1,16 +1,14 @@
 repositories {
     mavenLocal();
     jcenter();
-    //maven { url "https://tehnut.info/maven"}
-    //maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
-    //maven { url "https://minecraft.curseforge.com/api/maven" }
     maven { url "https://maven.fabricmc.net/" }
-    //maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
     
  	maven {
     	name = "dblsaiko"
     	url = "https://maven.dblsaiko.net/"
     }
+    
+    maven { url "https://maven.terraformersmc.com/releases/"}
 }
 
 dependencies {
@@ -20,11 +18,7 @@ dependencies {
 	modApi "net.fabricmc:fabric-loader:${loader_version}"
 	modApi "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 	
-	// dev env annotation support
-	compileOnly "org.apiguardian:apiguardian-api:1.0.0"
-	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-		
 	modImplementation ("grondag:fermion-${project.mc_tag}:${project.fermion_version}.+") { transitive = false }
 	
-	modApi ("io.github.prospector:modmenu:${project.modmenu_version}") { transitive = false }
+	modApi ("com.terraformersmc:modmenu:${project.modmenu_version}") { transitive = false }
 }
