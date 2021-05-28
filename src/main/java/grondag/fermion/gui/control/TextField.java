@@ -7,13 +7,13 @@ import com.google.common.base.Predicates;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.class_6382;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
@@ -607,7 +607,7 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 	}
 
 	@Override
-	public void method_37020(class_6382 arg) {
-		// TODO Whatever this is
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		// TODO Auto-generated method stub
 	}
 }

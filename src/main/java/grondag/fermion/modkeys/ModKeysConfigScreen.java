@@ -31,7 +31,7 @@ public class ModKeysConfigScreen extends Screen {
 
 	@Override
 	protected void init() {
-		addChild(new ButtonWidget(width / 2 + 5, 100, 120, 20, new TranslatableText(keyPrefix + primary.key), (buttonWidget) -> {
+		addDrawableChild(new ButtonWidget(width / 2 + 5, 100, 120, 20, new TranslatableText(keyPrefix + primary.key), (buttonWidget) -> {
 			primary = primary.ordinal() == options.length - 1 ? options[0] : options[primary.ordinal() + 1];
 		}) {
 			@Override
@@ -45,7 +45,7 @@ public class ModKeysConfigScreen extends Screen {
 			}
 		});
 
-		method_37063(new ButtonWidget(width / 2 + 5, 130, 120, 20, new TranslatableText(keyPrefix + secondary.key), (buttonWidget) -> {
+		addDrawableChild(new ButtonWidget(width / 2 + 5, 130, 120, 20, new TranslatableText(keyPrefix + secondary.key), (buttonWidget) -> {
 			secondary = secondary.ordinal() == options.length - 1 ? options[0] : options[secondary.ordinal() + 1];
 		}) {
 			@Override
@@ -59,7 +59,7 @@ public class ModKeysConfigScreen extends Screen {
 			}
 		});
 
-		method_37063(new ButtonWidget(width / 2 + 5, 160, 120, 20, new TranslatableText(keyPrefix + tertiary.key), (buttonWidget) -> {
+		addDrawableChild(new ButtonWidget(width / 2 + 5, 160, 120, 20, new TranslatableText(keyPrefix + tertiary.key), (buttonWidget) -> {
 			tertiary = tertiary.ordinal() == options.length - 1 ? options[0] : options[tertiary.ordinal() + 1];
 		}) {
 			@Override
@@ -73,13 +73,13 @@ public class ModKeysConfigScreen extends Screen {
 			}
 		});
 
-		method_37063(new ButtonWidget(width / 2 - 155, 200, 150, 20, new TranslatableText("controls.reset"), (buttonWidget) -> {
+		addDrawableChild(new ButtonWidget(width / 2 - 155, 200, 150, 20, new TranslatableText("controls.reset"), (buttonWidget) -> {
 			primary = Option.CONTROL;
 			secondary = Option.ALT;
 			tertiary = Option.SUPER;
 		}));
 
-		method_37063(new ButtonWidget(width / 2 + 5, 200, 150, 20, new TranslatableText("gui.done"), (buttonWidget) -> {
+		addDrawableChild(new ButtonWidget(width / 2 + 5, 200, 150, 20, new TranslatableText("gui.done"), (buttonWidget) -> {
 			ModKeysConfig.saveOptions(primary, secondary, tertiary);
 			client.openScreen(parent);
 		}));

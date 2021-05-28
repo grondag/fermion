@@ -40,7 +40,7 @@ public class MixinControlsOptionsScreen extends Screen {
 	public void drawMenuButton(CallbackInfo info) {
 		final Screen thisScreen =  this;
 
-		method_37063(new ButtonWidget(width - 100, 10, 90, 20, new TranslatableText("config.modkeys.button"), (buttonWidget) -> {
+		addDrawableChild(new ButtonWidget(width - 100, 10, 90, 20, new TranslatableText("config.modkeys.button"), (buttonWidget) -> {
 			client.openScreen(new ModKeysConfigScreen(thisScreen));
 		}));
 	}

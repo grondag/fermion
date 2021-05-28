@@ -15,11 +15,11 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import net.minecraft.class_6379;
-import net.minecraft.class_6382;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.EnvType;
@@ -30,7 +30,7 @@ import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
-public abstract class AbstractControl<T extends AbstractControl<T>> extends DrawableHelper implements Element, Drawable, class_6379 {
+public abstract class AbstractControl<T extends AbstractControl<T>> extends DrawableHelper implements Element, Drawable, Selectable {
 	public static final int NO_SELECTION = -1;
 
 	protected final ScreenTheme theme = ScreenTheme.current();
@@ -98,18 +98,14 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 	}
 
 	@Override
-	public void method_37020(class_6382 arg) {
+	public void appendNarrations(NarrationMessageBuilder builder) {
 		// TODO whatever this is
 	}
 
 	@Override
-	public class_6379.class_6380 method_37018() {
-		// TODO: whatever this is
-		return class_6379.class_6380.field_33784;
-	}
-
-	protected void method_37021(class_6382 arg) {
-		//TODO: whatever this is
+	public SelectionType getType() {
+		// TODO: implement
+		return SelectionType.NONE;
 	}
 
 	public abstract void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks);

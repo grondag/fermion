@@ -154,4 +154,10 @@ public class ItemStackPicker<T> extends TabBar<T> {
 	protected void drawItemToolTip(MatrixStack matrixStack, T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks) {
 		renderContext.renderTooltip(matrixStack, stackFunc.apply(item), mouseX, mouseY);
 	}
+
+	@Override
+	public SelectionType getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

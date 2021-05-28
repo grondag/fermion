@@ -18,7 +18,7 @@ package grondag.fermion.gui.control;
 import static grondag.fermion.gui.HorizontalAlignment.CENTER;
 import static grondag.fermion.gui.VerticalAlignment.MIDDLE;
 
-import net.minecraft.class_6382;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -54,7 +54,7 @@ public abstract class Button extends PressableWidget {
 	}
 
 	@Override
-	public void method_37020(class_6382 arg) {
+	public void appendNarrations(NarrationMessageBuilder arg) {
 		// TODO whatever this is
 
 	}
