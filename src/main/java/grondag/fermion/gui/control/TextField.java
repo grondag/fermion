@@ -7,18 +7,18 @@ import com.google.common.base.Predicates;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.class_6382;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.api.EnvType;
@@ -27,8 +27,9 @@ import net.fabricmc.api.Environment;
 import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.gui.ScreenTheme;
 
+//UGLY needs less copypasta
 @Environment(EnvType.CLIENT)
-public class TextField extends AbstractButtonWidget implements Drawable, Element {
+public class TextField extends ClickableWidget implements Drawable, Element {
 	protected String text;
 	protected int maxLength;
 	protected int focusedTicks;
@@ -143,8 +144,6 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 		if (changedListener != null) {
 			changedListener.accept(string);
 		}
-
-		nextNarration = Util.getMeasuringTimeMs() + 500L;
 	}
 
 	private void erase(int i) {
@@ -605,5 +604,10 @@ public class TextField extends AbstractButtonWidget implements Drawable, Element
 
 	public void setX(int i) {
 		x = i;
+	}
+
+	@Override
+	public void method_37020(class_6382 arg) {
+		// TODO Whatever this is
 	}
 }

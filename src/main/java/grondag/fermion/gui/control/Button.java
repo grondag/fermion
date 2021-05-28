@@ -18,7 +18,8 @@ package grondag.fermion.gui.control;
 import static grondag.fermion.gui.HorizontalAlignment.CENTER;
 import static grondag.fermion.gui.VerticalAlignment.MIDDLE;
 
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.class_6382;
+import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -30,7 +31,7 @@ import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
-public class Button extends AbstractButtonWidget {
+public abstract class Button extends PressableWidget {
 	protected final ScreenRenderContext renderContext;
 	protected final ScreenTheme theme = ScreenTheme.current();
 
@@ -50,5 +51,11 @@ public class Button extends AbstractButtonWidget {
 			GuiUtil.drawRect(matrixStack.peek().getModel(), x, y, x + width - 1, y + height - 1, color);
 			GuiUtil.drawAlignedStringNoShadow(matrixStack, renderContext.fontRenderer(), getMessage(), x, y, width, height, theme.textColorActive, CENTER, MIDDLE);
 		}
+	}
+
+	@Override
+	public void method_37020(class_6382 arg) {
+		// TODO whatever this is
+
 	}
 }

@@ -1,13 +1,14 @@
 package grondag.fermion.recipe;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public abstract class AbstractSimpleRecipe implements SimpleRecipe<Inventory> {
 	public final Ingredient ingredient;
@@ -51,7 +52,7 @@ public abstract class AbstractSimpleRecipe implements SimpleRecipe<Inventory> {
 	}
 
 	@Override
-	public DefaultedList<Ingredient> getPreviewInputs() {
+	public DefaultedList<Ingredient> getIngredients() {
 		final DefaultedList<Ingredient> defaultedList = DefaultedList.of();
 		defaultedList.add(ingredient);
 		return defaultedList;

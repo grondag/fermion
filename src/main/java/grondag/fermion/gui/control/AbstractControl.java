@@ -15,6 +15,9 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
+import net.minecraft.class_6379;
+import net.minecraft.class_6382;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
@@ -27,7 +30,7 @@ import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
-public abstract class AbstractControl<T extends AbstractControl<T>> extends DrawableHelper implements Element {
+public abstract class AbstractControl<T extends AbstractControl<T>> extends DrawableHelper implements Element, Drawable, class_6379 {
 	public static final int NO_SELECTION = -1;
 
 	protected final ScreenTheme theme = ScreenTheme.current();
@@ -80,7 +83,8 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 		return this;
 	}
 
-	public final void drawControl(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	@Override
+	public final void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		this.refreshContentCoordinatesIfNeeded();
 
 		if (this.isVisible) {
@@ -91,6 +95,21 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 
 			this.drawContent(matrixStack, mouseX, mouseY, partialTicks);
 		}
+	}
+
+	@Override
+	public void method_37020(class_6382 arg) {
+		// TODO whatever this is
+	}
+
+	@Override
+	public class_6379.class_6380 method_37018() {
+		// TODO: whatever this is
+		return class_6379.class_6380.field_33784;
+	}
+
+	protected void method_37021(class_6382 arg) {
+		//TODO: whatever this is
 	}
 
 	public abstract void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks);

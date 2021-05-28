@@ -65,7 +65,7 @@ public class Panel extends AbstractParentControl<Panel> implements ParentElement
 		}
 
 		for (final AbstractControl<?> control : children) {
-			control.drawControl(matrixStack, mouseX, mouseY, partialTicks);
+			control.render(matrixStack, mouseX, mouseY, partialTicks);
 		}
 	}
 

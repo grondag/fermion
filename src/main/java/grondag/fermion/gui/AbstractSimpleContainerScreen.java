@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -40,22 +41,22 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 	 * Called during init before controls are created.
 	 */
 	protected void computeScreenBounds() {
-		field_2800 = (height - backgroundHeight) / 2;
-		field_2776 = (width - backgroundWidth) / 2;
+		y = (height - backgroundHeight) / 2;
+		x = (width - backgroundWidth) / 2;
 	}
 
 	@Override
 	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.renderBackground(matrixStack);
-		fill(matrixStack, field_2776, field_2800, field_2776 + backgroundWidth, field_2800 + backgroundHeight, theme.screenBackground);
+		fill(matrixStack, x, y, x + backgroundWidth, y + backgroundHeight, theme.screenBackground);
 
 		final int limit = handler.slots.size();
 
 		// player slot backgrounds
 		for(int i = 0; i < limit; i++) {
 			final Slot slot = handler.getSlot(i);
-			final int u = slot.x + field_2776;
-			final int v = slot.y + field_2800;
+			final int u = slot.x + x;
+			final int v = slot.y + y;
 			fillGradient(matrixStack, u, v, u + theme.itemSize, v + theme.itemSize, theme.itemSlotGradientTop, theme.itemSlotGradientBottom);
 		}
 	}
@@ -70,8 +71,8 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-		for(int k = 0; k < buttons.size(); ++k) {
-			buttons.get(k).render(matrixStack, mouseX, mouseY, partialTicks);
+		for(int k = 0; k < children().size(); ++k) {
+			((Drawable) children().get(k)).render(matrixStack, mouseX, mouseY, partialTicks);
 		}
 
 		drawControls(matrixStack, mouseX, mouseY, partialTicks);
@@ -83,8 +84,8 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 		RenderSystem.disableBlend();
 
 		if (focusedSlot != null) {
-			final int sx = field_2776 + focusedSlot.x;
-			final int sy = field_2800 + focusedSlot.y;
+			final int sx = x + focusedSlot.x;
+			final int sy = y + focusedSlot.y;
 			GuiUtil.drawBoxRightBottom(matrixStack.peek().getModel(), sx - theme.itemSelectionMargin, sy - theme.itemSelectionMargin, sx + theme.itemSize + theme.itemSelectionMargin,
 					sy + theme.itemSize + theme.itemSelectionMargin, 1, theme.buttonColorFocus);
 		}
@@ -132,7 +133,7 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 
 	@Override
 	public int screenLeft() {
-		return field_2776;
+		return x;
 	}
 
 	@Override
@@ -142,7 +143,7 @@ public abstract class AbstractSimpleContainerScreen<T extends ScreenHandler> ext
 
 	@Override
 	public int screenTop() {
-		return field_2800;
+		return y;
 	}
 
 	@Override

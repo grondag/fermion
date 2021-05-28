@@ -91,14 +91,14 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 	}
 
 	protected void drawControls(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		final List<Element> children = this.children;
+		final List<? extends Element> children = children();
 		final int limit = children.size();
 
 		for (int i = 0; i < limit; ++i) {
 			final Element e = children.get(i);
 
 			if (e instanceof AbstractControl) {
-				((AbstractControl<?>) children.get(i)).drawControl(matrixStack, mouseX, mouseY, partialTicks);
+				((AbstractControl<?>) children.get(i)).render(matrixStack, mouseX, mouseY, partialTicks);
 			}
 		}
 	}
