@@ -1,13 +1,13 @@
 package grondag.fermion.sc.cache;
 
-import static grondag.fermion.sc.concurrency.Danger.UNSAFE;
-import static grondag.fermion.sc.concurrency.Danger.longByteOffset;
-import static grondag.fermion.sc.concurrency.Danger.objectByteOffset;
-
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import it.unimi.dsi.fastutil.HashCommon;
+
+import grondag.fermion.Fermion;
 
 public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
 {
@@ -19,8 +19,11 @@ public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
 
 	private final AtomicInteger backupMissCount = new AtomicInteger(0);
 
+	private static final VarHandle longArrayHandle =  MethodHandles.arrayElementVarHandle(long[].class);
+	private static final VarHandle objArrayHandle =  MethodHandles.arrayElementVarHandle(Object[].class);
+
 	protected volatile LongCacheState<V> activeState;
-	private final AtomicReference<LongCacheState<V>> backupState = new AtomicReference<LongCacheState<V>>();
+	private final AtomicReference<LongCacheState<V>> backupState = new AtomicReference<>();
 
 
 	public LongAtomicLoadingCache(LongSimpleCacheLoader<V> loader, int maxSize)
@@ -29,7 +32,7 @@ public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
 		this.maxFill = (int) (capacity * ISimpleLoadingCache.LOAD_FACTOR);
 		this.positionMask = capacity - 1;
 		this.loader = loader;
-		this.activeState = new LongCacheState<V>(this.capacity);
+		this.activeState = new LongCacheState<>(this.capacity);
 		this.clear();
 	}
 
@@ -39,7 +42,7 @@ public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
 	@Override
 	public void clear()
 	{
-		this.activeState = new LongCacheState<V>(this.capacity);
+		this.activeState = new LongCacheState<>(this.capacity);
 	}
 
 	public V get(long key)
@@ -64,17 +67,15 @@ public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
 		}
 
 		int position = (int) (HashCommon.mix(key) & positionMask);
-		long offset = longByteOffset(position);
-		do
-		{
-			final long currentKey = UNSAFE.getLongVolatile(localState.keys, offset);
+
+		do {
+			final long currentKey = (long) longArrayHandle.getVolatile(localState.keys, position);
 
 			if(currentKey == key) return getValueEventually(localState, position, key);
 
 			if(currentKey == 0) return load(localState, key, position);
 
 			position = (position + 1) & positionMask;
-			offset = longByteOffset(position);
 
 		} while (true);
 	}
@@ -108,26 +109,23 @@ public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
 		final LongCacheState<V> backupState = this.backupState.get();
 
 		final V result = backupState == null ? loader.load(key) : loadFromBackup(backupState, key);
-		long offset = longByteOffset(position);
 
-		do
-		{
-			if(UNSAFE.compareAndSwapLong(localState.keys, offset, 0, key))
-			{
-				UNSAFE.putObjectVolatile(localState.values, objectByteOffset(position), result);
+		do {
+			if(longArrayHandle.compareAndSet(localState.keys, position, 0, key)) {
+				objArrayHandle.setVolatile(localState.values, position, result);
 				break;
 			}
 
 			// small chance another thread added our value before we got our lock
-			if(UNSAFE.getLongVolatile(localState.keys, offset) == key) return getValueEventually(localState, position, key);
-			position = (position + 1) & positionMask;
-			offset = longByteOffset(position);
+			if ((long) longArrayHandle.getVolatile(localState.keys, position) == key) {
+				return getValueEventually(localState, position, key);
+			}
 
+			position = (position + 1) & positionMask;
 		} while(true);
 
-		if(localState.size.incrementAndGet() == this.maxFill)
-		{
-			final LongCacheState<V> newState = new LongCacheState<V>(this.capacity);
+		if(localState.size.incrementAndGet() == this.maxFill) {
+			final LongCacheState<V> newState = new LongCacheState<>(this.capacity);
 			// doing this means we don't have to handle zero value in backup cache value lookup
 			newState.zeroValue.set(this.activeState.zeroValue.get());
 			this.backupState.set(this.activeState);
@@ -138,59 +136,61 @@ public class LongAtomicLoadingCache<V> implements ISimpleLoadingCache
 		return result;
 	}
 
-	@SuppressWarnings({"unchecked"})
 	private V getValueEventually(LongCacheState<V> localState, int position, long key)
 	{
-		final long offset = objectByteOffset(position);
-
-		V result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		V result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
 		// Another thread has updated key but hasn't yet updated the value.
 		// Should be very rare.  Retry several times until value appears.
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		result = (V) UNSAFE.getObjectVolatile(localState.values, offset);
+		result = (V) objArrayHandle.getVolatile(localState.values, position);
 		if(result != null) return result;
 
-		assert false : "LongSimpleLoadingCache: returning new loaded value despite key hit because cached value not yet written by other thread.";
+		assert trueButWarn();
 
 		// abort and return loaded value directly
 		return loader.load(key);
 	}
 
+	private static boolean trueButWarn() {
+		Fermion.LOG.info("LongAtomicLoadingCache: returning new loaded value despite key hit because cached value not yet written by other thread.");
+		return true;
+	}
+
 	// for test harness
 	public LongAtomicLoadingCache<V> createNew(LongSimpleCacheLoader<V> loader, int startingCapacity)
 	{
-		return new LongAtomicLoadingCache<V>(loader, startingCapacity);
+		return new LongAtomicLoadingCache<>(loader, startingCapacity);
 	}
 }

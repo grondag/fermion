@@ -1,5 +1,7 @@
 package grondag.fermion.sc.concurrency;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -10,7 +12,6 @@ import com.google.common.collect.ImmutableList;
 
 import grondag.fermion.sc.Sc;
 import grondag.fermion.sc.unordered.AbstractUnorderedArrayList;
-import sun.misc.Unsafe;
 
 /**
  * Thread pool optimized for scatter-gather processing patterns with an array, list or
@@ -130,21 +131,17 @@ public class ScatterGatherThreadPool
 	};
 
 	/**
-	 * Used here to avoid a pointer chase for the atomic batch counter at the core of the implementation.
+	 * Atomic access to {@link #nextBatchIndex}
 	 */
-	private static final Unsafe UNSAFE = Danger.UNSAFE;
-
-	/**
-	 * Unsafe address for atomic access to {@link #nextBatchIndex}
-	 */
-	private static final long nextBatchIndexOffset;
+	private static final VarHandle NEXT_BATCH_INDEX_HANDLE;
 
 	static
 	{
 		try
 		{
-			nextBatchIndexOffset = UNSAFE.objectFieldOffset
-				(ScatterGatherThreadPool.class.getDeclaredField("nextBatchIndex"));
+			NEXT_BATCH_INDEX_HANDLE = MethodHandles
+					  .privateLookupIn(ScatterGatherThreadPool.class, MethodHandles.lookup())
+					  .findVarHandle(ScatterGatherThreadPool.class, "nextBatchIndex", int.class);
 		} catch (final Exception ex) { throw new Error(ex); }
 	}
 
@@ -197,7 +194,7 @@ public class ScatterGatherThreadPool
 		{
 			final Thread thread = new Thread(
 				new Worker(),
-				"Exotic Matter Simulation Thread - " + i);
+				"Fermion Scatter/Gather Pool Thread - " + i);
 			thread.setDaemon(true);
 			builder.add(thread);
 			thread.start();
@@ -208,9 +205,8 @@ public class ScatterGatherThreadPool
 	/**
 	 * See {@link #nextBatchIndex}
 	 */
-	private final int getNextBatchIndex()
-	{
-		return UNSAFE.getAndAddInt(this, nextBatchIndexOffset, 1);
+	private final int getNextBatchIndex() {
+		return (int) NEXT_BATCH_INDEX_HANDLE.getAndAdd(this, 1);
 	}
 
 	/**
@@ -500,7 +496,7 @@ public class ScatterGatherThreadPool
 		private final BiConsumer<T, Consumer<V>> operation;
 		private final Consumer<AbstractUnorderedArrayList<V>> collector;
 
-		protected final ThreadLocal<WorkerState> workerStates = new ThreadLocal<WorkerState>()
+		protected final ThreadLocal<WorkerState> workerStates = new ThreadLocal<>()
 		{
 			@Override
 			protected ArrayMappingConsumer<T, V>.WorkerState initialValue()

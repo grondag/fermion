@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
-
-
-import org.junit.Test;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import io.netty.util.internal.ThreadLocalRandom;
+import org.junit.Test;
 
+import grondag.fermion.sc.cache.KeyInterningCache;
 import grondag.fermion.sc.cache.LongAtomicLoadingCache;
 import grondag.fermion.sc.cache.LongSimpleCacheLoader;
 import grondag.fermion.sc.cache.LongSimpleLoadingCache;
@@ -20,7 +21,6 @@ import grondag.fermion.sc.cache.ObjectSimpleCacheLoader;
 import grondag.fermion.sc.cache.ObjectSimpleLoadingCache;
 import grondag.fermion.sc.cache.WideSimpleCacheLoader;
 import grondag.fermion.sc.cache.WideSimpleLoadingCache;
-import io.netty.util.internal.ThreadLocalRandom;
 
 public class SimpleLoadingCacheTest {
     /** added to key to produce result */
@@ -47,6 +47,15 @@ public class SimpleLoadingCacheTest {
             return new Long(key + MAGIC_NUMBER);
         }
 
+        public Long loadInterned(long key) {
+            if (LOAD_COST > 0) {
+                for (int i = 0; i < LOAD_COST; i++) {
+                    twiddler.incrementAndGet();
+                }
+            }
+            return key;
+        }
+
         @Override
         public Long load(Long key) {
             if (LOAD_COST > 0) {
@@ -68,31 +77,33 @@ public class SimpleLoadingCacheTest {
         }
     }
 
-    private static interface CacheAdapter {
-        public abstract long get(long key);
+    private interface CacheAdapter {
+        long get(long key);
 
-        public abstract CacheAdapter newInstance(int maxSize);
+        CacheAdapter newInstance(int maxSize);
     }
 
     private abstract class Runner implements Callable<Void> {
 
         private final CacheAdapter subject;
+        private final long magic;
 
-        private Runner(CacheAdapter subject) {
+        private Runner(CacheAdapter subject,long magic) {
             this.subject = subject;
+            this.magic = magic;
         }
 
         @Override
         public Void call() {
             try {
-                Random random = ThreadLocalRandom.current();
+                final Random random = ThreadLocalRandom.current();
 
                 for (int i = 0; i < STEP_COUNT; i++) {
-                    long key = getKey(i, random.nextLong());
-                    Long result = subject.get(key);
-                    assert (result.longValue() == key + MAGIC_NUMBER);
+                    final long key = getKey(i, random.nextLong());
+                    final Long result = subject.get(key);
+                    assert (result.longValue() == key + magic);
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -104,8 +115,8 @@ public class SimpleLoadingCacheTest {
     private class UniformRunner extends Runner {
         private final long keyMask;
 
-        private UniformRunner(CacheAdapter subject, long keyMask) {
-            super(subject);
+        private UniformRunner(CacheAdapter subject, long keyMask, long magic) {
+            super(subject, magic);
             this.keyMask = keyMask;
         }
 
@@ -122,8 +133,8 @@ public class SimpleLoadingCacheTest {
 
         private final long keyMask;
 
-        private ShiftRunner(CacheAdapter subject, long keyMask) {
-            super(subject);
+        private ShiftRunner(CacheAdapter subject, long keyMask, long magic) {
+            super(subject, magic);
             this.keyMask = keyMask;
         }
 
@@ -146,15 +157,15 @@ public class SimpleLoadingCacheTest {
 
         @Override
         public long get(long key) {
-            long startTime = System.nanoTime();
-            long result = cache.getUnchecked(key);
+            final long startTime = System.nanoTime();
+            final long result = cache.getUnchecked(key);
             nanoCount.addAndGet(System.nanoTime() - startTime);
             return result;
         }
 
         @Override
         public CacheAdapter newInstance(int maxSize) {
-            GoogleAdapter result = new GoogleAdapter();
+            final GoogleAdapter result = new GoogleAdapter();
 
             result.cache = CacheBuilder.newBuilder().concurrencyLevel(THREAD_COUNT).initialCapacity(maxSize)
                     .maximumSize(maxSize).build(new Loader());
@@ -168,16 +179,16 @@ public class SimpleLoadingCacheTest {
 
         @Override
         public long get(long key) {
-            long startTime = System.nanoTime();
-            long result = cache.get(key);
+            final long startTime = System.nanoTime();
+            final long result = cache.get(key);
             nanoCount.addAndGet(System.nanoTime() - startTime);
             return result;
         }
 
         @Override
         public CacheAdapter newInstance(int maxSize) {
-            LongAtomicAdapter result = new LongAtomicAdapter();
-            result.cache = new LongAtomicLoadingCache<Long>(new Loader(), maxSize);
+            final LongAtomicAdapter result = new LongAtomicAdapter();
+            result.cache = new LongAtomicLoadingCache<>(new Loader(), maxSize);
             return result;
         }
     }
@@ -187,16 +198,16 @@ public class SimpleLoadingCacheTest {
 
         @Override
         public long get(long key) {
-            long startTime = System.nanoTime();
-            long result = cache.get(key);
+            final long startTime = System.nanoTime();
+            final long result = cache.get(key);
             nanoCount.addAndGet(System.nanoTime() - startTime);
             return result;
         }
 
         @Override
         public CacheAdapter newInstance(int maxSize) {
-            LongSimpleAdapter result = new LongSimpleAdapter();
-            result.cache = new LongSimpleLoadingCache<Long>(new Loader(), maxSize);
+            final LongSimpleAdapter result = new LongSimpleAdapter();
+            result.cache = new LongSimpleLoadingCache<>(new Loader(), maxSize);
             return result;
         }
     }
@@ -206,16 +217,36 @@ public class SimpleLoadingCacheTest {
 
         @Override
         public long get(long key) {
-            long startTime = System.nanoTime();
-            long result = cache.get(key);
+            final long startTime = System.nanoTime();
+            final long result = cache.get(key);
             nanoCount.addAndGet(System.nanoTime() - startTime);
             return result;
         }
 
         @Override
         public CacheAdapter newInstance(int maxSize) {
-            ObjectSimpleAdapter result = new ObjectSimpleAdapter();
-            result.cache = new ObjectSimpleLoadingCache<Long, Long>(new Loader(), maxSize);
+            final ObjectSimpleAdapter result = new ObjectSimpleAdapter();
+            result.cache = new ObjectSimpleLoadingCache<>(new Loader(), maxSize);
+            return result;
+        }
+    }
+
+    private class KeyInterningAdapter implements CacheAdapter {
+        private KeyInterningCache<Long> cache;
+        final Loader loader = new Loader();
+
+        @Override
+        public long get(long key) {
+            final long startTime = System.nanoTime();
+            final long result = cache.get(key);
+            nanoCount.addAndGet(System.nanoTime() - startTime);
+            return result;
+        }
+
+        @Override
+        public CacheAdapter newInstance(int maxSize) {
+            final KeyInterningAdapter result = new KeyInterningAdapter();
+            result.cache = new KeyInterningCache<>(loader::loadInterned, maxSize);
             return result;
         }
     }
@@ -225,36 +256,36 @@ public class SimpleLoadingCacheTest {
 
         @Override
         public long get(long key) {
-            long startTime = System.nanoTime();
-            long result = cache.get(key, key * 31);
+            final long startTime = System.nanoTime();
+            final long result = cache.get(key, key * 31);
             nanoCount.addAndGet(System.nanoTime() - startTime);
             return result;
         }
 
         @Override
         public CacheAdapter newInstance(int maxSize) {
-            WideSimpleAdapter result = new WideSimpleAdapter();
-            result.cache = new WideSimpleLoadingCache<Long>(new Loader(), maxSize);
+            final WideSimpleAdapter result = new WideSimpleAdapter();
+            result.cache = new WideSimpleLoadingCache<>(new Loader(), maxSize);
             return result;
         }
     }
 
     AtomicLong nanoCount = new AtomicLong(0);
 
-    private void doTestInner(ExecutorService executor, CacheAdapter subject) {
-        ArrayList<Runner> runs = new ArrayList<Runner>();
+    private void doTestInner(ExecutorService executor, CacheAdapter subject, long magic) {
+        final ArrayList<Runner> runs = new ArrayList<>();
 
         System.out.println("Practical best case: key space == max capacity - uniform random demand");
         runs.clear();
         nanoCount.set(0);
         subject = subject.newInstance(0xFFFFF);
         for (int i = 0; i < THREAD_COUNT; i++) {
-            runs.add(new UniformRunner(subject, 0xFFFFF));
+            runs.add(new UniformRunner(subject, 0xFFFFF, magic));
         }
         try {
             executor.invokeAll(runs);
             System.out.println("Mean get() time = " + (nanoCount.get() / (STEP_COUNT * THREAD_COUNT)));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
 
@@ -263,12 +294,12 @@ public class SimpleLoadingCacheTest {
         nanoCount.set(0);
         subject = subject.newInstance(0xCCCCC);
         for (int i = 0; i < THREAD_COUNT; i++) {
-            runs.add(new UniformRunner(subject, 0xFFFFF));
+            runs.add(new UniformRunner(subject, 0xFFFFF, magic));
         }
         try {
             executor.invokeAll(runs);
             System.out.println("Mean get() time = " + (nanoCount.get() / (STEP_COUNT * THREAD_COUNT)));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
 
@@ -277,12 +308,12 @@ public class SimpleLoadingCacheTest {
         nanoCount.set(0);
         subject = subject.newInstance(0x2FFFF);
         for (int i = 0; i < THREAD_COUNT; i++) {
-            runs.add(new UniformRunner(subject, 0xFFFFF));
+            runs.add(new UniformRunner(subject, 0xFFFFF, magic));
         }
         try {
             executor.invokeAll(runs);
             System.out.println("Mean get() time = " + (nanoCount.get() / (STEP_COUNT * THREAD_COUNT)));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
 
@@ -291,12 +322,12 @@ public class SimpleLoadingCacheTest {
         nanoCount.set(0);
         subject = subject.newInstance(0x7FFFF);
         for (int i = 0; i < THREAD_COUNT; i++) {
-            runs.add(new ShiftRunner(subject, 0xFFFFF));
+            runs.add(new ShiftRunner(subject, 0xFFFFF, magic));
         }
         try {
             executor.invokeAll(runs);
             System.out.println("Mean get() time = " + (nanoCount.get() / (STEP_COUNT * THREAD_COUNT)));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
 
@@ -305,7 +336,7 @@ public class SimpleLoadingCacheTest {
         nanoCount.set(0);
         subject = subject.newInstance(0x7FFFF);
         for (int i = 0; i < THREAD_COUNT; i++) {
-            new ShiftRunner(subject, 0xFFFFF).call();
+            new ShiftRunner(subject, 0xFFFFF, magic).call();
         }
         System.out.println("Mean get() time = " + (nanoCount.get() / (STEP_COUNT * THREAD_COUNT)));
 
@@ -313,22 +344,23 @@ public class SimpleLoadingCacheTest {
     }
 
     public void doTestOuter(ExecutorService executor) {
+    	System.out.println("Running key interning object cache test");
+    	doTestInner(executor, new KeyInterningAdapter(), 0);
+
+    	System.out.println("Running google cache test");
+        doTestInner(executor, new GoogleAdapter(), MAGIC_NUMBER);
 
         System.out.println("Running simple long cache test");
-        doTestInner(executor, new LongSimpleAdapter());
+        doTestInner(executor, new LongSimpleAdapter(), MAGIC_NUMBER);
 
         System.out.println("Running atomic long cache test");
-        doTestInner(executor, new LongAtomicAdapter());
+        doTestInner(executor, new LongAtomicAdapter(), MAGIC_NUMBER);
 
         System.out.println("Running wide key cache test");
-        doTestInner(executor, new WideSimpleAdapter());
+        doTestInner(executor, new WideSimpleAdapter(), MAGIC_NUMBER);
 
         System.out.println("Running simple object cache test");
-        doTestInner(executor, new ObjectSimpleAdapter());
-
-        System.out.println("Running google cache test");
-        doTestInner(executor, new GoogleAdapter());
-
+        doTestInner(executor, new ObjectSimpleAdapter(), MAGIC_NUMBER);
     }
 
     @Test
@@ -336,13 +368,13 @@ public class SimpleLoadingCacheTest {
 
         // not really a unit test, so disable unless actually want to run
 
-//        ExecutorService SIMULATION_POOL;
-//        SIMULATION_POOL = Executors.newFixedThreadPool(THREAD_COUNT);
-//        
-//        System.out.println("WARM UP RUN");
-//        doTestOuter(SIMULATION_POOL);
-//        
-//        System.out.println("TEST RUN");
-//        doTestOuter(SIMULATION_POOL);
+        ExecutorService SIMULATION_POOL;
+        SIMULATION_POOL = Executors.newFixedThreadPool(THREAD_COUNT);
+
+        System.out.println("WARM UP RUN");
+        doTestOuter(SIMULATION_POOL);
+
+        System.out.println("TEST RUN");
+        doTestOuter(SIMULATION_POOL);
     }
 }

@@ -21,11 +21,11 @@ public class ThreadPoolTest {
             null);
 
     {
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 100000000; i++) {
             bigThings.add(new TestSubject());
         }
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             smallThings.add(new TestSubject());
         }
     }
@@ -41,11 +41,11 @@ public class ThreadPoolTest {
 
     final ForkJoinPool SIMULATION_POOL = new ForkJoinPool(Runtime.getRuntime().availableProcessors(),
             new ForkJoinWorkerThreadFactory() {
-                private AtomicInteger count = new AtomicInteger(1);
+                private final AtomicInteger count = new AtomicInteger(1);
 
                 @Override
                 public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
-                    ForkJoinWorkerThread result = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+                    final ForkJoinWorkerThread result = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
                     result.setName("Exotic Matter Simulation Thread -" + count.getAndIncrement());
                     return result;
                 }
@@ -65,54 +65,54 @@ public class ThreadPoolTest {
         for (int i = 0; i < 50; i++) {
             SIMPLE_POOL.completeTask(smallThings, t -> t.doSomething());
             SIMPLE_POOL.completeTask(smallThings, smallThings.size(), t -> t.doSomething());
-            this.SIMULATION_POOL.submit(() -> smallThings.stream(true).forEach(t -> t.doSomething())).get();
+            SIMULATION_POOL.submit(() -> smallThings.stream(true).forEach(t -> t.doSomething())).get();
             SIMPLE_POOL.completeTask(bigThings, t -> t.doSomething());
-            this.SIMULATION_POOL.submit(() -> bigThings.stream(true).forEach(t -> t.doSomething())).get();
+            SIMULATION_POOL.submit(() -> bigThings.stream(true).forEach(t -> t.doSomething())).get();
         }
         System.out.println("");
         System.out.println("");
 
         long iSmall = 0;
         long iBig = 0;
-        long nanosSmallSimple = 0;
-        long nanosSmallSimpleSingleBatch = 0;
-        long nanosSmallStream = 0;
-        long nanosBigSimple = 0;
-        long nanosBigStream = 0;
+        long scatterGatherSmallLoad = 0;
+        long scatterGatherSingleBatch = 0;
+        long forkJoinStreamSmallLoad = 0;
+        long scatterGatherLargeLoad = 0;
+        long forkJoinStreamLargeLoad = 0;
 
         while (true) {
             long start = System.nanoTime();
             SIMPLE_POOL.completeTask(smallThings, t -> t.doSomething());
             long end = System.nanoTime();
-            nanosSmallSimple += (end - start);
+            scatterGatherSmallLoad += (end - start);
 
             start = System.nanoTime();
             SIMPLE_POOL.completeTask(smallThings, smallThings.size(), t -> t.doSomething());
             end = System.nanoTime();
-            nanosSmallSimpleSingleBatch += (end - start);
+            scatterGatherSingleBatch += (end - start);
 
             start = System.nanoTime();
-            this.SIMULATION_POOL.submit(() -> smallThings.stream(true).forEach(t -> t.doSomething())).get();
+            SIMULATION_POOL.submit(() -> smallThings.stream(true).forEach(t -> t.doSomething())).get();
             end = System.nanoTime();
-            nanosSmallStream += (end - start);
+            forkJoinStreamSmallLoad += (end - start);
 
             start = System.nanoTime();
             SIMPLE_POOL.completeTask(bigThings, t -> t.doSomething());
             end = System.nanoTime();
-            nanosBigSimple += (end - start);
+            scatterGatherLargeLoad += (end - start);
 
             start = System.nanoTime();
-            this.SIMULATION_POOL.submit(() -> bigThings.stream(true).forEach(t -> t.doSomething())).get();
+            SIMULATION_POOL.submit(() -> bigThings.stream(true).forEach(t -> t.doSomething())).get();
             end = System.nanoTime();
-            nanosBigStream += (end - start);
+            forkJoinStreamLargeLoad += (end - start);
 
-            iSmall += this.smallThings.size();
-            iBig += this.bigThings.size();
-            System.out.println("Avg Small Stream = " + nanosSmallStream / (double) iSmall);
-            System.out.println("Avg Small Simple = " + nanosSmallSimple / (double) iSmall);
-            System.out.println("Avg Small Simple Single Batch = " + nanosSmallSimpleSingleBatch / (double) iSmall);
-            System.out.println("Avg Big Stream = " + nanosBigStream / (double) iBig);
-            System.out.println("Avg Big Simple = " + nanosBigSimple / (double) iBig);
+            iSmall += smallThings.size();
+            iBig += bigThings.size();
+            System.out.println(String.format("ForkJoin Stream Small Job = %,dns (%fns per task)", forkJoinStreamSmallLoad, forkJoinStreamSmallLoad / (double) iSmall));
+            System.out.println(String.format("Scatter/Gather Pool Small Job = %,dns (%fns per task)", scatterGatherSmallLoad, scatterGatherSmallLoad / (double) iSmall));
+            System.out.println(String.format("Scatter/Gather Single Task = %,dns (%fns per task)", scatterGatherSingleBatch, scatterGatherSingleBatch / (double) iSmall));
+            System.out.println(String.format("ForkJoin Stream Large Job = %,dns (%fns per task)", forkJoinStreamLargeLoad, forkJoinStreamLargeLoad / (double) iBig));
+            System.out.println(String.format("Scatter/Gather Large Job = %,dns (%fns per task)", scatterGatherLargeLoad, scatterGatherLargeLoad / (double) iBig));
             System.out.println("");
         }
     }
