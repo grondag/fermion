@@ -37,9 +37,11 @@ if (grgit == null) {
 processResources {
 	inputs.property "version", project.version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+	from(sourceSets.main.resources.srcDirs) {
+        filesMatching("fabric.mod.json") {
+            expand "version": project.version
+        }
+    }
 }
 
 def eclipseName =  project.mod_name;
@@ -86,13 +88,13 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 sourceSets {
 	main {
 	        java {
-							srcDirs = ['../../src/main/java/grondag/fermion']
+				srcDirs = ['../../src/main/java/grondag/fermion']
 	            include 'simulator/**/*'
 	            exclude '*.DS_Store'
 	        }
-	        resources
-	        {
-						srcDirs = ['../../src/simulator/resources']
+	        
+	        resources {
+				srcDirs = ['../../src/simulator/resources']
 	        	include '**/*'
 	        	exclude '*.DS_Store'
 	        }
