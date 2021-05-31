@@ -16,18 +16,16 @@
 
 package grondag.fermion.modkeys;
 
+import com.terraformersmc.modmenu.api.ConfigScreenFactory;
+import com.terraformersmc.modmenu.api.ModMenuApi;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-public class ModKeysModMenuHelper { //implements ModMenuApi {
-	//	@Override
-	//	public Function<Screen, ? extends Screen> getConfigScreenFactory() {
-	//		return ModKeysConfigScreen::new;
-	//	}
-	//
-	//	@Override
-	//	public String getModId() {
-	//		return "fermion-modkeys";
-	//	}
+public class ModKeysModMenuHelper implements ModMenuApi {
+	@Override
+	public ConfigScreenFactory<?> getModConfigScreenFactory() {
+		return ModKeysConfigScreen::new;
+	}
 }

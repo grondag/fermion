@@ -23,8 +23,9 @@
     "fabric": "*"
   },
   "custom": {
-    "modmenu:api": true,
-    "modmenu:clientsideOnly": false,
-    "modmenu:parent": "fermion"
+    "modmenu": {
+        "badges": [ "library" ],
+        "parent": "fermion"
+    }
   }
 }

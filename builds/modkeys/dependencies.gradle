@@ -27,5 +27,8 @@ dependencies {
 	
 	modImplementation ("grondag:fermion-${project.mc_tag}:${project.fermion_version}.+") { transitive = false; changing = true; }
 	
-	//modApi ("io.github.prospector:modmenu:${project.modmenu_version}") { transitive = false }
+	modApi("com.terraformersmc:modmenu:${project.modmenu_version}") {
+		exclude group: "net.fabricmc.fabric-api"
+		exclude group: "net.fabricmc.fabric-loader"
+	}
 }
