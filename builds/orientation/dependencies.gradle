@@ -1,11 +1,7 @@
 repositories {
     mavenLocal();
     jcenter();
-    //maven { url "https://tehnut.info/maven"}
-    //maven { url "http://maven.sargunv.s3-website-us-west-2.amazonaws.com/" }
-    //maven { url "https://minecraft.curseforge.com/api/maven" }
     maven { url "https://maven.fabricmc.net/" }
-    //maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
     
  	maven {
     	name = "dblsaiko"
@@ -26,6 +22,4 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 	
 	modImplementation ("grondag:fermion-${project.mc_tag}:${project.fermion_version}.+") { transitive = false; changing = true; }
-	
-	//modApi ("io.github.prospector:modmenu:${project.modmenu_version}") { transitive = false }
 }
