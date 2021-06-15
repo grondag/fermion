@@ -157,7 +157,6 @@ public class ItemStackPicker<T> extends TabBar<T> {
 
 	@Override
 	public SelectionType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return SelectionType.NONE;
 	}
 }
