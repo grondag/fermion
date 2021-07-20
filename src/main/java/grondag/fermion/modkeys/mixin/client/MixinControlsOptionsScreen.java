@@ -41,7 +41,7 @@ public class MixinControlsOptionsScreen extends Screen {
 		final Screen thisScreen =  this;
 
 		addDrawableChild(new ButtonWidget(width - 100, 10, 90, 20, new TranslatableText("config.modkeys.button"), (buttonWidget) -> {
-			client.openScreen(new ModKeysConfigScreen(thisScreen));
+			client.setScreen(new ModKeysConfigScreen(thisScreen));
 		}));
 	}
 }

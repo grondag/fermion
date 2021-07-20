@@ -26,7 +26,7 @@ public class ModKeysConfigScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		client.openScreen(parent);
+		client.setScreen(parent);
 	}
 
 	@Override
@@ -40,8 +40,8 @@ public class ModKeysConfigScreen extends Screen {
 			}
 
 			@Override
-			public void renderToolTip(MatrixStack matrixStack, int i, int j) {
-				renderTooltip(matrixStack, new TranslatableText("config.modkeys.help.primary"), i, j);
+			public void renderTooltip(MatrixStack matrixStack, int i, int j) {
+				ModKeysConfigScreen.this.renderTooltip(matrixStack, new TranslatableText("config.modkeys.help.primary"), i, j);
 			}
 		});
 
@@ -54,8 +54,8 @@ public class ModKeysConfigScreen extends Screen {
 			}
 
 			@Override
-			public void renderToolTip(MatrixStack matrixStack, int i, int j) {
-				renderTooltip(matrixStack, new TranslatableText("config.modkeys.help.secondary"), i, j);
+			public void renderTooltip(MatrixStack matrixStack, int i, int j) {
+				ModKeysConfigScreen.this.renderTooltip(matrixStack, new TranslatableText("config.modkeys.help.secondary"), i, j);
 			}
 		});
 
@@ -68,8 +68,8 @@ public class ModKeysConfigScreen extends Screen {
 			}
 
 			@Override
-			public void renderToolTip(MatrixStack matrixStack, int i, int j) {
-				renderTooltip(matrixStack, new TranslatableText("config.modkeys.help.tertiary"), i, j);
+			public void renderTooltip(MatrixStack matrixStack, int i, int j) {
+				ModKeysConfigScreen.this.renderTooltip(matrixStack, new TranslatableText("config.modkeys.help.tertiary"), i, j);
 			}
 		});
 
@@ -81,7 +81,7 @@ public class ModKeysConfigScreen extends Screen {
 
 		addDrawableChild(new ButtonWidget(width / 2 + 5, 200, 150, 20, new TranslatableText("gui.done"), (buttonWidget) -> {
 			ModKeysConfig.saveOptions(primary, secondary, tertiary);
-			client.openScreen(parent);
+			client.setScreen(parent);
 		}));
 	}
 

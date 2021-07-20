@@ -59,10 +59,10 @@ public class ItemHelper {
 	}
 
 	public static NbtCompound getOrCreateStackTag(ItemStack stack) {
-		NbtCompound result = stack.getTag();
+		NbtCompound result = stack.getNbt();
 		if (result == null) {
 			result = new NbtCompound();
-			stack.setTag(result);
+			stack.setNbt(result);
 		}
 		return result;
 	}
@@ -78,9 +78,9 @@ public class ItemHelper {
 			return false;
 		else if (stack1.getItem() != stack2.getItem())
 			return false;
-		else if (stack1.hasTag() ^ stack2.hasTag())
+		else if (stack1.hasNbt() ^ stack2.hasNbt())
 			return false;
-		else if (stack1.hasTag() && !stack1.getTag().equals(stack2.getTag()))
+		else if (stack1.hasNbt() && !stack1.getNbt().equals(stack2.getNbt()))
 			return false;
 		else if (stack1.getCount() != stack2.getCount())
 			return false;

@@ -319,10 +319,10 @@ public class Useful {
 	 * Creates stack tag if it doesn't exist
 	 */
 	public static NbtCompound getOrCreateTagCompound(ItemStack stack) {
-		NbtCompound tag = stack.getTag();
+		NbtCompound tag = stack.getNbt();
 		if (tag == null) {
 			tag = new NbtCompound();
-			stack.setTag(tag);
+			stack.setNbt(tag);
 		}
 		return tag;
 	}
