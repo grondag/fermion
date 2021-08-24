@@ -20,6 +20,7 @@ import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_270;
 import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_90;
 import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_NONE;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
@@ -85,7 +86,7 @@ public enum CubeEdge implements StringIdentifiable {
 	public final HorizontalEdge horizontalEdge;
 
 	CubeEdge(Direction face1, Direction face2, ClockwiseRotation rotation) {
-		name = name().toLowerCase();
+		name = name().toLowerCase(Locale.ROOT);
 		this.face1 = face1;
 		this.face2 = face2;
 		this.rotation = rotation;

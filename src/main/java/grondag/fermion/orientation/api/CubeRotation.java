@@ -15,6 +15,7 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
@@ -89,7 +90,7 @@ public enum CubeRotation implements StringIdentifiable {
 	public final HorizontalEdge horizontalEdge;
 
 	CubeRotation(Direction bottom, Direction back) {
-		name = name().toLowerCase();
+		name = name().toLowerCase(Locale.ROOT);
 		this.bottom = bottom;
 		this.back = back;
 		superOrdinal = 6 + ordinal();

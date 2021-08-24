@@ -15,12 +15,6 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
-import java.util.function.Consumer;
-
-import grondag.fermion.orientation.impl.FaceEdgeHelper;
-import org.jetbrains.annotations.ApiStatus.Internal;
-import org.jetbrains.annotations.Nullable;
-
 import static net.minecraft.util.math.Direction.DOWN;
 import static net.minecraft.util.math.Direction.EAST;
 import static net.minecraft.util.math.Direction.NORTH;
@@ -28,8 +22,16 @@ import static net.minecraft.util.math.Direction.SOUTH;
 import static net.minecraft.util.math.Direction.UP;
 import static net.minecraft.util.math.Direction.WEST;
 
+import java.util.Locale;
+import java.util.function.Consumer;
+
+import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
+
+import grondag.fermion.orientation.impl.FaceEdgeHelper;
 
 @Internal
 public enum FaceEdge implements StringIdentifiable {
@@ -46,8 +48,8 @@ public enum FaceEdge implements StringIdentifiable {
 
 	public final String name;
 
-	private FaceEdge(Direction... relativeLookup) {
-		name = name().toLowerCase();
+	FaceEdge(Direction... relativeLookup) {
+		name = name().toLowerCase(Locale.ROOT);
 		this.relativeLookup = relativeLookup;
 		ordinalBit = 1 << ordinal();
 	}

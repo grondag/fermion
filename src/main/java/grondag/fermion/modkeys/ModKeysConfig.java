@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 
 import net.fabricmc.loader.api.FabricLoader;
@@ -36,7 +37,7 @@ public class ModKeysConfig {
 		public final String key;
 		public final int flag;
 
-		private Option(String key, int flag) {
+		Option(String key, int flag) {
 			this.flag = flag;
 			this.key = key;
 		}
@@ -91,7 +92,7 @@ public class ModKeysConfig {
 		final File configFile = getFile();
 		final Properties properties = getProperties(configFile);
 
-		final String primaryStr = properties.computeIfAbsent(PRIMARY, (a) -> Option.CONTROL.key).toString().toLowerCase();
+		final String primaryStr = properties.computeIfAbsent(PRIMARY, (a) -> Option.CONTROL.key).toString().toLowerCase(Locale.ROOT);
 		primary = getOption(primaryStr);
 
 		if(primary == null) {
@@ -99,7 +100,7 @@ public class ModKeysConfig {
 			properties.put(PRIMARY, Option.CONTROL.key);
 		}
 
-		final String secondaryStr = properties.computeIfAbsent(SECONDARY, (a) -> Option.ALT.key).toString().toLowerCase();
+		final String secondaryStr = properties.computeIfAbsent(SECONDARY, (a) -> Option.ALT.key).toString().toLowerCase(Locale.ROOT);
 		secondary = getOption(secondaryStr);
 
 		if(secondary == null) {
@@ -107,7 +108,7 @@ public class ModKeysConfig {
 			properties.put(SECONDARY, Option.ALT.key);
 		}
 
-		final String tertiaryStr = properties.computeIfAbsent(TERTIARY, (a) -> Option.SUPER.key).toString().toLowerCase();
+		final String tertiaryStr = properties.computeIfAbsent(TERTIARY, (a) -> Option.SUPER.key).toString().toLowerCase(Locale.ROOT);
 		tertiary = getOption(tertiaryStr);
 
 		if(tertiary == null) {

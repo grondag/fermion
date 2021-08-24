@@ -1,5 +1,7 @@
 package grondag.fermion.color;
 
+import java.util.Locale;
+
 import net.minecraft.client.resource.language.I18n;
 
 /**
@@ -26,13 +28,13 @@ public enum Chroma
 
 	public final double value;
 
-	private Chroma(double chromaValue)
+	Chroma(double chromaValue)
 	{
 		value = chromaValue;
 	}
 
 	public String localizedName()
 	{
-		return I18n.translate("color.chroma." + name().toLowerCase());
+		return I18n.translate("color.chroma." + name().toLowerCase(Locale.ROOT));
 	}
 }

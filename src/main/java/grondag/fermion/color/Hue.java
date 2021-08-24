@@ -1,5 +1,7 @@
 package grondag.fermion.color;
 
+import java.util.Locale;
+
 import net.minecraft.client.resource.language.I18n;
 
 /**
@@ -104,6 +106,6 @@ public enum Hue
 
 	public String localizedName()
 	{
-		return I18n.translate("color.hue." + name().toLowerCase());
+		return I18n.translate("color.hue." + name().toLowerCase(Locale.ROOT));
 	}
 }

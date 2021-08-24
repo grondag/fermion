@@ -15,6 +15,7 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
@@ -45,7 +46,7 @@ public enum FaceCorner implements StringIdentifiable {
 	public final int ordinalBit;
 
 	FaceCorner(FaceEdge leftSide, FaceEdge rightSide) {
-		name = name().toLowerCase();
+		name = name().toLowerCase(Locale.ROOT);
 		this.leftSide = leftSide;
 		this.rightSide = rightSide;
 		ordinalBit = 1 << ordinal();

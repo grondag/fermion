@@ -15,6 +15,7 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
@@ -43,7 +44,7 @@ public enum ClockwiseRotation implements StringIdentifiable {
 	public final int degreesInverse;
 
 	ClockwiseRotation(int degrees) {
-		name = name().toLowerCase();
+		name = name().toLowerCase(Locale.ROOT);
 		this.degrees = degrees;
 		degreesInverse = (360 - degrees) % 360;
 	}

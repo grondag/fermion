@@ -15,6 +15,7 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus.Experimental;
@@ -44,7 +45,7 @@ public enum HorizontalFace implements StringIdentifiable {
 	public final String name;
 
 	HorizontalFace(Direction face) {
-		name = name().toLowerCase();
+		name = name().toLowerCase(Locale.ROOT);
 		this.face = face;
 		vector = face.getVector();
 	}

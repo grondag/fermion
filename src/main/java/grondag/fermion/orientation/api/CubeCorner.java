@@ -15,6 +15,7 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -60,7 +61,7 @@ public enum CubeCorner implements StringIdentifiable {
 	public final int superOrdinalBit;
 
 	CubeCorner(Direction face1, Direction face2, Direction face3) {
-		name = name().toLowerCase();
+		name = name().toLowerCase(Locale.ROOT);
 		this.face1 = face1;
 		this.face2 = face2;
 		this.face3 = face3;

@@ -1,5 +1,7 @@
 package grondag.fermion.color;
 
+import java.util.Locale;
+
 import net.minecraft.client.resource.language.I18n;
 
 /**
@@ -23,13 +25,13 @@ public enum Luminance
 
 	public final double value;
 
-	private Luminance(double luminanceValue)
+	Luminance(double luminanceValue)
 	{
 		value = luminanceValue;
 	}
 
 	public String localizedName()
 	{
-		return I18n.translate("color.luminance." + name().toLowerCase());
+		return I18n.translate("color.luminance." + name().toLowerCase(Locale.ROOT));
 	}
 }
