@@ -2,14 +2,15 @@ package grondag.fermion.recipe;
 
 import com.google.gson.JsonObject;
 
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+
 import grondag.fermion.recipe.AbstractSimpleRecipe.Factory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.registry.Registry;
 
 public class SimpleRecipeSerializer<T extends AbstractSimpleRecipe> implements RecipeSerializer<T> {
 	protected final Factory<T> factory;
@@ -19,35 +20,35 @@ public class SimpleRecipeSerializer<T extends AbstractSimpleRecipe> implements R
 	}
 
 	@Override
-	public T read(Identifier identifier, JsonObject jsonObject) {
-		final String group = JsonHelper.getString(jsonObject, "group", "");
+	public T fromJson(ResourceLocation identifier, JsonObject jsonObject) {
+		final String group = GsonHelper.getAsString(jsonObject, "group", "");
 		Ingredient ingredient;
-		if (JsonHelper.hasArray(jsonObject, "ingredient")) {
-			ingredient = Ingredient.fromJson(JsonHelper.getArray(jsonObject, "ingredient"));
+		if (GsonHelper.isArrayNode(jsonObject, "ingredient")) {
+			ingredient = Ingredient.fromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredient"));
 		} else {
-			ingredient = Ingredient.fromJson(JsonHelper.getObject(jsonObject, "ingredient"));
+			ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(jsonObject, "ingredient"));
 		}
 
-		final String result = JsonHelper.getString(jsonObject, "result");
-		final ItemStack itemStack = new ItemStack(Registry.ITEM.get(new Identifier(result)), 1);
-		final int cost = JsonHelper.getInt(jsonObject, "cost", 0);
+		final String result = GsonHelper.getAsString(jsonObject, "result");
+		final ItemStack itemStack = new ItemStack(Registry.ITEM.get(new ResourceLocation(result)), 1);
+		final int cost = GsonHelper.getAsInt(jsonObject, "cost", 0);
 		return factory.create(identifier, group, ingredient, cost, itemStack);
 	}
 
 	@Override
-	public T read(Identifier identifier, PacketByteBuf packetByteBuf) {
-		final String group = packetByteBuf.readString(32767);
-		final Ingredient ingredient = Ingredient.fromPacket(packetByteBuf);
-		final ItemStack result = packetByteBuf.readItemStack();
+	public T fromNetwork(ResourceLocation identifier, FriendlyByteBuf packetByteBuf) {
+		final String group = packetByteBuf.readUtf(32767);
+		final Ingredient ingredient = Ingredient.fromNetwork(packetByteBuf);
+		final ItemStack result = packetByteBuf.readItem();
 		final int cost = packetByteBuf.readVarInt();
 		return factory.create(identifier, group, ingredient, cost, result);
 	}
 
 	@Override
-	public void write(PacketByteBuf packetByteBuf, AbstractSimpleRecipe recipe) {
-		packetByteBuf.writeString(recipe.group);
-		recipe.ingredient.write(packetByteBuf);
-		packetByteBuf.writeItemStack(recipe.result);
+	public void toNetwork(FriendlyByteBuf packetByteBuf, AbstractSimpleRecipe recipe) {
+		packetByteBuf.writeUtf(recipe.group);
+		recipe.ingredient.toNetwork(packetByteBuf);
+		packetByteBuf.writeItem(recipe.result);
 		packetByteBuf.writeVarInt(recipe.cost);
 	}
 }

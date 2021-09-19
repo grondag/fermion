@@ -2,16 +2,14 @@ package grondag.fermion.gui.control;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import grondag.fermion.gui.ScreenRenderContext;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.ParentElement;
-
-public abstract class AbstractParentControl <T extends AbstractParentControl<T>> extends AbstractControl<T> implements ParentElement {
+public abstract class AbstractParentControl <T extends AbstractParentControl<T>> extends AbstractControl<T> implements ContainerEventHandler {
 	@Nullable
-	private Element focused;
+	private GuiEventListener focused;
 	private boolean isDragging;
 	protected ArrayList<AbstractControl<?>> children = new ArrayList<>();
 
@@ -31,32 +29,32 @@ public abstract class AbstractParentControl <T extends AbstractParentControl<T>>
 
 	@Override
 	@Nullable
-	public Element getFocused() {
+	public GuiEventListener getFocused() {
 		return this.focused;
 	}
 
 	@Override
-	public void setFocused(@Nullable Element element) {
+	public void setFocused(@Nullable GuiEventListener element) {
 		this.focused = element;
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return children;
 	}
 
 	@Override
 	protected void handleMouseClick(double mouseX, double mouseY, int clickedMouseButton) {
-		ParentElement.super.mouseClicked(mouseX, mouseY, clickedMouseButton);
+		ContainerEventHandler.super.mouseClicked(mouseX, mouseY, clickedMouseButton);
 	}
 
 	@Override
 	protected void handleMouseDrag(double mouseX, double mouseY, int clickedMouseButton, double dx, double dy) {
-		ParentElement.super.mouseDragged(mouseX, mouseY, clickedMouseButton, dx, dy);
+		ContainerEventHandler.super.mouseDragged(mouseX, mouseY, clickedMouseButton, dx, dy);
 	}
 
 	@Override
 	protected void handleMouseScroll(double mouseX, double mouseY, double scrollDelta) {
-		ParentElement.super.mouseScrolled(mouseX, mouseY, scrollDelta);
+		ContainerEventHandler.super.mouseScrolled(mouseX, mouseY, scrollDelta);
 	}
 }

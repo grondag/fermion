@@ -16,7 +16,7 @@
 
 package grondag.fermion.color;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 /**
  * Unique library for color conversion and manipulation. Less complicated than
@@ -292,7 +292,7 @@ public class Color {
 	 * -100 to +100, but typical values much more narrow
 	 */
 	public Color lighten(int howMuch) {
-		final float lightness = MathHelper.clamp(HCL_L + howMuch, 0, 100);
+		final float lightness = Mth.clamp(HCL_L + howMuch, 0, 100);
 		return fromHCL(HCL_H, HCL_C, lightness, HCLMode.REDUCE_CHROMA);
 	}
 
@@ -309,7 +309,7 @@ public class Color {
 	 * -100 to +100, but typical values much more narrow
 	 */
 	public Color saturate(int howMuch) {
-		final float chroma = MathHelper.clamp(HCL_C + howMuch, 0, 100);
+		final float chroma = Mth.clamp(HCL_C + howMuch, 0, 100);
 		return fromHCL(HCL_H, chroma, HCL_L, HCLMode.REDUCE_CHROMA);
 	}
 

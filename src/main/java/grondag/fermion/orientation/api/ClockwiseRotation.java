@@ -17,14 +17,12 @@ package grondag.fermion.orientation.api;
 
 import java.util.Locale;
 import java.util.function.Consumer;
-
+import net.minecraft.core.Direction;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.ApiStatus.Experimental;
 
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
-
 @Experimental
-public enum ClockwiseRotation implements StringIdentifiable {
+public enum ClockwiseRotation implements StringRepresentable {
 	ROTATE_NONE(0),
 	ROTATE_90(90),
 	ROTATE_180(180),
@@ -50,7 +48,7 @@ public enum ClockwiseRotation implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name;
 	}
 

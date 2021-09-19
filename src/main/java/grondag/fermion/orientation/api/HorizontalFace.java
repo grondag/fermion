@@ -17,14 +17,11 @@ package grondag.fermion.orientation.api;
 
 import java.util.Locale;
 import java.util.function.Consumer;
-
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3i;
-
 import grondag.fermion.orientation.impl.HorizontalFaceHelper;
 
 /**
@@ -32,7 +29,7 @@ import grondag.fermion.orientation.impl.HorizontalFaceHelper;
  * plane.
  */
 @Experimental
-public enum HorizontalFace implements StringIdentifiable {
+public enum HorizontalFace implements StringRepresentable {
 	NORTH(Direction.NORTH),
 	EAST(Direction.EAST),
 	SOUTH(Direction.SOUTH),
@@ -47,7 +44,7 @@ public enum HorizontalFace implements StringIdentifiable {
 	HorizontalFace(Direction face) {
 		name = name().toLowerCase(Locale.ROOT);
 		this.face = face;
-		vector = face.getVector();
+		vector = face.getNormal();
 	}
 
 	public HorizontalFace left() {
@@ -83,7 +80,7 @@ public enum HorizontalFace implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name;
 	}
 }

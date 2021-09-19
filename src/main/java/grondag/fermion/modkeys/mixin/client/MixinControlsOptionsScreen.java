@@ -20,19 +20,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.ControlsOptionsScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-
 import grondag.fermion.modkeys.ModKeysConfigScreen;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.controls.ControlsScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
-@Mixin(ControlsOptionsScreen.class)
+@Mixin(ControlsScreen.class)
 public class MixinControlsOptionsScreen extends Screen {
 
-	public MixinControlsOptionsScreen(Text title) {
+	public MixinControlsOptionsScreen(Component title) {
 		super(title);
 	}
 
@@ -40,8 +38,8 @@ public class MixinControlsOptionsScreen extends Screen {
 	public void drawMenuButton(CallbackInfo info) {
 		final Screen thisScreen =  this;
 
-		addDrawableChild(new ButtonWidget(width - 100, 10, 90, 20, new TranslatableText("config.modkeys.button"), (buttonWidget) -> {
-			client.setScreen(new ModKeysConfigScreen(thisScreen));
+		addRenderableWidget(new Button(width - 100, 10, 90, 20, new TranslatableComponent("config.modkeys.button"), (buttonWidget) -> {
+			minecraft.setScreen(new ModKeysConfigScreen(thisScreen));
 		}));
 	}
 }

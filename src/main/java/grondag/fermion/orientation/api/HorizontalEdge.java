@@ -17,16 +17,13 @@ package grondag.fermion.orientation.api;
 
 import java.util.Locale;
 import java.util.function.Consumer;
-
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.Rotation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3i;
-
 import grondag.fermion.orientation.impl.HorizontalEdgeHelper;
 
 /**
@@ -34,7 +31,7 @@ import grondag.fermion.orientation.impl.HorizontalEdgeHelper;
  * plane.
  */
 @Experimental
-public enum HorizontalEdge implements StringIdentifiable {
+public enum HorizontalEdge implements StringRepresentable {
 	NORTH_EAST(HorizontalFace.NORTH, HorizontalFace.EAST),
 	NORTH_WEST(HorizontalFace.WEST, HorizontalFace.NORTH),
 	SOUTH_EAST(HorizontalFace.EAST, HorizontalFace.SOUTH),
@@ -51,18 +48,18 @@ public enum HorizontalEdge implements StringIdentifiable {
 		name = name().toLowerCase(Locale.ROOT);
 		this.left = left;
 		this.right = right;
-		vector = new Vec3i(left.face.getVector().getX() + right.face.getVector().getX(), 0,
-			left.face.getVector().getZ() + right.face.getVector().getZ());
+		vector = new Vec3i(left.face.getNormal().getX() + right.face.getNormal().getX(), 0,
+			left.face.getNormal().getZ() + right.face.getNormal().getZ());
 	}
 
-	public HorizontalEdge rotate(BlockRotation rotation) {
+	public HorizontalEdge rotate(Rotation rotation) {
 		final Direction face1 = rotation.rotate(left.face);
 		final Direction face2 = rotation.rotate(right.face);
 		return ObjectUtils.defaultIfNull(find(face1, face2), this);
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name;
 	}
 

@@ -29,11 +29,11 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import grondag.fermion.Fermion;
 import grondag.fermion.sc.concurrency.ScatterGatherThreadPool;
@@ -64,7 +64,7 @@ import grondag.fermion.varia.NBTDictionary;
  * machines are running very quickly.
  *
  */
-public class Simulator extends PersistentState implements DirtKeeper {
+public class Simulator extends SavedData implements DirtKeeper {
 
 	////////////////////////////////////////////////////////////
 	// STATIC MEMBERS
@@ -93,9 +93,9 @@ public class Simulator extends PersistentState implements DirtKeeper {
 		return currentTick;
 	}
 
-	private static final HashMap<String, Function<NbtCompound, SimulationTopNode>> nodeTypes = new HashMap<>();
+	private static final HashMap<String, Function<CompoundTag, SimulationTopNode>> nodeTypes = new HashMap<>();
 
-	public static void register(String id, Function<NbtCompound, SimulationTopNode> nodeType) {
+	public static void register(String id, Function<CompoundTag, SimulationTopNode> nodeType) {
 		nodeTypes.put(id, nodeType);
 	}
 
@@ -116,7 +116,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 	});
 
 	/** used for world time */
-	private static @Nullable ServerWorld world;
+	private static @Nullable ServerLevel world;
 
 	private static MinecraftServer server;
 
@@ -170,10 +170,10 @@ public class Simulator extends PersistentState implements DirtKeeper {
 		super();
 		// defaults for new simulation - will be overwritten if deserialized from tag
 		lastSimTick = 0;
-		worldTickOffset = -world.getTime();
+		worldTickOffset = -world.getGameTime();
 	}
 
-	public Simulator(NbtCompound tag) {
+	public Simulator(CompoundTag tag) {
 		this();
 		readNbt(tag);
 	}
@@ -187,14 +187,14 @@ public class Simulator extends PersistentState implements DirtKeeper {
 	public static void start(MinecraftServer serverIn) {
 		server = serverIn;
 
-		for (final ServerWorld w : serverIn.getWorlds()) {
-			if (w.getRegistryKey() == World.OVERWORLD)  {
+		for (final ServerLevel w : serverIn.getAllLevels()) {
+			if (w.dimension() == Level.OVERWORLD)  {
 				world = w;
 				break;
 			}
 		}
 
-		instance = world.getPersistentStateManager().getOrCreate(Simulator::new, Simulator::new, NBT_TAG_SIMULATOR);
+		instance = world.getDataStorage().computeIfAbsent(Simulator::new, Simulator::new, NBT_TAG_SIMULATOR);
 		instance.initialize(serverIn);
 	}
 
@@ -212,7 +212,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 			nodes.clear();
 			nodeTypes.forEach((s, t) -> {
 				try {
-					final SimulationTopNode node = world.getPersistentStateManager().get(t, s);
+					final SimulationTopNode node = world.getDataStorage().get(t, s);
 					nodes.put(node.getClass(), node);
 					node.afterCreated(this);
 				} catch (final Exception e) {
@@ -266,7 +266,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 
 			if (lastTickFuture == null || lastTickFuture.isDone()) {
 
-				final int newLastSimTick = (int) (world.getTime() + worldTickOffset);
+				final int newLastSimTick = (int) (world.getGameTime() + worldTickOffset);
 
 				// Simulation clock can't move backwards.
 				// NB: don't need CAS because only ever changed by game thread in this method
@@ -277,7 +277,7 @@ public class Simulator extends PersistentState implements DirtKeeper {
 				} else {
 					// world clock has gone backwards or paused, so readjust offset
 					lastSimTick++;
-					worldTickOffset = lastSimTick - world.getTime();
+					worldTickOffset = lastSimTick - world.getGameTime();
 					if (isClockSetbackNotificationNeeded) {
 						Fermion.LOG.warn("World clock appears to have run backwards.  Simulation clock offset was adjusted to compensate.");
 						Fermion.LOG.warn("Next tick according to world was " + newLastSimTick + ", using " + lastSimTick + " instead.");
@@ -301,21 +301,21 @@ public class Simulator extends PersistentState implements DirtKeeper {
 		}
 	}
 
-	public void readNbt(NbtCompound nbt) {
+	public void readNbt(CompoundTag nbt) {
 		assignedNumbersAuthority.writeTag(nbt);
 		lastSimTick = nbt.getInt(NBT_TAG_LAST_TICK);
 		worldTickOffset = nbt.getLong(NBT_TAG_WORLD_TICK_OFFSET);
 	}
 
 	@Override
-	public NbtCompound writeNbt(NbtCompound nbt) {
+	public CompoundTag save(CompoundTag nbt) {
 		assignedNumbersAuthority.readTag(nbt);
 		nbt.putInt(NBT_TAG_LAST_TICK, lastSimTick);
 		nbt.putLong(NBT_TAG_WORLD_TICK_OFFSET, worldTickOffset);
 		return nbt;
 	}
 
-	public @Nullable ServerWorld getWorld() {
+	public @Nullable ServerLevel getWorld() {
 		return world;
 	}
 

@@ -18,7 +18,7 @@ package grondag.fermion.simulator.persistence;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 
 import grondag.fermion.varia.NBTDictionary;
 import grondag.fermion.varia.ReadWriteNBT;
@@ -79,8 +79,8 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 	}
 
 	@Override
-	public synchronized void writeTag(NbtCompound tag) {
-		final NbtCompound myTag = new NbtCompound();
+	public synchronized void writeTag(CompoundTag tag) {
+		final CompoundTag myTag = new CompoundTag();
 
 		indexes.forEach((id, idx) -> {
 			myTag.putInt(id, idx.lastId);
@@ -90,20 +90,20 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 	}
 
 	@Override
-	public synchronized void readTag(NbtCompound tag) {
+	public synchronized void readTag(CompoundTag tag) {
 		clear();
-		final NbtCompound myTag = tag.getCompound(NBT_TAG);
+		final CompoundTag myTag = tag.getCompound(NBT_TAG);
 
 		if (myTag == null || myTag.isEmpty()) return;
 
-		myTag.getKeys().forEach(k -> {
+		myTag.getAllKeys().forEach(k -> {
 			getIndex(k).reset(myTag.getInt(k));
 		});
 	}
 
 	@Override
-	public void markDirty() {
-		dirtKeeper.markDirty();
+	public void setDirty() {
+		dirtKeeper.setDirty();
 	}
 
 	@Override

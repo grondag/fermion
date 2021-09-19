@@ -1,8 +1,7 @@
 package grondag.fermion.color;
 
 import java.util.Locale;
-
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 /**
  * @deprecated  use ColorUtil
@@ -32,6 +31,6 @@ public enum Luminance
 
 	public String localizedName()
 	{
-		return I18n.translate("color.luminance." + name().toLowerCase(Locale.ROOT));
+		return I18n.get("color.luminance." + name().toLowerCase(Locale.ROOT));
 	}
 }

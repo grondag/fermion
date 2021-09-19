@@ -19,8 +19,7 @@ package grondag.fermion.sc.unordered;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Iterator;
-
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 /**
  * Lightweight, non-concurrent collection-like class for managing small
@@ -39,7 +38,7 @@ public class AbstractUnorderedArrayList<T> extends AbstractList<T> {
 	}
 
 	protected AbstractUnorderedArrayList(int startingCapacity) {
-		items = new Object[MathHelper.smallestEncompassingPowerOfTwo(startingCapacity)];
+		items = new Object[Mth.smallestEncompassingPowerOfTwo(startingCapacity)];
 	}
 
 	@Override

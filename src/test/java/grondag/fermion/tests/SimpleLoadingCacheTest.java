@@ -44,7 +44,8 @@ public class SimpleLoadingCacheTest {
                     twiddler.incrementAndGet();
                 }
             }
-            return new Long(key + MAGIC_NUMBER);
+
+            return key + MAGIC_NUMBER;
         }
 
         public Long loadInterned(long key) {

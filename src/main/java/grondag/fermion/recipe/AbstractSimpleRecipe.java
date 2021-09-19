@@ -1,23 +1,22 @@
 package grondag.fermion.recipe;
 
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 
-public abstract class AbstractSimpleRecipe implements SimpleRecipe<Inventory> {
+public abstract class AbstractSimpleRecipe implements SimpleRecipe<Container> {
 	public final Ingredient ingredient;
 	public final ItemStack result;
-	public final Identifier id;
+	public final ResourceLocation id;
 	public final String group;
 	public final int cost;
 
-	public AbstractSimpleRecipe(Identifier id, String group, Ingredient ingredient, int cost, ItemStack result) {
+	public AbstractSimpleRecipe(ResourceLocation id, String group, Ingredient ingredient, int cost, ItemStack result) {
 		this.id = id;
 		this.group = group;
 		this.ingredient = ingredient;
@@ -26,13 +25,13 @@ public abstract class AbstractSimpleRecipe implements SimpleRecipe<Inventory> {
 	}
 
 	@Override
-	public Identifier getId() {
+	public ResourceLocation getId() {
 		return id;
 	}
 
 	@Override
-	public boolean matches(Inventory inventory, World world) {
-		return ingredient.test(inventory.getStack(0));
+	public boolean matches(Container inventory, Level world) {
+		return ingredient.test(inventory.getItem(0));
 	}
 
 	@Override
@@ -47,30 +46,30 @@ public abstract class AbstractSimpleRecipe implements SimpleRecipe<Inventory> {
 	}
 
 	@Override
-	public ItemStack getOutput() {
+	public ItemStack getResultItem() {
 		return result;
 	}
 
 	@Override
-	public DefaultedList<Ingredient> getIngredients() {
-		final DefaultedList<Ingredient> defaultedList = DefaultedList.of();
+	public NonNullList<Ingredient> getIngredients() {
+		final NonNullList<Ingredient> defaultedList = NonNullList.create();
 		defaultedList.add(ingredient);
 		return defaultedList;
 	}
 
 	@Override
 	@Environment(EnvType.CLIENT)
-	public boolean fits(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return true;
 	}
 
 	@Override
-	public ItemStack craft(Inventory inventory) {
+	public ItemStack assemble(Container inventory) {
 		return result.copy();
 	}
 
 	@FunctionalInterface
 	public interface Factory<T extends AbstractSimpleRecipe> {
-		T create(Identifier id, String group, Ingredient ingredient, int cost, ItemStack result);
+		T create(ResourceLocation id, String group, Ingredient ingredient, int cost, ItemStack result);
 	}
 }

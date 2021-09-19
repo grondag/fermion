@@ -17,16 +17,14 @@
 package grondag.fermion.registrar;
 
 import java.util.function.Supplier;
-
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Lazy;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.LazyLoadedValue;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
 public class SimpleArmorMaterial implements ArmorMaterial {
 	private static final int[] BASE_DURABILITY = new int[]{13, 15, 16, 11};
@@ -36,7 +34,7 @@ public class SimpleArmorMaterial implements ArmorMaterial {
 	private final int enchantability;
 	private final SoundEvent equipSound;
 	private final float toughness;
-	private final Lazy<Ingredient> repairIngredientSupplier;
+	private final LazyLoadedValue<Ingredient> repairIngredientSupplier;
 
 	public SimpleArmorMaterial(String id, int durability, int[] protection, int enchantability, SoundEvent soundEvent, float toughness, Supplier<Ingredient> supplier) {
 		name = id;
@@ -45,21 +43,21 @@ public class SimpleArmorMaterial implements ArmorMaterial {
 		this.enchantability = enchantability;
 		equipSound = soundEvent;
 		this.toughness = toughness;
-		repairIngredientSupplier = new Lazy<>(supplier);
+		repairIngredientSupplier = new LazyLoadedValue<>(supplier);
 	}
 
 	@Override
-	public int getDurability(EquipmentSlot equipmentSlot) {
-		return BASE_DURABILITY[equipmentSlot.getEntitySlotId()] * durabilityMultiplier;
+	public int getDurabilityForSlot(EquipmentSlot equipmentSlot) {
+		return BASE_DURABILITY[equipmentSlot.getIndex()] * durabilityMultiplier;
 	}
 
 	@Override
-	public int getProtectionAmount(EquipmentSlot equipmentSlot) {
-		return protectionAmounts[equipmentSlot.getEntitySlotId()];
+	public int getDefenseForSlot(EquipmentSlot equipmentSlot) {
+		return protectionAmounts[equipmentSlot.getIndex()];
 	}
 
 	@Override
-	public int getEnchantability() {
+	public int getEnchantmentValue() {
 		return enchantability;
 	}
 
@@ -88,8 +86,8 @@ public class SimpleArmorMaterial implements ArmorMaterial {
 		return new SimpleArmorMaterial(id, durability, protection, enchantability, soundEvent, toughness, supplier);
 	}
 
-	public static ArmorMaterial of(String id, int durability, int[] protection, int enchantability, SoundEvent soundEvent, float toughness, ItemConvertible repairItem) {
-		return new SimpleArmorMaterial(id, durability, protection, enchantability, soundEvent, toughness, () -> Ingredient.ofItems(repairItem.asItem()));
+	public static ArmorMaterial of(String id, int durability, int[] protection, int enchantability, SoundEvent soundEvent, float toughness, ItemLike repairItem) {
+		return new SimpleArmorMaterial(id, durability, protection, enchantability, soundEvent, toughness, () -> Ingredient.of(repairItem.asItem()));
 	}
 
 	@Override

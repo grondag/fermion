@@ -16,9 +16,9 @@
 
 package grondag.fermion.position;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 
 /**
  * Serialization of BlockPos to long values with functionality beyond the
@@ -28,7 +28,7 @@ public class PackedBlockPos {
 	public static final int WORLD_BOUNDARY = 30000000;
 	public static final long NULL_POS = Long.MIN_VALUE;
 	public static final int NUM_X_BITS = 1
-			+ MathHelper.log2(MathHelper.smallestEncompassingPowerOfTwo(WORLD_BOUNDARY));
+			+ Mth.log2(Mth.smallestEncompassingPowerOfTwo(WORLD_BOUNDARY));
 	public static final int NUM_Z_BITS = NUM_X_BITS;
 	public static final int NUM_Y_BITS = 8;
 	public static final int NUM_EXTRA_BITS = 3;
@@ -202,7 +202,7 @@ public class PackedBlockPos {
 		return 0;
 	}
 
-	public static final BlockPos.Mutable unpackTo(long packedBlockPos, BlockPos.Mutable targetPos) {
+	public static final BlockPos.MutableBlockPos unpackTo(long packedBlockPos, BlockPos.MutableBlockPos targetPos) {
 		return targetPos.set(getX(packedBlockPos), getY(packedBlockPos), getZ(packedBlockPos));
 	}
 }

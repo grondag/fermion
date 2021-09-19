@@ -2,9 +2,7 @@ package grondag.fermion.bits;
 
 
 import java.util.Arrays;
-
-import net.minecraft.nbt.NbtCompound;
-
+import net.minecraft.nbt.CompoundTag;
 import grondag.fermion.varia.Useful;
 
 public class BitPacker {
@@ -17,11 +15,11 @@ public class BitPacker {
 			bits = new long[size];
 		}
 
-		public void writeNbt(String tagName, NbtCompound toTag) {
+		public void writeNbt(String tagName, CompoundTag toTag) {
 			toTag.putLongArray(tagName, bits);
 		}
 
-		public void readNbt(String tagName, NbtCompound fromTag) {
+		public void readNbt(String tagName, CompoundTag fromTag) {
 			Arrays.fill(bits, 0);
 			final long[] src = fromTag.getLongArray(tagName);
 

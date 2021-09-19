@@ -15,26 +15,23 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
-import static net.minecraft.util.math.Direction.DOWN;
-import static net.minecraft.util.math.Direction.EAST;
-import static net.minecraft.util.math.Direction.NORTH;
-import static net.minecraft.util.math.Direction.SOUTH;
-import static net.minecraft.util.math.Direction.UP;
-import static net.minecraft.util.math.Direction.WEST;
+import static net.minecraft.core.Direction.DOWN;
+import static net.minecraft.core.Direction.EAST;
+import static net.minecraft.core.Direction.NORTH;
+import static net.minecraft.core.Direction.SOUTH;
+import static net.minecraft.core.Direction.UP;
+import static net.minecraft.core.Direction.WEST;
 
 import java.util.Locale;
 import java.util.function.Consumer;
-
+import net.minecraft.core.Direction;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
-
 import grondag.fermion.orientation.impl.FaceEdgeHelper;
 
 @Internal
-public enum FaceEdge implements StringIdentifiable {
+public enum FaceEdge implements StringRepresentable {
 	TOP_EDGE(SOUTH, NORTH, UP, UP, UP, UP),
 	BOTTOM_EDGE(NORTH, SOUTH, DOWN, DOWN, DOWN, DOWN),
 	LEFT_EDGE(WEST, WEST, EAST, WEST, NORTH, SOUTH),
@@ -126,7 +123,7 @@ public enum FaceEdge implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name;
 	}
 

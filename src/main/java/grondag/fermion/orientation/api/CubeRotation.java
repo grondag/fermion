@@ -17,17 +17,14 @@ package grondag.fermion.orientation.api;
 
 import java.util.Locale;
 import java.util.function.Consumer;
-
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.util.math.Vec3i;
-
 import grondag.fermion.orientation.impl.CubeRotationHelper;
 
 /**
@@ -41,7 +38,7 @@ import grondag.fermion.orientation.impl.CubeRotationHelper;
  * Components of the name are bottom and back face.
  */
 @Experimental
-public enum CubeRotation implements StringIdentifiable {
+public enum CubeRotation implements StringRepresentable {
 	DOWN_SOUTH(Direction.DOWN, Direction.SOUTH),
 	DOWN_WEST(Direction.DOWN, Direction.WEST),
 	DOWN_NORTH(Direction.DOWN, Direction.NORTH),
@@ -96,8 +93,8 @@ public enum CubeRotation implements StringIdentifiable {
 		superOrdinal = 6 + ordinal();
 		superOrdinalBit = 1 << superOrdinal;
 
-		final Vec3i v1 = bottom.getVector();
-		final Vec3i v2 = back.getVector();
+		final Vec3i v1 = bottom.getNormal();
+		final Vec3i v2 = back.getNormal();
 		vector = new Vec3i(v1.getX() + v2.getX(), v1.getY() + v2.getY(), v1.getZ() + v2.getZ());
 
 		if (bottom.getAxis() == Axis.Y || back.getAxis() == Axis.Y) {
@@ -126,11 +123,11 @@ public enum CubeRotation implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name;
 	}
 
-	public CubeRotation rotate(BlockRotation rotation) {
+	public CubeRotation rotate(Rotation rotation) {
 		final Direction newBack = rotation.rotate(back);
 		final Direction newBottom = rotation.rotate(bottom);
 		return find(newBottom, newBack);

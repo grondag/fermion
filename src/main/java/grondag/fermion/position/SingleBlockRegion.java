@@ -16,7 +16,7 @@
 
 package grondag.fermion.position;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public class SingleBlockRegion implements BlockRegion {
 
@@ -28,7 +28,7 @@ public class SingleBlockRegion implements BlockRegion {
 
 	@Override
 	public Iterable<BlockPos> surfacePositions() {
-		return BlockPos.iterate(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
+		return BlockPos.betweenClosed(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

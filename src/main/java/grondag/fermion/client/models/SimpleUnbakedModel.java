@@ -21,42 +21,40 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
-
 /** Can be used for multiple blocks - will return same baked model for each */
 public class SimpleUnbakedModel implements UnbakedModel {
-	final Function<Function<SpriteIdentifier, Sprite>, BakedModel> baker;
-	final List<SpriteIdentifier> sprites;
+	final Function<Function<Material, TextureAtlasSprite>, BakedModel> baker;
+	final List<Material> sprites;
 	BakedModel baked = null;
 
-	public SimpleUnbakedModel(Function<Function<SpriteIdentifier, Sprite>, BakedModel> baker, List<SpriteIdentifier> sprites) {
+	public SimpleUnbakedModel(Function<Function<Material, TextureAtlasSprite>, BakedModel> baker, List<Material> sprites) {
 		this.baker = baker;
 		this.sprites = sprites;
 	}
 
 	@Override
-	public Collection<Identifier> getModelDependencies() {
+	public Collection<ResourceLocation> getDependencies() {
 		return Collections.emptyList();
 	}
 
 	@Override
-	public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> function, Set<Pair<String, String>> errors) {
+	public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> function, Set<Pair<String, String>> errors) {
 		return sprites;
 	}
 
 	@Override
 	@Nullable
-	public BakedModel bake(ModelLoader modelLoader, Function<SpriteIdentifier, Sprite> spriteLoader, ModelBakeSettings modelBakeSettings, Identifier identifier) {
+	public BakedModel bake(ModelBakery modelLoader, Function<Material, TextureAtlasSprite> spriteLoader, ModelState modelBakeSettings, ResourceLocation identifier) {
 		BakedModel result = baked;
 		if (result == null) {
 			result = baker.apply(spriteLoader);

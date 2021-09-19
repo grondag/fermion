@@ -18,14 +18,11 @@ package grondag.fermion.simulator.domain;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerPlayer;
 import com.google.common.collect.ImmutableList;
-
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import grondag.fermion.Fermion;
 import grondag.fermion.simulator.Simulator;
 import grondag.fermion.simulator.persistence.AssignedNumber;
@@ -163,7 +160,7 @@ public class DomainManager extends SimulationTopNode {
 		makeDirty(isDirty);
 	}
 
-	public void readNbt(NbtCompound tag) {
+	public void readNbt(CompoundTag tag) {
 		isDeserializationInProgress = true;
 
 		unload();
@@ -175,7 +172,7 @@ public class DomainManager extends SimulationTopNode {
 			return;
 		}
 
-		final NbtList nbtDomains = tag.getList(NBT_DOMAIN_MANAGER_DOMAINS, 10);
+		final ListTag nbtDomains = tag.getList(NBT_DOMAIN_MANAGER_DOMAINS, 10);
 		if (nbtDomains != null && !nbtDomains.isEmpty()) {
 			for (int i = 0; i < nbtDomains.size(); ++i) {
 				final Domain domain = new Domain(this, nbtDomains.getCompound(i));
@@ -183,9 +180,9 @@ public class DomainManager extends SimulationTopNode {
 			}
 		}
 
-		final NbtCompound nbtPlayerDomains = tag.getCompound(NBT_DOMAIN_PLAYER_DOMAINS);
+		final CompoundTag nbtPlayerDomains = tag.getCompound(NBT_DOMAIN_PLAYER_DOMAINS);
 		if (nbtPlayerDomains != null && !nbtPlayerDomains.isEmpty()) {
-			for (final String playerName : nbtPlayerDomains.getKeys()) {
+			for (final String playerName : nbtPlayerDomains.getAllKeys()) {
 				final IDomain d = domainFromId(nbtPlayerDomains.getInt(playerName));
 				if (d != null) {
 					playerIntrinsicDomains.put(playerName, d);
@@ -193,9 +190,9 @@ public class DomainManager extends SimulationTopNode {
 			}
 		}
 
-		final NbtCompound nbtActiveDomains = tag.getCompound(NBT_DOMAIN_ACTIVE_DOMAINS);
+		final CompoundTag nbtActiveDomains = tag.getCompound(NBT_DOMAIN_ACTIVE_DOMAINS);
 		if (nbtActiveDomains != null && !nbtActiveDomains.isEmpty()) {
-			for (final String playerName : nbtActiveDomains.getKeys()) {
+			for (final String playerName : nbtActiveDomains.getAllKeys()) {
 				final IDomain d = domainFromId(nbtActiveDomains.getInt(playerName));
 				if (d != null) {
 					playerActiveDomains.put(playerName, d);
@@ -207,8 +204,8 @@ public class DomainManager extends SimulationTopNode {
 	}
 
 	@Override
-	public NbtCompound writeNbt(NbtCompound tag) {
-		final NbtList nbtDomains = new NbtList();
+	public CompoundTag save(CompoundTag tag) {
+		final ListTag nbtDomains = new ListTag();
 
 		final NumberedIndex domains = Simulator.instance().assignedNumbersAuthority().getIndex(AssignedNumber.DOMAIN);
 
@@ -220,7 +217,7 @@ public class DomainManager extends SimulationTopNode {
 		tag.put(NBT_DOMAIN_MANAGER_DOMAINS, nbtDomains);
 
 		if (!playerIntrinsicDomains.isEmpty()) {
-			final NbtCompound nbtPlayerDomains = new NbtCompound();
+			final CompoundTag nbtPlayerDomains = new CompoundTag();
 			for (final Entry<String, IDomain> entry : playerIntrinsicDomains.entrySet()) {
 				nbtPlayerDomains.putInt(entry.getKey(), entry.getValue().getAssignedNumber());
 			}
@@ -228,7 +225,7 @@ public class DomainManager extends SimulationTopNode {
 		}
 
 		if (!playerActiveDomains.isEmpty()) {
-			final NbtCompound nbtActiveDomains = new NbtCompound();
+			final CompoundTag nbtActiveDomains = new CompoundTag();
 			for (final Entry<String, IDomain> entry : playerActiveDomains.entrySet()) {
 				nbtActiveDomains.putInt(entry.getKey(), entry.getValue().getAssignedNumber());
 			}
@@ -248,14 +245,14 @@ public class DomainManager extends SimulationTopNode {
 	 * The player's currently active domain. If player has never specified, will be
 	 * the player's intrinsic domain.
 	 */
-	public IDomain getActiveDomain(ServerPlayerEntity player) {
-		IDomain result = playerActiveDomains.get(player.getUuidAsString());
+	public IDomain getActiveDomain(ServerPlayer player) {
+		IDomain result = playerActiveDomains.get(player.getStringUUID());
 		if (result == null) {
 			synchronized (playerActiveDomains) {
-				result = playerActiveDomains.get(player.getUuidAsString());
+				result = playerActiveDomains.get(player.getStringUUID());
 				if (result == null) {
 					result = getIntrinsicDomain(player);
-					playerActiveDomains.put(player.getUuidAsString(), result);
+					playerActiveDomains.put(player.getStringUUID(), result);
 				}
 			}
 		}
@@ -266,9 +263,9 @@ public class DomainManager extends SimulationTopNode {
 	 * Set the player's currently active domain.<br>
 	 * Posts an event so that anything dependent on active domain can react.
 	 */
-	public void setActiveDomain(ServerPlayerEntity player, IDomain domain) {
+	public void setActiveDomain(ServerPlayer player, IDomain domain) {
 		synchronized (playerActiveDomains) {
-			final IDomain result = playerActiveDomains.put(player.getUuidAsString(), domain);
+			final IDomain result = playerActiveDomains.put(player.getStringUUID(), domain);
 			if (result == null || result != domain) {
 				PlayerDomainChangeCallback.EVENT.invoker().onDomainChange(player, result, domain);
 			}
@@ -278,18 +275,18 @@ public class DomainManager extends SimulationTopNode {
 	/**
 	 * The player's private, default domain. Created if does not already exist.
 	 */
-	public IDomain getIntrinsicDomain(ServerPlayerEntity player) {
-		IDomain result = playerIntrinsicDomains.get(player.getUuidAsString());
+	public IDomain getIntrinsicDomain(ServerPlayer player) {
+		IDomain result = playerIntrinsicDomains.get(player.getStringUUID());
 		if (result == null) {
 			synchronized (playerIntrinsicDomains) {
-				result = playerIntrinsicDomains.get(player.getUuidAsString());
+				result = playerIntrinsicDomains.get(player.getStringUUID());
 				if (result == null) {
 					result = createDomain();
 					result.setSecurityEnabled(true);
-					result.setName(I18n.translate("misc.default_domain_template", player.getName()));
+					result.setName(I18n.get("misc.default_domain_template", player.getName()));
 					final DomainUser user = result.addPlayer(player);
 					user.setPrivileges(Privilege.ADMIN);
-					playerIntrinsicDomains.put(player.getUuidAsString(), result);
+					playerIntrinsicDomains.put(player.getStringUUID(), result);
 				}
 			}
 		}

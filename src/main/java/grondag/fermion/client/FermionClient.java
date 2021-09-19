@@ -16,27 +16,29 @@
 
 package grondag.fermion.client;
 
-import grondag.fermion.client.models.SimpleModels;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.world.level.block.Blocks;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.render.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.ResourceType;
+
+import grondag.fermion.client.models.SimpleModels;
 
 public final class FermionClient implements ClientModInitializer  {
 	@Override
 	public void onInitializeClient() {
-		final MinecraftClient client = MinecraftClient.getInstance();
+		final Minecraft client = Minecraft.getInstance();
 
 		InvalidateRenderStateCallback.EVENT.register(() -> {
 			RenderRefreshProxy.RENDER_REFRESH_HANDLER = p -> {
-				client.worldRenderer.updateBlock(client.world, p, Blocks.AIR.getDefaultState(), Blocks.AIR.getDefaultState(), 8);
+				client.levelRenderer.blockChanged(client.level, p, Blocks.AIR.defaultBlockState(), Blocks.AIR.defaultBlockState(), 8);
 			};
 		});
 
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(SimpleFluidRenderRegistry.LISTENER);
+		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(SimpleFluidRenderRegistry.LISTENER);
 
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider(r -> SimpleModels.MODEL_VARIANT_PROVIER);
 

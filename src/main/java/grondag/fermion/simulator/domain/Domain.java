@@ -24,9 +24,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.entity.player.Player;
 
 import grondag.fermion.Fermion;
 import grondag.fermion.simulator.persistence.AssignedNumber;
@@ -76,7 +76,7 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 		}
 	}
 
-	Domain(DomainManager domainManager, NbtCompound tag) {
+	Domain(DomainManager domainManager, CompoundTag tag) {
 		this(domainManager);
 		writeTag(tag);
 	}
@@ -99,8 +99,8 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 
 	@Override
 	@Nullable
-	public DomainUser findPlayer(PlayerEntity player) {
-		return findUser(player.getUuidAsString());
+	public DomainUser findPlayer(Player player) {
+		return findUser(player.getStringUUID());
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 	}
 
 	@Override
-	public boolean hasPrivilege(PlayerEntity player, Privilege privilege) {
+	public boolean hasPrivilege(Player player, Privilege privilege) {
 		final DomainUser user = findPlayer(player);
 		return user == null ? false : user.hasPrivilege(privilege);
 	}
@@ -119,7 +119,7 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 	 * Will return existing user if already exists.
 	 */
 	@Override
-	public synchronized DomainUser addPlayer(PlayerEntity player) {
+	public synchronized DomainUser addPlayer(Player player) {
 		DomainUser result = findPlayer(player);
 		if (result == null) {
 			result = new DomainUser(this, player);
@@ -167,17 +167,17 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 	}
 
 	@Override
-	public void markDirty() {
+	public void setDirty() {
 		domainManager.isDirty = true;
 	}
 
 	@Override
-	public void readTag(NbtCompound tag) {
+	public void readTag(CompoundTag tag) {
 		serializeNumber(tag);
 		tag.putBoolean(NBT_DOMAIN_SECURITY_ENABLED, isSecurityEnabled);
 		tag.putString(NBT_DOMAIN_NAME, name);
 
-		final NbtList nbtUsers = new NbtList();
+		final ListTag nbtUsers = new ListTag();
 
 		if (!users.isEmpty()) {
 			for (final DomainUser user : users.values()) {
@@ -188,12 +188,12 @@ public class Domain implements ReadWriteNBT, DirtListenerProvider, Numbered, IDo
 	}
 
 	@Override
-	public void writeTag(@Nullable NbtCompound tag) {
+	public void writeTag(@Nullable CompoundTag tag) {
 		deserializeNumber(tag);
 		isSecurityEnabled = tag.getBoolean(NBT_DOMAIN_SECURITY_ENABLED);
 		name = tag.getString(NBT_DOMAIN_NAME);
 
-		final NbtList nbtUsers = tag.getList(NBT_DOMAIN_USERS, 10);
+		final ListTag nbtUsers = tag.getList(NBT_DOMAIN_USERS, 10);
 		if (nbtUsers != null && !nbtUsers.isEmpty()) {
 			for (int i = 0; i < nbtUsers.size(); ++i) {
 				final DomainUser user = new DomainUser(this, nbtUsers.getCompound(i));

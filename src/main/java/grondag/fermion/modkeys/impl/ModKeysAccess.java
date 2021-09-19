@@ -15,7 +15,7 @@
  ******************************************************************************/
 package grondag.fermion.modkeys.impl;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public interface ModKeysAccess {
 	int SHIFT = 1;
@@ -30,31 +30,31 @@ public interface ModKeysAccess {
 
 	byte mk_flags();
 
-	static boolean isShiftPressed(PlayerEntity player) {
+	static boolean isShiftPressed(Player player) {
 		return player != null && (((ModKeysAccess) player).mk_flags() & SHIFT) == SHIFT;
 	}
 
-	static boolean isControlPressed(PlayerEntity player) {
+	static boolean isControlPressed(Player player) {
 		return player != null && (((ModKeysAccess) player).mk_flags() & CONTROL) == CONTROL;
 	}
 
-	static boolean isAltPressed(PlayerEntity player) {
+	static boolean isAltPressed(Player player) {
 		return player != null && (((ModKeysAccess) player).mk_flags() & ALT) == ALT;
 	}
 
-	static boolean isSuperPressed(PlayerEntity player) {
+	static boolean isSuperPressed(Player player) {
 		return player != null && (((ModKeysAccess) player).mk_flags() & SUPER) == SUPER;
 	}
 
-	static boolean isPrimaryPressed(PlayerEntity player) {
+	static boolean isPrimaryPressed(Player player) {
 		return player != null && (((ModKeysAccess) player).mk_flags() & PRIMARY) == PRIMARY;
 	}
 
-	static boolean isSecondaryPressed(PlayerEntity player) {
+	static boolean isSecondaryPressed(Player player) {
 		return player != null && (((ModKeysAccess) player).mk_flags() & SECONDARY) == SECONDARY;
 	}
 
-	static boolean isTertiaryPressed(PlayerEntity player) {
+	static boolean isTertiaryPressed(Player player) {
 		return player != null && (((ModKeysAccess) player).mk_flags() & TERTIARY) == TERTIARY;
 	}
 }

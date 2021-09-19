@@ -31,31 +31,31 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SimpleRandomModel extends SimpleModel {
-	protected final Sprite[] sprites;
+	protected final TextureAtlasSprite[] sprites;
 	protected final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
 	protected final RenderMaterial material = renderer.materialFinder().find();
 	protected final int maxTextureIndex;
 
-	public SimpleRandomModel(Function<SpriteIdentifier, Sprite> spriteMap, List<SpriteIdentifier> textures) {
+	public SimpleRandomModel(Function<Material, TextureAtlasSprite> spriteMap, List<Material> textures) {
 		super(spriteMap.apply(textures.get(0)), ModelHelper.MODEL_TRANSFORM_BLOCK);
 		final int textureCount = textures.size();
 		maxTextureIndex = textureCount - 1;
-		sprites = new Sprite[textureCount];
+		sprites = new TextureAtlasSprite[textureCount];
 		for (int i = 0; i < textureCount; i++) {
 			sprites[i] = spriteMap.apply(textures.get(i));
 		}
 	}
 
 	@Override
-	public final void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+	public final void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
 		final QuadEmitter qe = context.getEmitter();
 		final long bits = HashCommon.mix(pos.asLong());
 		emitQuads(qe, bits);

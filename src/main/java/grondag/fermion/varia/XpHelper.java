@@ -16,31 +16,31 @@
 
 package grondag.fermion.varia;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 
 public class XpHelper {
 	/** Adds or removes XP without adjusting player score */
-	public static void changeXpNoScore(PlayerEntity player, int delta) {
-		player.experienceProgress += (float)delta / (float)player.getNextLevelExperience();
-		player.totalExperience = MathHelper.clamp(player.totalExperience + delta, 0, Integer.MAX_VALUE);
+	public static void changeXpNoScore(Player player, int delta) {
+		player.experienceProgress += (float)delta / (float)player.getXpNeededForNextLevel();
+		player.totalExperience = Mth.clamp(player.totalExperience + delta, 0, Integer.MAX_VALUE);
 
 		while(player.experienceProgress < 0.0F) {
-			final float p = player.experienceProgress * player.getNextLevelExperience();
+			final float p = player.experienceProgress * player.getXpNeededForNextLevel();
 
 			if (player.experienceLevel > 0) {
-				player.addExperienceLevels(-1);
-				player.experienceProgress = 1.0F + p / player.getNextLevelExperience();
+				player.giveExperienceLevels(-1);
+				player.experienceProgress = 1.0F + p / player.getXpNeededForNextLevel();
 			} else {
-				player.addExperienceLevels(-1);
+				player.giveExperienceLevels(-1);
 				player.experienceProgress = 0.0F;
 			}
 		}
 
 		while(player.experienceProgress >= 1.0F) {
-			player.experienceProgress = (player.experienceProgress - 1.0F) * player.getNextLevelExperience();
-			player.addExperienceLevels(1);
-			player.experienceProgress /= player.getNextLevelExperience();
+			player.experienceProgress = (player.experienceProgress - 1.0F) * player.getXpNeededForNextLevel();
+			player.giveExperienceLevels(1);
+			player.experienceProgress /= player.getXpNeededForNextLevel();
 		}
 	}
 }

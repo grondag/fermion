@@ -17,8 +17,7 @@
 package grondag.fermion.client;
 
 import java.util.function.Consumer;
-
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 /**
  * Server-safe proxy for block entities to call render refresh

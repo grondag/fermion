@@ -16,9 +16,9 @@
 
 package grondag.fermion.gui.control;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemHelper {
 	// for unit testing
@@ -26,10 +26,10 @@ public class ItemHelper {
 
 		public Item item;
 		public int size;
-		public NbtCompound tag;
+		public CompoundTag tag;
 		public int meta;
 
-		public TestItemStack(Item item, int size, int meta, NbtCompound tag) {
+		public TestItemStack(Item item, int size, int meta, CompoundTag tag) {
 			this.item = item;
 			this.size = size;
 			this.meta = meta;
@@ -44,7 +44,7 @@ public class ItemHelper {
 			return tag != null;
 		}
 
-		public NbtCompound getTagCompound() {
+		public CompoundTag getTagCompound() {
 			return tag;
 		}
 
@@ -58,11 +58,11 @@ public class ItemHelper {
 
 	}
 
-	public static NbtCompound getOrCreateStackTag(ItemStack stack) {
-		NbtCompound result = stack.getNbt();
+	public static CompoundTag getOrCreateStackTag(ItemStack stack) {
+		CompoundTag result = stack.getTag();
 		if (result == null) {
-			result = new NbtCompound();
-			stack.setNbt(result);
+			result = new CompoundTag();
+			stack.setTag(result);
 		}
 		return result;
 	}
@@ -78,9 +78,9 @@ public class ItemHelper {
 			return false;
 		else if (stack1.getItem() != stack2.getItem())
 			return false;
-		else if (stack1.hasNbt() ^ stack2.hasNbt())
+		else if (stack1.hasTag() ^ stack2.hasTag())
 			return false;
-		else if (stack1.hasNbt() && !stack1.getNbt().equals(stack2.getNbt()))
+		else if (stack1.hasTag() && !stack1.getTag().equals(stack2.getTag()))
 			return false;
 		else if (stack1.getCount() != stack2.getCount())
 			return false;

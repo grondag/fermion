@@ -16,11 +16,8 @@
 package grondag.fermion.orientation.impl;
 
 import java.util.function.Consumer;
-
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.ApiStatus.Internal;
-
-import net.minecraft.util.math.MathHelper;
-
 import grondag.fermion.orientation.api.HorizontalEdge;
 import grondag.fermion.orientation.api.HorizontalFace;
 
@@ -56,7 +53,7 @@ public abstract class HorizontalEdgeHelper {
 	}
 
 	public static HorizontalEdge fromRotation(double yawDegrees) {
-		final int ordinal = MathHelper.floor(yawDegrees / 90.0D) & 3;
+		final int ordinal = Mth.floor(yawDegrees / 90.0D) & 3;
 
 		switch(ordinal) {
 		case 0:

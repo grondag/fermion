@@ -21,8 +21,8 @@ import grondag.fermion.position.PackedChunkPos;
 import grondag.fermion.varia.Useful;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 
 /**
  * Maintains a queue of block positions for each world chunk. Per-chunk data is
@@ -94,7 +94,7 @@ public class PerChunkBlockPosQueue {
 		Vec3i offset = Useful.getDistanceSortedCircularOffset(i);
 
 		while (offset.getY() <= radius) {
-			result += sizeInChunkAt(pos.add(offset.getX() * 16, 0, offset.getZ() * 16));
+			result += sizeInChunkAt(pos.offset(offset.getX() * 16, 0, offset.getZ() * 16));
 			offset = Useful.getDistanceSortedCircularOffset(++i);
 
 		}

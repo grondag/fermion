@@ -17,15 +17,14 @@
 package grondag.fermion.world;
 
 import java.util.Iterator;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Iterators;
 
 import grondag.fermion.position.PackedChunkPos;
 import grondag.fermion.varia.Useful;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 
 /**
  * Maintains a set of block positions for each world chunk. Per-chunk data is
@@ -81,7 +80,7 @@ public abstract class ChunkMap<T> implements Iterable<T> {
 				Vec3i offset = Useful.getDistanceSortedCircularOffset(i++);
 
 				while (offset.getY() <= radius) {
-					final T result = getIfExists(pos.add(offset.getX() * 16, 0, offset.getZ() * 16));
+					final T result = getIfExists(pos.offset(offset.getX() * 16, 0, offset.getZ() * 16));
 					if (result != null)
 						return result;
 					offset = Useful.getDistanceSortedCircularOffset(i++);

@@ -16,9 +16,9 @@
 
 package grondag.fermion.position;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class PackedChunkPos {
 	private static final int CHUNK_BOUNDARY = PackedBlockPos.WORLD_BOUNDARY >> 4;
@@ -41,7 +41,7 @@ public class PackedChunkPos {
 		return getPackedChunkPosFromChunkXZ(chunkPos.x, chunkPos.z);
 	}
 
-	public static long getPackedChunkPos(Chunk chunk) {
+	public static long getPackedChunkPos(ChunkAccess chunk) {
 		return getPackedChunkPos(chunk.getPos());
 	}
 

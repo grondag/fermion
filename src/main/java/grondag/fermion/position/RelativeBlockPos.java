@@ -16,7 +16,7 @@
 
 package grondag.fermion.position;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 /**
  * Stores XYZ offsets in a 32-bit integer that also acts as a hash. Uses 8 bits

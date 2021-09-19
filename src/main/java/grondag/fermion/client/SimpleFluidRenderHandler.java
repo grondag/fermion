@@ -17,41 +17,39 @@
 package grondag.fermion.client;
 
 import java.util.function.Function;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
-
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.material.FluidState;
 
 class SimpleFluidRenderHandler implements FluidRenderHandler {
 	private final int color;
-	private final Identifier stillSpriteName;
-	private final Identifier flowingSpriteName;
-	private final Sprite[] sprites = new Sprite[2];
+	private final ResourceLocation stillSpriteName;
+	private final ResourceLocation flowingSpriteName;
+	private final TextureAtlasSprite[] sprites = new TextureAtlasSprite[2];
 
 	SimpleFluidRenderHandler(int color, String stillSpriteName, String flowingSpriteName) {
 		this.color = color;
-		this.stillSpriteName = new Identifier(stillSpriteName);
-		this.flowingSpriteName = new Identifier(flowingSpriteName);
+		this.stillSpriteName = new ResourceLocation(stillSpriteName);
+		this.flowingSpriteName = new ResourceLocation(flowingSpriteName);
 	}
 
 	@Override
-	public int getFluidColor(BlockRenderView view, BlockPos pos, FluidState state) {
+	public int getFluidColor(BlockAndTintGetter view, BlockPos pos, FluidState state) {
 		return color;
 	}
 
 	@Override
-	public Sprite[] getFluidSprites(BlockRenderView view, BlockPos pos, FluidState state) {
+	public TextureAtlasSprite[] getFluidSprites(BlockAndTintGetter view, BlockPos pos, FluidState state) {
 		return sprites;
 	}
 
 	public void reload() {
-		final Function<Identifier, Sprite> atlas = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+		final Function<ResourceLocation, TextureAtlasSprite> atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
 		sprites[0] = atlas.apply(stillSpriteName);
 		sprites[1] = atlas.apply(flowingSpriteName);
 	}

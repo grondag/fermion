@@ -1,13 +1,13 @@
 package grondag.fermion.orientation.api;
 
-import static net.minecraft.util.math.Direction.DOWN;
-import static net.minecraft.util.math.Direction.EAST;
-import static net.minecraft.util.math.Direction.NORTH;
-import static net.minecraft.util.math.Direction.SOUTH;
-import static net.minecraft.util.math.Direction.UP;
-import static net.minecraft.util.math.Direction.WEST;
+import static net.minecraft.core.Direction.DOWN;
+import static net.minecraft.core.Direction.EAST;
+import static net.minecraft.core.Direction.NORTH;
+import static net.minecraft.core.Direction.SOUTH;
+import static net.minecraft.core.Direction.UP;
+import static net.minecraft.core.Direction.WEST;
 
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
 
 /**
  * Based on vanilla methods but reliably public and available server-side.

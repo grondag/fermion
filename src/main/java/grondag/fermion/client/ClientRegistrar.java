@@ -17,14 +17,11 @@
 package grondag.fermion.client;
 
 import java.util.List;
-
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
 import com.google.common.collect.ImmutableList;
-
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.util.Identifier;
-
 import grondag.fermion.client.models.SimpleModels;
 import grondag.fermion.client.models.SimpleRandomModel;
 import grondag.fermion.client.models.SimpleUnbakedModel;
@@ -44,22 +41,22 @@ public class ClientRegistrar extends AbstractRegistrar {
 		SimpleModels.register(id(id), unbakedModel);
 	}
 
-	public void simpleRandomModel(String id, Identifier atlasId, String... textures) {
-		final ImmutableList.Builder<SpriteIdentifier> builder = ImmutableList.builder();
+	public void simpleRandomModel(String id, ResourceLocation atlasId, String... textures) {
+		final ImmutableList.Builder<Material> builder = ImmutableList.builder();
 
 		for (final String tex : textures) {
-			builder.add(new SpriteIdentifier(atlasId, id(tex)));
+			builder.add(new Material(atlasId, id(tex)));
 		}
 
-		final List<SpriteIdentifier> list = builder.build();
+		final List<Material> list = builder.build();
 
 		SimpleModels.register(id(id), new SimpleUnbakedModel(spriteMap -> new SimpleRandomModel(spriteMap, list), list));
 	}
 
-	public List<SpriteIdentifier> spriteIdList(Identifier atlasId, String... ids) {
-		final ImmutableList.Builder<SpriteIdentifier> builder = ImmutableList.builder();
+	public List<Material> spriteIdList(ResourceLocation atlasId, String... ids) {
+		final ImmutableList.Builder<Material> builder = ImmutableList.builder();
 		for (final String id : ids) {
-			builder.add(new SpriteIdentifier(atlasId, id(id)));
+			builder.add(new Material(atlasId, id(id)));
 		}
 		return builder.build();
 	}

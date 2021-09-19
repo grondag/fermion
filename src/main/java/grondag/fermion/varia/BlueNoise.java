@@ -18,10 +18,9 @@ package grondag.fermion.varia;
 
 import java.util.BitSet;
 import java.util.Random;
-
+import net.minecraft.core.Vec3i;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
-import net.minecraft.util.math.Vec3i;
 
 /**
  * Generates tileable 2d blue noise with integer coordinates using Bridson

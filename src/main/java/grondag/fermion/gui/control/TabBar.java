@@ -19,16 +19,13 @@ import java.util.Collection;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix4f;
-
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.util.Mth;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.gui.ScreenTheme;
@@ -94,7 +91,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	}
 
 	@Override
-	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (items == null) {
 			return;
 		}
@@ -122,7 +119,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 		final float halfTabWidth  = theme.tabWidth * 0.5f;
 
-		final Matrix4f matrix = matrixStack.peek().getModel();
+		final Matrix4f matrix = matrixStack.last().pose();
 
 		// skip drawing tabs if there is only one
 		if (this.tabCount > 1) {
@@ -187,7 +184,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	}
 
 	@Override
-	public final void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public final void drawToolTip(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (this.items == null) {
 			return;
 		}
@@ -205,13 +202,13 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		}
 	}
 
-	protected abstract void drawItemToolTip(MatrixStack matrixStack, T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks);
+	protected abstract void drawItemToolTip(PoseStack matrixStack, T item, ScreenRenderContext renderContext, int mouseX, int mouseY, float partialTicks);
 
 	/**
 	 *
 	 * @param index
 	 */
-	private void drawHighlightIfNeeded(MatrixStack matrixStack, int index, boolean isHighlight) {
+	private void drawHighlightIfNeeded(PoseStack matrixStack, int index, boolean isHighlight) {
 		if (index == NO_SELECTION) {
 			return;
 		}
@@ -235,8 +232,8 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 	 * offset. If isHighlight = true, mouse is over item. If false, item is
 	 * selected.
 	 */
-	protected void drawHighlight(MatrixStack matrixStack, int index, float x, float y, boolean isHighlight) {
-		GuiUtil.drawBoxRightBottom(matrixStack.peek().getModel(), x - itemSelectionMargin, y - itemSelectionMargin, x + itemSize + itemSelectionMargin,
+	protected void drawHighlight(PoseStack matrixStack, int index, float x, float y, boolean isHighlight) {
+		GuiUtil.drawBoxRightBottom(matrixStack.last().pose(), x - itemSelectionMargin, y - itemSelectionMargin, x + itemSize + itemSelectionMargin,
 				y + itemSize + itemSelectionMargin, 1, isHighlight ? theme.buttonColorFocus : theme.buttonColorActive);
 	}
 
@@ -245,7 +242,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 
 	protected abstract void tearDownItemRendering();
 
-	protected abstract void drawItem(MatrixStack matrixStack, T item, MinecraftClient mc, ItemRenderer itemRender, double left, double top, float partialTicks, boolean isHighlighted);
+	protected abstract void drawItem(PoseStack matrixStack, T item, Minecraft mc, ItemRenderer itemRender, double left, double top, float partialTicks, boolean isHighlighted);
 
 	private void updateMouseLocation(double mouseX, double mouseY) {
 		if (items == null) {
@@ -259,7 +256,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 				this.currentMouseLocation = MouseLocation.TOP_ARROW;
 			} else if (mouseY < scrollBottom - itemSpacing / 2.0) {
 				this.currentMouseLocation = MouseLocation.TAB;
-				this.currentMouseIndex = MathHelper
+				this.currentMouseIndex = Mth
 						.clamp((int) ((mouseY - top - theme.tabWidth - itemSpacing / 2) / (this.scrollHeight) * this.tabCount), 0, this.tabCount - 1);
 			} else if (mouseY > scrollBottom + theme.tabWidth + itemSpacing / 2.0) {
 				this.currentMouseLocation = MouseLocation.NONE;
@@ -392,7 +389,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 			return;
 		}
 
-		selectedTabIndex = MathHelper.clamp(selectedTabIndex + mouseIncrementDelta(), 0, tabCount - 1);
+		selectedTabIndex = Mth.clamp(selectedTabIndex + mouseIncrementDelta(), 0, tabCount - 1);
 	}
 
 	public void add(T item) {
@@ -502,7 +499,7 @@ public abstract class TabBar<T> extends AbstractControl<TabBar<T>> {
 		if (items == null || !allowSelection) {
 			return;
 		}
-		selectedItemIndex = MathHelper.clamp(index, NO_SELECTION, items.size() - 1);
+		selectedItemIndex = Mth.clamp(index, NO_SELECTION, items.size() - 1);
 		showSelected();
 	}
 

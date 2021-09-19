@@ -17,10 +17,8 @@
 package grondag.fermion.registrar;
 
 import java.util.List;
-
+import net.minecraft.resources.ResourceLocation;
 import com.google.common.collect.ImmutableList;
-
-import net.minecraft.util.Identifier;
 
 public abstract class AbstractRegistrar {
 	public final String modId;
@@ -29,12 +27,12 @@ public abstract class AbstractRegistrar {
 		this.modId = modId;
 	}
 
-	public Identifier id(String name) {
-		return new Identifier(modId, name);
+	public ResourceLocation id(String name) {
+		return new ResourceLocation(modId, name);
 	}
 
-	public List<Identifier> idList(String... ids) {
-		final ImmutableList.Builder<Identifier> builder = ImmutableList.builder();
+	public List<ResourceLocation> idList(String... ids) {
+		final ImmutableList.Builder<ResourceLocation> builder = ImmutableList.builder();
 		for (final String id : ids) {
 			builder.add(id(id));
 		}

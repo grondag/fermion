@@ -17,13 +17,12 @@
 package grondag.fermion.world;
 
 import java.util.IdentityHashMap;
-
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * Keeps lazily-loaded objects, one-per dimension. Not thread-safe.
  */
-public abstract class WorldMap<T> extends IdentityHashMap<World, T> {
+public abstract class WorldMap<T> extends IdentityHashMap<Level, T> {
 	/**
 	 *
 	 */
@@ -31,10 +30,10 @@ public abstract class WorldMap<T> extends IdentityHashMap<World, T> {
 
 	@Override
 	public T get(Object world) {
-		return getInner((World) world);
+		return getInner((Level) world);
 	}
 
-	private synchronized T getInner(World world) {
+	private synchronized T getInner(Level world) {
 		T result = super.get(world);
 		if (result == null) {
 			result = load(world);
@@ -43,9 +42,9 @@ public abstract class WorldMap<T> extends IdentityHashMap<World, T> {
 		return result;
 	}
 
-	public T get(World world) {
+	public T get(Level world) {
 		return getInner(world);
 	}
 
-	protected abstract T load(World world);
+	protected abstract T load(Level world);
 }

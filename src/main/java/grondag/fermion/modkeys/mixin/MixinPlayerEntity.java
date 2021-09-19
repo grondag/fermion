@@ -18,9 +18,9 @@ package grondag.fermion.modkeys.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 
 import grondag.fermion.modkeys.impl.ModKeysAccess;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public class MixinPlayerEntity implements ModKeysAccess {
 	private byte modifierFlags = 0;
 

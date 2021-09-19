@@ -18,43 +18,41 @@ package grondag.fermion.gui.control;
 import static grondag.fermion.gui.HorizontalAlignment.CENTER;
 import static grondag.fermion.gui.VerticalAlignment.MIDDLE;
 
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
-public abstract class Button extends PressableWidget {
+public abstract class Button extends AbstractButton {
 	protected final ScreenRenderContext renderContext;
 	protected final ScreenTheme theme = ScreenTheme.current();
 
-	public Button(ScreenRenderContext renderContext, int x, int y, int width, int height, Text buttonText) {
+	public Button(ScreenRenderContext renderContext, int x, int y, int width, int height, Component buttonText) {
 		super(x, y, width, height, buttonText);
 		this.renderContext = renderContext;
 	}
 
 	// TODO: add narration logic
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (visible) {
-			hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-			final int i = getYImage(hovered);
+			isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+			final int i = getYImage(isHovered);
 			final int color = i == 0 ? theme.buttonColorInactive : i == 2 ? theme.buttonColorFocus : theme.buttonColorActive;
 
-			GuiUtil.drawRect(matrixStack.peek().getModel(), x, y, x + width - 1, y + height - 1, color);
+			GuiUtil.drawRect(matrixStack.last().pose(), x, y, x + width - 1, y + height - 1, color);
 			GuiUtil.drawAlignedStringNoShadow(matrixStack, renderContext.fontRenderer(), getMessage(), x, y, width, height, theme.textColorActive, CENTER, MIDDLE);
 		}
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder arg) {
+	public void updateNarration(NarrationElementOutput arg) {
 		// TODO whatever this is
 
 	}

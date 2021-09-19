@@ -1,7 +1,8 @@
 package grondag.fermion.simulator.persistence;
 
-import grondag.fermion.Fermion;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
+import grondag.fermion.Fermion;
 
 @SuppressWarnings("serial")
 public class NumberedIndex extends Int2ObjectOpenHashMap<Numbered> {
@@ -49,7 +50,7 @@ public class NumberedIndex extends Int2ObjectOpenHashMap<Numbered> {
 	 * ID's should start at 1 to distinguish from missing/unset ID.
 	 */
 	public synchronized int newNumber() {
-		dirtNotifier.markDirty();
+		dirtNotifier.setDirty();
 		return ++lastId;
 	}
 }

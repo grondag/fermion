@@ -16,37 +16,34 @@
 package grondag.fermion.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix4f;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 import grondag.fermion.orientation.api.ClockwiseRotation;
 
 @Environment(EnvType.CLIENT)
@@ -76,16 +73,16 @@ public class GuiUtil {
 		final float green = (color >> 8 & 255) / 255.0F;
 		final float blue = (color & 255) / 255.0F;
 
-		final BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		final BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
 		RenderSystem.disableTexture();
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-		bufferBuilder.vertex(matrix, left, bottom, 0.0F).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(matrix, right, bottom, 0.0F).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(matrix, right, top, 0.0F).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(matrix, left, top, 0.0F).color(red, green, blue, alpha).next();
+		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+		bufferBuilder.vertex(matrix, left, bottom, 0.0F).color(red, green, blue, alpha).endVertex();
+		bufferBuilder.vertex(matrix, right, bottom, 0.0F).color(red, green, blue, alpha).endVertex();
+		bufferBuilder.vertex(matrix, right, top, 0.0F).color(red, green, blue, alpha).endVertex();
+		bufferBuilder.vertex(matrix, left, top, 0.0F).color(red, green, blue, alpha).endVertex();
 		bufferBuilder.end();
-		BufferRenderer.draw(bufferBuilder);
+		BufferUploader.end(bufferBuilder);
 		RenderSystem.enableTexture();
 	}
 
@@ -116,18 +113,18 @@ public class GuiUtil {
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
 
-			final BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+			final BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
 			RenderSystem.disableTexture();
 			RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-			bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-			bufferBuilder.vertex(left, bottom, 0.0D).color(red1, green1, blue1, alpha1).next();
-			bufferBuilder.vertex(right, bottom, 0.0D).color(red1, green1, blue1, alpha1).next();
-			bufferBuilder.vertex(right, top, 0.0D).color(red2, green2, blue2, alpha2).next();
-			bufferBuilder.vertex(left, top, 0.0D).color(red2, green2, blue2, alpha2).next();
+			bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+			bufferBuilder.vertex(left, bottom, 0.0D).color(red1, green1, blue1, alpha1).endVertex();
+			bufferBuilder.vertex(right, bottom, 0.0D).color(red1, green1, blue1, alpha1).endVertex();
+			bufferBuilder.vertex(right, top, 0.0D).color(red2, green2, blue2, alpha2).endVertex();
+			bufferBuilder.vertex(left, top, 0.0D).color(red2, green2, blue2, alpha2).endVertex();
 			bufferBuilder.end();
 
-			BufferRenderer.draw(bufferBuilder);
+			BufferUploader.end(bufferBuilder);
 			RenderSystem.disableBlend();
 			RenderSystem.enableTexture();
 	}
@@ -179,17 +176,17 @@ public class GuiUtil {
 			final float f1 = (color >> 8 & 255) / 255.0F;
 			final float f2 = (color & 255) / 255.0F;
 
-			final BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+			final BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
 			RenderSystem.enableBlend();
 			RenderSystem.disableTexture();
 			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-			bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-			bufferBuilder.vertex(x0, y0, 0.0D).color(f, f1, f2, f3).next();
-			bufferBuilder.vertex(x1, y1, 0.0D).color(f, f1, f2, f3).next();
-			bufferBuilder.vertex(x2, y2, 0.0D).color(f, f1, f2, f3).next();
-			bufferBuilder.vertex(x3, y3, 0.0D).color(f, f1, f2, f3).next();
+			bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+			bufferBuilder.vertex(x0, y0, 0.0D).color(f, f1, f2, f3).endVertex();
+			bufferBuilder.vertex(x1, y1, 0.0D).color(f, f1, f2, f3).endVertex();
+			bufferBuilder.vertex(x2, y2, 0.0D).color(f, f1, f2, f3).endVertex();
+			bufferBuilder.vertex(x3, y3, 0.0D).color(f, f1, f2, f3).endVertex();
 			bufferBuilder.end();
-			BufferRenderer.draw(bufferBuilder);
+			BufferUploader.end(bufferBuilder);
 			RenderSystem.enableTexture();
 			RenderSystem.disableBlend();
 	}
@@ -197,7 +194,7 @@ public class GuiUtil {
 	/**
 	 * Draws a rectangle using the provide texture sprite and color
 	 */
-	public static void drawTexturedRectWithColor(Matrix4f matrix, double xCoord, double yCoord, double zLevel, Sprite textureSprite, double widthIn, double heightIn, int color,
+	public static void drawTexturedRectWithColor(Matrix4f matrix, double xCoord, double yCoord, double zLevel, TextureAtlasSprite textureSprite, double widthIn, double heightIn, int color,
 	ClockwiseRotation rotation, boolean useAlpha) {
 		drawTexturedRectWithColor(matrix, heightIn, heightIn, heightIn, textureSprite, heightIn, heightIn, color, 1, rotation, useAlpha);
 	}
@@ -241,25 +238,25 @@ public class GuiUtil {
 		return result;
 	}
 
-	public static void drawTexturedRectWithColor(Matrix4f matrix, double xCoord, double yCoord, double zLevel, Sprite textureSprite, double widthIn, double heightIn, int color,
+	public static void drawTexturedRectWithColor(Matrix4f matrix, double xCoord, double yCoord, double zLevel, TextureAtlasSprite textureSprite, double widthIn, double heightIn, int color,
 		int textureDivision, ClockwiseRotation rotation, boolean useAlpha) {
 		final float alpha = (color >> 24 & 255) / 255.0F;
 		final float red = (color >> 16 & 255) / 255.0F;
 		final float green = (color >> 8 & 255) / 255.0F;
 		final float blue = (color & 255) / 255.0F;
 
-		final float minU = textureSprite.getMinU();
-		final float minV = textureSprite.getMinV();
-		final float maxU = minU + (textureSprite.getMaxU() - minU) / textureDivision;
-		final float maxV = minV + (textureSprite.getMaxV() - minV) / textureDivision;
+		final float minU = textureSprite.getU0();
+		final float minV = textureSprite.getV0();
+		final float maxU = minU + (textureSprite.getU1() - minU) / textureDivision;
+		final float maxV = minV + (textureSprite.getV1() - minV) / textureDivision;
 		final float uv[][] = rotatedUV(minU, minV, maxU, maxV, rotation);
 
-		final TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
-		textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-		textureManager.getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
+		final TextureManager textureManager = Minecraft.getInstance().getTextureManager();
+		textureManager.bindForSetup(TextureAtlas.LOCATION_BLOCKS);
+		textureManager.getTexture(TextureAtlas.LOCATION_BLOCKS).setFilter(false, false);
 
 		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-		final BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		final BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
 		RenderSystem.enableTexture();
 
 		if (useAlpha) {
@@ -269,13 +266,13 @@ public class GuiUtil {
 			RenderSystem.disableBlend();
 		}
 
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-		bufferBuilder.vertex(xCoord + 0, yCoord + heightIn, zLevel).texture(uv[0][0], uv[1][0]).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(xCoord + widthIn, yCoord + heightIn, zLevel).texture(uv[0][1], uv[1][1]).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(xCoord + widthIn, yCoord + 0, zLevel).texture(uv[0][2], uv[1][2]).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(xCoord + 0, yCoord + 0, zLevel).texture(uv[0][3], uv[1][3]).color(red, green, blue, alpha).next();
+		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+		bufferBuilder.vertex(xCoord + 0, yCoord + heightIn, zLevel).uv(uv[0][0], uv[1][0]).color(red, green, blue, alpha).endVertex();
+		bufferBuilder.vertex(xCoord + widthIn, yCoord + heightIn, zLevel).uv(uv[0][1], uv[1][1]).color(red, green, blue, alpha).endVertex();
+		bufferBuilder.vertex(xCoord + widthIn, yCoord + 0, zLevel).uv(uv[0][2], uv[1][2]).color(red, green, blue, alpha).endVertex();
+		bufferBuilder.vertex(xCoord + 0, yCoord + 0, zLevel).uv(uv[0][3], uv[1][3]).color(red, green, blue, alpha).endVertex();
 		bufferBuilder.end();
-	    BufferRenderer.draw(bufferBuilder);
+	    BufferUploader.end(bufferBuilder);
 
 		if (useAlpha) {
 			RenderSystem.disableBlend();
@@ -283,7 +280,7 @@ public class GuiUtil {
 	}
 
 	public static void playPressedSound() {
-		MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+		Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 
 	public static boolean renderItemAndEffectIntoGui(ScreenRenderContext renderContext, ItemStack itm, float x, float y, float contentSize) {
@@ -294,9 +291,9 @@ public class GuiUtil {
 		return renderItemAndEffectIntoGui(renderContext.minecraft(), renderContext.renderItem(), itm, model, x, y, contentSize);
 	}
 
-	public static boolean renderItemAndEffectIntoGui(MinecraftClient mc, ItemRenderer itemRender, ItemStack itemStack, float x, float y, float contentSize) {
+	public static boolean renderItemAndEffectIntoGui(Minecraft mc, ItemRenderer itemRender, ItemStack itemStack, float x, float y, float contentSize) {
 		if (itemStack != null && itemStack.getItem() != null) {
-			return renderItemAndEffectIntoGui(mc, itemRender, itemStack, itemRender.getHeldItemModel(itemStack, null, null, 42), x, y, contentSize);
+			return renderItemAndEffectIntoGui(mc, itemRender, itemStack, itemRender.getModel(itemStack, null, null, 42), x, y, contentSize);
 		}
 
 		return false;
@@ -305,18 +302,18 @@ public class GuiUtil {
 	/**
 	 * Size is in pixels. Hat tip to McJty.
 	 */
-	public static boolean renderItemAndEffectIntoGui(MinecraftClient mc, ItemRenderer itemRender, ItemStack itemStack, BakedModel model, float x, float y, float contentSize) {
+	public static boolean renderItemAndEffectIntoGui(Minecraft mc, ItemRenderer itemRender, ItemStack itemStack, BakedModel model, float x, float y, float contentSize) {
 		if (itemStack != null && itemStack.getItem() != null) {
 
-			mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-			mc.getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
-			RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+			mc.getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
+			mc.getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS).setFilter(false, false);
+			RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
 			RenderSystem.enableBlend();
-			RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+			RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-			final MatrixStack matrixStack = RenderSystem.getModelViewStack();
-			matrixStack.push();
-			matrixStack.translate(x, y, itemRender.zOffset);
+			final PoseStack matrixStack = RenderSystem.getModelViewStack();
+			matrixStack.pushPose();
+			matrixStack.translate(x, y, itemRender.blitOffset);
 
 			final float half = contentSize * 0.5f;
 
@@ -324,41 +321,41 @@ public class GuiUtil {
 			matrixStack.scale(contentSize, -contentSize, contentSize);
 			RenderSystem.applyModelViewMatrix();
 
-			 final MatrixStack dummyStack = new MatrixStack();
-			final VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-			final boolean frontLit = !model.isSideLit();
+			 final PoseStack dummyStack = new PoseStack();
+			final MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
+			final boolean frontLit = !model.usesBlockLight();
 
 			if (frontLit) {
-				DiffuseLighting.disableGuiDepthLighting();
+				Lighting.setupForFlatItems();
 			}
 
-			itemRender.renderItem(itemStack, ModelTransformation.Mode.GUI, false, dummyStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, model);
-			immediate.draw();
+			itemRender.render(itemStack, ItemTransforms.TransformType.GUI, false, dummyStack, immediate, 15728880, OverlayTexture.NO_OVERLAY, model);
+			immediate.endBatch();
 
 			if (frontLit) {
-				DiffuseLighting.enableGuiDepthLighting();
+				Lighting.setupFor3DItems();
 			}
 
-			matrixStack.pop();
+			matrixStack.popPose();
 			RenderSystem.applyModelViewMatrix();
 			RenderSystem.disableBlend();
 
 			if (itemStack.isDamaged()) {
 				final float scale = contentSize / 16f;
 				RenderSystem.disableTexture();
-				final Tessellator tessellator = Tessellator.getInstance();
-				final BufferBuilder bufferBuilder = tessellator.getBuffer();
-				final float dmg = itemStack.getDamage();
+				final Tesselator tessellator = Tesselator.getInstance();
+				final BufferBuilder bufferBuilder = tessellator.getBuilder();
+				final float dmg = itemStack.getDamageValue();
 				final float maxDmg = itemStack.getMaxDamage();
 				final float ratio = Math.max(0.0F, (maxDmg - dmg) / maxDmg);
 				final int width = Math.round(13.0F - dmg * 13.0F / maxDmg);
-				final int color = MathHelper.hsvToRgb(ratio / 3.0F, 1.0F, 1.0F);
-				bufferGuiQuad(matrixStack.peek().getModel(), bufferBuilder, x + 2 * scale, y + 13 * scale, 13 * scale, 2 * scale, 0, 0, 0, 255);
+				final int color = Mth.hsvToRgb(ratio / 3.0F, 1.0F, 1.0F);
+				bufferGuiQuad(matrixStack.last().pose(), bufferBuilder, x + 2 * scale, y + 13 * scale, 13 * scale, 2 * scale, 0, 0, 0, 255);
 				bufferBuilder.end();
-			    BufferRenderer.draw(bufferBuilder);
-				bufferGuiQuad(matrixStack.peek().getModel(), bufferBuilder, x + 2 * scale, y + 13.5f * scale, width * scale, scale, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
+			    BufferUploader.end(bufferBuilder);
+				bufferGuiQuad(matrixStack.last().pose(), bufferBuilder, x + 2 * scale, y + 13.5f * scale, width * scale, scale, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
 				bufferBuilder.end();
-			    BufferRenderer.draw(bufferBuilder);
+			    BufferUploader.end(bufferBuilder);
 
 				RenderSystem.enableTexture();
 			}
@@ -370,27 +367,27 @@ public class GuiUtil {
 	}
 
 	private static void bufferGuiQuad(Matrix4f matrix, BufferBuilder bufferBuilder, float left, float top, float width, float height, int r, int g, int b, int a) {
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-		bufferBuilder.vertex(matrix, left, top, 0).color(r, g, b, a).next();
-		bufferBuilder.vertex(matrix, left, top + height, 0).color(r, g, b, a).next();
-		bufferBuilder.vertex(matrix, left + width, top + height, 0).color(r, g, b, a).next();
-		bufferBuilder.vertex(matrix, left + width, top, 0).color(r, g, b, a).next();
+		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+		bufferBuilder.vertex(matrix, left, top, 0).color(r, g, b, a).endVertex();
+		bufferBuilder.vertex(matrix, left, top + height, 0).color(r, g, b, a).endVertex();
+		bufferBuilder.vertex(matrix, left + width, top + height, 0).color(r, g, b, a).endVertex();
+		bufferBuilder.vertex(matrix, left + width, top, 0).color(r, g, b, a).endVertex();
 	}
 
 	/**
 	 * Renders the specified text to the screen, center-aligned. Args : renderer,
 	 * string, x, y, color
 	 */
-	public static void drawAlignedStringNoShadow(MatrixStack matrixStack, TextRenderer fontRendererIn, Text text, float x, float y, float width, float height, int color,
+	public static void drawAlignedStringNoShadow(PoseStack matrixStack, Font fontRendererIn, Component text, float x, float y, float width, float height, int color,
 	HorizontalAlignment hAlign, VerticalAlignment vAlign) {
 
 		switch (hAlign) {
 			case RIGHT:
-				x += width - fontRendererIn.getWidth(text);
+				x += width - fontRendererIn.width(text);
 				break;
 
 			case CENTER:
-				x += (width - fontRendererIn.getWidth(text)) / 2;
+				x += (width - fontRendererIn.width(text)) / 2;
 				break;
 
 			case LEFT:
@@ -401,11 +398,11 @@ public class GuiUtil {
 
 		switch (vAlign) {
 			case BOTTOM:
-				y += height - fontRendererIn.fontHeight;
+				y += height - fontRendererIn.lineHeight;
 				break;
 
 			case MIDDLE:
-				y += (height - fontRendererIn.fontHeight) / 2;
+				y += (height - fontRendererIn.lineHeight) / 2;
 				break;
 
 			case TOP:
@@ -417,7 +414,7 @@ public class GuiUtil {
 		fontRendererIn.draw(matrixStack, text, x, y, color);
 	}
 
-	public static void drawAlignedStringNoShadow(MatrixStack matrixStack, TextRenderer fontRendererIn, Text text, double x, double y, double width, double height, int color,
+	public static void drawAlignedStringNoShadow(PoseStack matrixStack, Font fontRendererIn, Component text, double x, double y, double width, double height, int color,
 	HorizontalAlignment hAlign, VerticalAlignment vAlign) {
 		drawAlignedStringNoShadow(matrixStack, fontRendererIn, text, (float) x, (float) y, (float) width, (float) height, color, hAlign, vAlign);
 	}
@@ -426,7 +423,7 @@ public class GuiUtil {
 	 * Renders the specified text to the screen. Args : renderer, string, x, y,
 	 * color
 	 */
-	public static void drawStringNoShadow(MatrixStack matrixStack, TextRenderer fontRendererIn, String text, int x, int y, int color) {
+	public static void drawStringNoShadow(PoseStack matrixStack, Font fontRendererIn, String text, int x, int y, int color) {
 		fontRendererIn.draw(matrixStack, text, x, y, color);
 	}
 }

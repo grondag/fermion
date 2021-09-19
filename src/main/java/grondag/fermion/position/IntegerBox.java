@@ -17,10 +17,10 @@
 package grondag.fermion.position;
 
 import grondag.fermion.varia.Useful;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Integer version of the vanilla MC AABB class.
@@ -100,12 +100,12 @@ public class IntegerBox {
 		maxZ = Math.max(pos1.getZ(), pos2.getZ()) + 1;
 	}
 
-	private Box aabb = null;
+	private AABB aabb = null;
 
-	public Box toAABB() {
-		Box result = aabb;
+	public AABB toAABB() {
+		AABB result = aabb;
 		if (result == null) {
-			result = new Box(minX, minY, minZ, maxX, maxY, maxZ);
+			result = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
 			aabb = result;
 		}
 		return result;
@@ -410,7 +410,7 @@ public class IntegerBox {
 	/**
 	 * Returns if the supplied Vec3D is completely inside the bounding box
 	 */
-	public boolean contains(Vec3d vec) {
+	public boolean contains(Vec3 vec) {
 		if (vec.x > minX && vec.x < maxX) {
 			if (vec.y > minY && vec.y < maxY)
 				return vec.z > minZ && vec.z < maxZ;

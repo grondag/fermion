@@ -15,15 +15,13 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.HorizontalAlignment;
 import grondag.fermion.gui.ScreenRenderContext;
@@ -32,7 +30,7 @@ import grondag.fermion.gui.VerticalAlignment;
 @Environment(EnvType.CLIENT)
 public class BrightnessSlider extends Slider {
 	// TODO: localize or remove this class
-	private static final Text LABEL = new LiteralText("Brightness");
+	private static final Component LABEL = new TextComponent("Brightness");
 
 	public BrightnessSlider(ScreenRenderContext renderContext) {
 		super(renderContext, 16, LABEL, 0.22f);
@@ -50,14 +48,14 @@ public class BrightnessSlider extends Slider {
 	}
 
 	@Override
-	protected void drawChoice(MatrixStack matrixStack, MinecraftClient mc, ItemRenderer itemRender, float partialTicks) {
+	protected void drawChoice(PoseStack matrixStack, Minecraft mc, ItemRenderer itemRender, float partialTicks) {
 		final int color = 0xFFFECE | (((255 * selectedTabIndex / 15) & 0xFF) << 24);
 
-		GuiUtil.drawRect(matrixStack.peek().getModel(), labelRight, top, labelRight + choiceWidth, bottom, color);
+		GuiUtil.drawRect(matrixStack.last().pose(), labelRight, top, labelRight + choiceWidth, bottom, color);
 
 		final int textColor = selectedTabIndex > 6 ? 0xFF000000 : 0xFFFFFFFF;
 
-		GuiUtil.drawAlignedStringNoShadow(matrixStack, mc.textRenderer, new LiteralText(Integer.toString(selectedTabIndex)), labelRight, top, choiceWidth, height,
+		GuiUtil.drawAlignedStringNoShadow(matrixStack, mc.font, new TextComponent(Integer.toString(selectedTabIndex)), labelRight, top, choiceWidth, height,
 				textColor, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 	}
 

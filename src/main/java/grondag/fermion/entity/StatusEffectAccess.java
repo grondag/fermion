@@ -1,6 +1,6 @@
 package grondag.fermion.entity;
 
-import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.world.effect.MobEffectInstance;
 
 public interface StatusEffectAccess {
 	void fermion_setDuration(int duration);
@@ -14,7 +14,7 @@ public interface StatusEffectAccess {
 		fermion_setAmplifier(amplifier);
 	}
 
-	static StatusEffectAccess access(StatusEffectInstance instance) {
+	static StatusEffectAccess access(MobEffectInstance instance) {
 		return (StatusEffectAccess) instance;
 	}
 }

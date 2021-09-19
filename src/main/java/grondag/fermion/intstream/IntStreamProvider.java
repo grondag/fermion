@@ -3,8 +3,7 @@ package grondag.fermion.intstream;
 import java.nio.IntBuffer;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
-
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 public class IntStreamProvider {
 	final int blockSize;
@@ -27,16 +26,16 @@ public class IntStreamProvider {
 	private static final AtomicIntegerFieldUpdater<IntStreamProvider> maxBlockCountUpdater = AtomicIntegerFieldUpdater.newUpdater(IntStreamProvider.class, "maxStreamBlockCount");
 
 	public IntStreamProvider(int blockSizeIn, int streamPoolSize, int blockPoolSize) {
-		blockSize = MathHelper.smallestEncompassingPowerOfTwo(blockSizeIn);
+		blockSize = Mth.smallestEncompassingPowerOfTwo(blockSizeIn);
 		blockMask = blockSize - 1;
 		blockShift = Integer.bitCount(blockMask);
 		emptyBlock = new int[blockSize];
-		streamPoolSize = MathHelper.smallestEncompassingPowerOfTwo(streamPoolSize);
-		blockPoolSize = MathHelper.smallestEncompassingPowerOfTwo(blockPoolSize);
+		streamPoolSize = Mth.smallestEncompassingPowerOfTwo(streamPoolSize);
+		blockPoolSize = Mth.smallestEncompassingPowerOfTwo(blockPoolSize);
 		this.streamPoolSize = streamPoolSize;
 		this.blockPoolSize = blockPoolSize;
-		streams = new ArrayBlockingQueue<>(MathHelper.smallestEncompassingPowerOfTwo(streamPoolSize));
-		blockPool = new ArrayBlockingQueue<>(MathHelper.smallestEncompassingPowerOfTwo(blockPoolSize));
+		streams = new ArrayBlockingQueue<>(Mth.smallestEncompassingPowerOfTwo(streamPoolSize));
+		blockPool = new ArrayBlockingQueue<>(Mth.smallestEncompassingPowerOfTwo(blockPoolSize));
 	}
 
 	public int streamUseCount() {
@@ -129,7 +128,7 @@ public class IntStreamProvider {
 				final int blocksNeeded = (address >> blockShift) + 1;
 
 				if (blocksNeeded > blocks.length) {
-					final int newMax = MathHelper.smallestEncompassingPowerOfTwo(blocksNeeded);
+					final int newMax = Mth.smallestEncompassingPowerOfTwo(blocksNeeded);
 					final int[][] newBlocks = new int[newMax][];
 					System.arraycopy(blocks, 0, newBlocks, 0, blocks.length);
 					blocks = newBlocks;

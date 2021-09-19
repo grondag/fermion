@@ -1,6 +1,6 @@
 package grondag.fermion.intstream;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 /**
  * Uses large blocks only - may be space-inefficient.
@@ -39,7 +39,7 @@ class SimpleStream implements IntStream {
 				final int blocksNeeded = (address >> IntStreams.BLOCK_SHIFT) + 1;
 
 				if (blocksNeeded > blocks.length) {
-					final int newMax = MathHelper.smallestEncompassingPowerOfTwo(blocksNeeded);
+					final int newMax = Mth.smallestEncompassingPowerOfTwo(blocksNeeded);
 					final int[][] newBlocks = new int[newMax][];
 					System.arraycopy(blocks, 0, newBlocks, 0, blocks.length);
 					blocks = newBlocks;

@@ -19,10 +19,10 @@ package grondag.fermion.world;
 import org.apache.commons.lang3.tuple.Pair;
 
 import grondag.fermion.varia.Useful;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 
 public class WorldHelper {
 
@@ -70,8 +70,8 @@ public class WorldHelper {
 		switch (hitFace.getAxis()) {
 		case X: {
 			// absolute distance from center of the face along the orthogonalAxis
-			final float yDist = 0.5F - hitY + MathHelper.floor(hitY);
-			final float zDist = 0.5F - hitZ + MathHelper.floor(hitZ);
+			final float yDist = 0.5F - hitY + Mth.floor(hitY);
+			final float zDist = 0.5F - hitZ + Mth.floor(hitZ);
 			if (Math.abs(yDist) > Math.abs(zDist))
 				return yDist < 0 ? Direction.UP : Direction.DOWN;
 			else
@@ -80,8 +80,8 @@ public class WorldHelper {
 
 		case Y: {
 			// absolute distance from center of the face along the orthogonalAxis
-			final float xDist = 0.5F - hitX + MathHelper.floor(hitX);
-			final float zDist = 0.5F - hitZ + MathHelper.floor(hitZ);
+			final float xDist = 0.5F - hitX + Mth.floor(hitX);
+			final float zDist = 0.5F - hitZ + Mth.floor(hitZ);
 			if (Math.abs(xDist) > Math.abs(zDist))
 				return xDist < 0 ? Direction.EAST : Direction.WEST;
 			else
@@ -90,8 +90,8 @@ public class WorldHelper {
 
 		case Z: {
 			// absolute distance from center of the face along the orthogonalAxis
-			final float yDist = 0.5F - hitY + MathHelper.floor(hitY);
-			final float xDist = 0.5F - hitX + MathHelper.floor(hitX);
+			final float yDist = 0.5F - hitY + Mth.floor(hitY);
+			final float xDist = 0.5F - hitX + Mth.floor(hitX);
 			if (Math.abs(yDist) > Math.abs(xDist))
 				return yDist < 0 ? Direction.UP : Direction.DOWN;
 			else
@@ -99,7 +99,7 @@ public class WorldHelper {
 		}
 		default:
 			// whatever
-			return hitFace.rotateYClockwise();
+			return hitFace.getClockWise();
 		}
 	}
 
@@ -122,8 +122,8 @@ public class WorldHelper {
 		switch (hitFace.getAxis()) {
 		case X: {
 			// absolute distance from center of the face along the orthogonalAxis
-			final float yDist = 0.5F - hitY + MathHelper.floor(hitY);
-			final float zDist = 0.5F - hitZ + MathHelper.floor(hitZ);
+			final float yDist = 0.5F - hitY + Mth.floor(hitY);
+			final float zDist = 0.5F - hitZ + Mth.floor(hitZ);
 			final Direction yFace = yDist < 0 ? Direction.UP : Direction.DOWN;
 			final Direction zFace = zDist < 0 ? Direction.SOUTH : Direction.NORTH;
 			return Math.abs(yDist) > Math.abs(zDist) ? Pair.of(yFace, zFace) : Pair.of(zFace, yFace);
@@ -131,8 +131,8 @@ public class WorldHelper {
 
 		case Y: {
 			// absolute distance from center of the face along the orthogonalAxis
-			final float xDist = 0.5F - hitX + MathHelper.floor(hitX);
-			final float zDist = 0.5F - hitZ + MathHelper.floor(hitZ);
+			final float xDist = 0.5F - hitX + Mth.floor(hitX);
+			final float zDist = 0.5F - hitZ + Mth.floor(hitZ);
 			final Direction xFace = xDist < 0 ? Direction.EAST : Direction.WEST;
 			final Direction zFace = zDist < 0 ? Direction.SOUTH : Direction.NORTH;
 			return Math.abs(xDist) > Math.abs(zDist) ? Pair.of(xFace, zFace) : Pair.of(zFace, xFace);
@@ -141,8 +141,8 @@ public class WorldHelper {
 		default: // can't happen, just making compiler shut up
 		case Z: {
 			// absolute distance from center of the face along the orthogonalAxis
-			final float yDist = 0.5F - hitY + MathHelper.floor(hitY);
-			final float xDist = 0.5F - hitX + MathHelper.floor(hitX);
+			final float yDist = 0.5F - hitY + Mth.floor(hitY);
+			final float xDist = 0.5F - hitX + Mth.floor(hitX);
 			final Direction xFace = xDist < 0 ? Direction.EAST : Direction.WEST;
 			final Direction yFace = yDist < 0 ? Direction.UP : Direction.DOWN;
 			return Math.abs(xDist) > Math.abs(yDist) ? Pair.of(xFace, yFace) : Pair.of(yFace, xFace);
@@ -155,13 +155,13 @@ public class WorldHelper {
 	 * face. For example, if lookup up at the ceiling and facing North, then South
 	 * would be "up." For horizontal faces, is always real up.
 	 */
-	public static Direction relativeUp(PlayerEntity player, Direction onFace) {
+	public static Direction relativeUp(Player player, Direction onFace) {
 		switch (onFace) {
 		case DOWN:
-			return player.getHorizontalFacing();
+			return player.getDirection();
 
 		case UP:
-			return player.getHorizontalFacing().getOpposite();
+			return player.getDirection().getOpposite();
 
 		default:
 			return Direction.UP;
@@ -176,16 +176,16 @@ public class WorldHelper {
 	 * direction <em>opposite</em> of the given face. (Player is looking at the
 	 * face, not away from it.)
 	 */
-	public static Direction relativeLeft(PlayerEntity player, Direction onFace) {
+	public static Direction relativeLeft(Player player, Direction onFace) {
 		switch (onFace) {
 		case DOWN:
-			return Direction.fromHorizontal((relativeUp(player, onFace).getHorizontal() + 1) & 0x3).getOpposite();
+			return Direction.from2DDataValue((relativeUp(player, onFace).get2DDataValue() + 1) & 0x3).getOpposite();
 
 		case UP:
-			return Direction.fromHorizontal((relativeUp(player, onFace).getHorizontal() + 1) & 0x3);
+			return Direction.from2DDataValue((relativeUp(player, onFace).get2DDataValue() + 1) & 0x3);
 
 		default:
-			return Direction.fromHorizontal((player.getHorizontalFacing().getHorizontal() + 1) & 0x3).getOpposite();
+			return Direction.from2DDataValue((player.getDirection().get2DDataValue() + 1) & 0x3).getOpposite();
 
 		}
 	}

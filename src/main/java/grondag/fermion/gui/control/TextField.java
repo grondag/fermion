@@ -4,23 +4,22 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import com.google.common.base.Predicates;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.MathHelper;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -29,7 +28,7 @@ import grondag.fermion.gui.ScreenTheme;
 
 //UGLY needs less copypasta
 @Environment(EnvType.CLIENT)
-public class TextField extends ClickableWidget implements Drawable, Element {
+public class TextField extends AbstractWidget implements Widget, GuiEventListener {
 	protected String text;
 	protected int maxLength;
 	protected int focusedTicks;
@@ -47,11 +46,11 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 
 	protected final ScreenRenderContext renderContext;
 
-	public TextField(ScreenRenderContext context, int left, int top, int width, int height, Text string) {
+	public TextField(ScreenRenderContext context, int left, int top, int width, int height, Component string) {
 		this(context, left, top, width, height, null, string);
 	}
 
-	public TextField(ScreenRenderContext context, int left, int top, int width, int height, @Nullable TextField textField, Text string) {
+	public TextField(ScreenRenderContext context, int left, int top, int width, int height, @Nullable TextField textField, Component string) {
 		super(left, top, width, height, string);
 		text = "";
 		maxLength = 32;
@@ -76,9 +75,9 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 	}
 
 	@Override
-	protected MutableText getNarrationMessage() {
-		final Text text = getMessage();
-		return new TranslatableText("gui.narrate.editBox", new Object[]{text, this.text});
+	protected MutableComponent createNarrationMessage() {
+		final Component text = getMessage();
+		return new TranslatableComponent("gui.narrate.editBox", new Object[]{text, this.text});
 	}
 
 	public void setText(String string) {
@@ -111,7 +110,7 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 
 	public void write(String string) {
 		String string2 = "";
-		final String string3 = SharedConstants.stripInvalidChars(string);
+		final String string3 = SharedConstants.filterText(string);
 		final int i = selectionStart < selectionEnd ? selectionStart : selectionEnd;
 		final int j = selectionStart < selectionEnd ? selectionEnd : selectionStart;
 		final int k = maxLength - text.length() - (i - j);
@@ -246,7 +245,7 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 	}
 
 	public void setSelectionStart(int i) {
-		selectionStart = MathHelper.clamp(i, 0, text.length());
+		selectionStart = Mth.clamp(i, 0, text.length());
 	}
 
 	public void setCursorToStart() {
@@ -269,16 +268,16 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 				setSelectionEnd(0);
 				return true;
 			} else if (Screen.isCopy(c)) {
-				MinecraftClient.getInstance().keyboard.setClipboard(getSelectedText());
+				Minecraft.getInstance().keyboardHandler.setClipboard(getSelectedText());
 				return true;
 			} else if (Screen.isPaste(c)) {
 				if (editable) {
-					write(MinecraftClient.getInstance().keyboard.getClipboard());
+					write(Minecraft.getInstance().keyboardHandler.getClipboard());
 				}
 
 				return true;
 			} else if (Screen.isCut(c)) {
-				MinecraftClient.getInstance().keyboard.setClipboard(getSelectedText());
+				Minecraft.getInstance().keyboardHandler.setClipboard(getSelectedText());
 				if (editable) {
 					write("");
 				}
@@ -346,7 +345,7 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 	public boolean charTyped(char c, int i) {
 		if (!isActive()) {
 			return false;
-		} else if (SharedConstants.isValidChar(c)) {
+		} else if (SharedConstants.isAllowedChatCharacter(c)) {
 			if (editable) {
 				write(Character.toString(c));
 			}
@@ -368,13 +367,13 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 			}
 
 			if (isFocused() && bl && i == 0) {
-				int j = MathHelper.floor(d) - x;
+				int j = Mth.floor(d) - x;
 				if (focused) {
 					j -= 4;
 				}
-				final TextRenderer textRenderer = renderContext.fontRenderer();
-				final String string = textRenderer.trimToWidth(text.substring(firstCharacterIndex), getInnerWidth());
-				setCursor(textRenderer.trimToWidth(string, j).length() + firstCharacterIndex);
+				final Font textRenderer = renderContext.fontRenderer();
+				final String string = textRenderer.plainSubstrByWidth(text.substring(firstCharacterIndex), getInnerWidth());
+				setCursor(textRenderer.plainSubstrByWidth(string, j).length() + firstCharacterIndex);
 				return true;
 			} else {
 				return false;
@@ -387,12 +386,12 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int i, int j, float f) {
-		final TextRenderer textRenderer = renderContext.fontRenderer();
+	public void renderButton(PoseStack matrixStack, int i, int j, float f) {
+		final Font textRenderer = renderContext.fontRenderer();
 
 		if (isVisible()) {
 			if (hasBorder()) {
-				final int borderColor = isFocused() || hovered ? theme.buttonColorFocus : theme.textBorder;
+				final int borderColor = isFocused() || isHovered ? theme.buttonColorFocus : theme.textBorder;
 				fill(matrixStack, x - 1, y - 1, x + width + 1, y + height + 1, borderColor);
 
 			}
@@ -402,7 +401,7 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 			final int textColor = editable ? theme.textColorActive : theme.textColorInactive;
 			final int startIndex = selectionStart - firstCharacterIndex;
 			int selectionLength = selectionEnd - firstCharacterIndex;
-			final String textToRender = textRenderer.trimToWidth(text.substring(firstCharacterIndex), getInnerWidth());
+			final String textToRender = textRenderer.plainSubstrByWidth(text.substring(firstCharacterIndex), getInnerWidth());
 			final boolean caretFlag = startIndex >= 0 && startIndex <= textToRender.length();
 			final boolean shouldCaretBlink = isFocused() && focusedTicks / 6 % 2 == 0 && caretFlag;
 			final int n = focused ? x + 4 : x;
@@ -443,14 +442,14 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 					var10002 = q + 1;
 					var10003 = o + 1;
 					textRenderer.getClass();
-					DrawableHelper.fill(matrixStack, q, var10001, var10002, var10003 + 9, -3092272);
+					GuiComponent.fill(matrixStack, q, var10001, var10002, var10003 + 9, -3092272);
 				} else {
 					textRenderer.draw(matrixStack, "_", q, o, textColor);
 				}
 			}
 
 			if (selectionLength != startIndex) {
-				final int r = n + textRenderer.getWidth(textToRender.substring(0, selectionLength));
+				final int r = n + textRenderer.width(textToRender.substring(0, selectionLength));
 				var10002 = o - 1;
 				var10003 = r - 1;
 				final int var10004 = o + 1;
@@ -556,8 +555,8 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 
 	public void setSelectionEnd(int i) {
 		final int j = text.length();
-		selectionEnd = MathHelper.clamp(i, 0, j);
-		final TextRenderer textRenderer = renderContext.fontRenderer();
+		selectionEnd = Mth.clamp(i, 0, j);
+		final Font textRenderer = renderContext.fontRenderer();
 
 		if (textRenderer != null) {
 			if (firstCharacterIndex > j) {
@@ -565,10 +564,10 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 			}
 
 			final int k = getInnerWidth();
-			final String string = textRenderer.trimToWidth(text.substring(firstCharacterIndex), k);
+			final String string = textRenderer.plainSubstrByWidth(text.substring(firstCharacterIndex), k);
 			final int l = string.length() + firstCharacterIndex;
 			if (selectionEnd == firstCharacterIndex) {
-				firstCharacterIndex -= textRenderer.trimToWidth(text, k, true).length();
+				firstCharacterIndex -= textRenderer.plainSubstrByWidth(text, k, true).length();
 			}
 
 			if (selectionEnd > l) {
@@ -577,7 +576,7 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 				firstCharacterIndex -= firstCharacterIndex - selectionEnd;
 			}
 
-			firstCharacterIndex = MathHelper.clamp(firstCharacterIndex, 0, j);
+			firstCharacterIndex = Mth.clamp(firstCharacterIndex, 0, j);
 		}
 
 	}
@@ -599,7 +598,7 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 	}
 
 	public int getCharacterX(int i) {
-		return i > text.length() ? x : x + renderContext.fontRenderer().getWidth(text.substring(0, i));
+		return i > text.length() ? x : x + renderContext.fontRenderer().width(text.substring(0, i));
 	}
 
 	public void setX(int i) {
@@ -607,7 +606,7 @@ public class TextField extends ClickableWidget implements Drawable, Element {
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder builder) {
+	public void updateNarration(NarrationElementOutput builder) {
 		// TODO Auto-generated method stub
 	}
 }

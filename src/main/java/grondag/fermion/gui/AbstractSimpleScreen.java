@@ -17,17 +17,15 @@ package grondag.fermion.gui;
 
 import java.util.List;
 import java.util.Optional;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import grondag.fermion.gui.control.AbstractControl;
 
 public abstract class AbstractSimpleScreen extends Screen implements ScreenRenderContext {
@@ -41,10 +39,10 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 	protected int screenHeight;
 
 	public AbstractSimpleScreen() {
-		super(new LiteralText(""));
+		super(new TextComponent(""));
 	}
 
-	public AbstractSimpleScreen(Text title) {
+	public AbstractSimpleScreen(Component title) {
 		super(title);
 	}
 
@@ -71,7 +69,7 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 	}
 
 	@Override
-	public final void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public final void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO: make generic
 		// ensure we get updates
 		//te.notifyServerPlayerWatching();
@@ -90,12 +88,12 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 		}
 	}
 
-	protected void drawControls(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		final List<? extends Element> children = children();
+	protected void drawControls(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		final List<? extends GuiEventListener> children = children();
 		final int limit = children.size();
 
 		for (int i = 0; i < limit; ++i) {
-			final Element e = children.get(i);
+			final GuiEventListener e = children.get(i);
 
 			if (e instanceof AbstractControl) {
 				((AbstractControl<?>) children.get(i)).render(matrixStack, mouseX, mouseY, partialTicks);
@@ -109,8 +107,8 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 	}
 
 	@Override
-	public MinecraftClient minecraft() {
-		return client;
+	public Minecraft minecraft() {
+		return minecraft;
 	}
 
 	@Override
@@ -124,8 +122,8 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 	}
 
 	@Override
-	public TextRenderer fontRenderer() {
-		return textRenderer;
+	public Font fontRenderer() {
+		return font;
 	}
 
 	@Override
@@ -154,12 +152,12 @@ public abstract class AbstractSimpleScreen extends Screen implements ScreenRende
 	}
 
 	@Override
-	public Optional<Element> hoveredElement(double double_1, double double_2) {
+	public Optional<GuiEventListener> getChildAt(double double_1, double double_2) {
 		return Optional.ofNullable(hoverControl);
 	}
 
 	@Override
-	public void renderTooltip(MatrixStack matrixStack, ItemStack itemStack, int i, int j) {
+	public void renderTooltip(PoseStack matrixStack, ItemStack itemStack, int i, int j) {
 		super.renderTooltip(matrixStack,  itemStack, i, j);
 	}
 }

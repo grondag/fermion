@@ -22,16 +22,13 @@ import static grondag.fermion.orientation.api.ClockwiseRotation.ROTATE_NONE;
 
 import java.util.Locale;
 import java.util.function.Consumer;
-
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.util.math.Vec3i;
-
 import grondag.fermion.orientation.impl.CubeEdgeHelper;
 
 /**
@@ -40,7 +37,7 @@ import grondag.fermion.orientation.impl.CubeEdgeHelper;
  * respect to that edge.
  */
 @Experimental
-public enum CubeEdge implements StringIdentifiable {
+public enum CubeEdge implements StringRepresentable {
 	DOWN_SOUTH(Direction.DOWN, Direction.SOUTH, ROTATE_180),
 	DOWN_WEST(Direction.DOWN, Direction.WEST, ROTATE_270),
 	DOWN_NORTH(Direction.DOWN, Direction.NORTH, ROTATE_NONE),
@@ -93,8 +90,8 @@ public enum CubeEdge implements StringIdentifiable {
 		superOrdinal = 6 + ordinal();
 		superOrdinalBit = 1 << superOrdinal;
 
-		final Vec3i v1 = face1.getVector();
-		final Vec3i v2 = face2.getVector();
+		final Vec3i v1 = face1.getNormal();
+		final Vec3i v2 = face2.getNormal();
 		vector = new Vec3i(v1.getX() + v2.getX(), v1.getY() + v2.getY(), v1.getZ() + v2.getZ());
 
 		if (face1.getAxis() == Axis.Y || face2.getAxis() == Axis.Y) {
@@ -123,7 +120,7 @@ public enum CubeEdge implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name;
 	}
 }

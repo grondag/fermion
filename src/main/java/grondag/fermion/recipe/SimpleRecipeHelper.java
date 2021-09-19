@@ -7,13 +7,13 @@ import java.util.IdentityHashMap;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeManager;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -25,28 +25,28 @@ public class SimpleRecipeHelper implements SimpleSynchronousResourceReloadListen
 
 	private final IdentityHashMap<RecipeType<?>, ArrayList<SimpleRecipe<?>>> recipes = new IdentityHashMap<>();
 
-	private final Collection<Identifier> RELOAD_DEPS = Collections.singletonList(ResourceReloadListenerKeys.RECIPES);
+	private final Collection<ResourceLocation> RELOAD_DEPS = Collections.singletonList(ResourceReloadListenerKeys.RECIPES);
 
-	private final Identifier id;
+	private final ResourceLocation id;
 
-	public SimpleRecipeHelper(Identifier id, RecipeType<?>... recipeTypes) {
+	public SimpleRecipeHelper(ResourceLocation id, RecipeType<?>... recipeTypes) {
 		this.id = id;
 		this.recipeTypes = ImmutableSet.copyOf(recipeTypes);
 	}
 
 	@Override
-	public Identifier getFabricId() {
+	public ResourceLocation getFabricId() {
 		return id;
 	}
 
 	@Override
-	public void reload(ResourceManager resourceManager) {
+	public void onResourceManagerReload(ResourceManager resourceManager) {
 		recipes.clear();
 		reload();
 	}
 
 	@Override
-	public Collection<Identifier> getFabricDependencies() {
+	public Collection<ResourceLocation> getFabricDependencies() {
 		return RELOAD_DEPS;
 	}
 
@@ -54,7 +54,7 @@ public class SimpleRecipeHelper implements SimpleSynchronousResourceReloadListen
 		if (server != null) {
 			final RecipeManager rm = server.getRecipeManager();
 
-			for (final Recipe<?> r : rm.values()) {
+			for (final Recipe<?> r : rm.getRecipes()) {
 				if (recipeTypes.contains(r.getType())) {
 					recipes.computeIfAbsent(r.getType(), k -> new ArrayList<>()).add((SimpleRecipe<?>) r);
 				}

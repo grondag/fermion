@@ -15,9 +15,8 @@
  ******************************************************************************/
 package grondag.fermion.orientation.api;
 
+import net.minecraft.core.Direction;
 import org.jetbrains.annotations.ApiStatus.Experimental;
-
-import net.minecraft.util.math.Direction;
 
 @Experimental
 @SuppressWarnings("rawtypes")

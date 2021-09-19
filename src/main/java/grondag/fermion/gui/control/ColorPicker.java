@@ -15,12 +15,10 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.gui.GuiComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
 import grondag.fermion.color.Chroma;
 import grondag.fermion.color.Color;
 import grondag.fermion.color.ColorAtlas;
@@ -75,7 +73,7 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 	}
 
 	@Override
-	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		for (int h = 0; h < Hue.COUNT; h++) {
 			final double radius = (h == selectedHue.ordinal()) ? radiusOuter : radiusInner;
 			final double arcStart = Math.toRadians(arc * h);
@@ -93,7 +91,7 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 			final double x3 = centerX;// + Math.sin(arcEnd) * radiusInner;
 			final double y3 = centerY;// + Math.cos(arcEnd) * radiusInner;
 
-			GuiUtil.drawQuad(matrixStack.peek().getModel(), (float) x0, (float) y0, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, Hue.VALUES[h].hueSample());
+			GuiUtil.drawQuad(matrixStack.last().pose(), (float) x0, (float) y0, (float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3, Hue.VALUES[h].hueSample());
 		}
 
 		float left;
@@ -110,7 +108,7 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 				right = left + gridIncrementX;
 				final ColorSet colormap = ColorAtlas.INSTANCE.getColorMap(selectedHue, Chroma.VALUES[c], Luminance.VALUES[l]);
 				if (colormap != null) {
-					DrawableHelper.fill(matrixStack, Math.round(left), Math.round(top), Math.round(right), Math.round(bottom), colormap.getColor(map));
+					GuiComponent.fill(matrixStack, Math.round(left), Math.round(top), Math.round(right), Math.round(bottom), colormap.getColor(map));
 				}
 				left = right;
 			}
@@ -122,8 +120,8 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 		final float sLeft = gridLeft + selectedColormap.chroma.ordinal() * gridIncrementX;
 		final float sTop = gridTop + selectedColormap.luminance.ordinal() * gridIncrementY;
 
-		GuiUtil.drawRect(matrixStack.peek().getModel(), sLeft - 1, sTop - 1, sLeft + gridIncrementX + 1, sTop + gridIncrementY + 1, showLampColors ? Color.BLACK : Color.WHITE);
-		GuiUtil.drawRect(matrixStack.peek().getModel(), sLeft - 0.5f, sTop - 0.5f, sLeft + gridIncrementX + 0.5f, sTop + gridIncrementY + 0.5f, selectedColormap.getColor(map));
+		GuiUtil.drawRect(matrixStack.last().pose(), sLeft - 1, sTop - 1, sLeft + gridIncrementX + 1, sTop + gridIncrementY + 1, showLampColors ? Color.BLACK : Color.WHITE);
+		GuiUtil.drawRect(matrixStack.last().pose(), sLeft - 0.5f, sTop - 0.5f, sLeft + gridIncrementX + 0.5f, sTop + gridIncrementY + 0.5f, selectedColormap.getColor(map));
 	}
 
 	private void changeHueIfDifferent(Hue newHue) {
@@ -237,7 +235,7 @@ public class ColorPicker extends AbstractControl<ColorPicker> {
 	}
 
 	@Override
-	public void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

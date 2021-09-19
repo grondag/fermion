@@ -21,11 +21,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
+import net.minecraft.core.BlockPos;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.util.math.BlockPos;
 
 public class CubicBlockRegion extends IntegerBox implements BlockRegion {
 	private final boolean isHollow;
@@ -77,7 +75,7 @@ public class CubicBlockRegion extends IntegerBox implements BlockRegion {
 	 * hollow
 	 */
 	public Iterable<BlockPos> allPositions() {
-		return BlockPos.iterate(minX, minY, minZ, maxX - 1, maxY - 1, maxZ - 1);
+		return BlockPos.betweenClosed(minX, minY, minZ, maxX - 1, maxY - 1, maxZ - 1);
 	}
 
 	/**
@@ -141,7 +139,7 @@ public class CubicBlockRegion extends IntegerBox implements BlockRegion {
 		final ImmutableSet.Builder<BlockPos> builder = ImmutableSet.builder();
 
 		for (final BlockPos pos : temp.allPositions()) {
-			builder.add(pos.toImmutable());
+			builder.add(pos.immutable());
 		}
 		return builder.build();
 	}
@@ -154,7 +152,7 @@ public class CubicBlockRegion extends IntegerBox implements BlockRegion {
 		final int x2, final int y2, final int z2) {
 		// has to be at least 3x3x3 or logic will get stuck and is also inefficient
 		if (x2 - x1 < 2 || y2 - y1 < 2 || z2 - z1 < 2)
-			return BlockPos.iterate(x1, y1, z1, x2, y2, z2);
+			return BlockPos.betweenClosed(x1, y1, z1, x2, y2, z2);
 
 		return new Iterable<BlockPos>() {
 			@Override
@@ -162,17 +160,17 @@ public class CubicBlockRegion extends IntegerBox implements BlockRegion {
 				return new AbstractIterator<BlockPos>() {
 					private boolean atStart = true;
 					private int x = x1, y = y1, z = z1;
-					private final BlockPos.Mutable pos = new BlockPos.Mutable(x1, y1, z1);
+					private final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x1, y1, z1);
 
 					@Override
-					protected BlockPos.Mutable computeNext() {
+					protected BlockPos.MutableBlockPos computeNext() {
 						if (atStart) {
 							// at beginning
 							atStart = false;
 							return pos;
 						} else if (x == x2 && y == y2 && z == z2)
 							// at end
-							return (BlockPos.Mutable) endOfData();
+							return (BlockPos.MutableBlockPos) endOfData();
 						else {
 							// if at either end of Z, normal behavior
 							if (z == z1 || z == z2) {

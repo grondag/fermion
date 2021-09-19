@@ -18,12 +18,10 @@ package grondag.fermion.gui.control;
 import static grondag.fermion.gui.HorizontalAlignment.CENTER;
 import static grondag.fermion.gui.VerticalAlignment.MIDDLE;
 
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.network.chat.Component;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.ScreenRenderContext;
 
@@ -39,17 +37,17 @@ public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 	}
 
 	@Override
-	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		float y = top;
 
 		final int hoverIndex = getButtonIndex(mouseX, mouseY);
 
 		for (int i = 0; i < target.size(); i++) {
-			final Text label = target.getLabel(i);
+			final Component label = target.getLabel(i);
 
-			GuiUtil.drawBoxRightBottom(matrixStack.peek().getModel(), left, y, right, y + buttonHeight, 1, theme.buttonColorActive);
+			GuiUtil.drawBoxRightBottom(matrixStack.last().pose(), left, y, right, y + buttonHeight, 1, theme.buttonColorActive);
 			final int buttonColor = i == hoverIndex ? theme.buttonColorFocus : i == target.getVisiblityIndex() ? theme.buttonColorActive : theme.buttonColorInactive;
-			GuiUtil.drawRect(matrixStack.peek().getModel(), left + 2, y + 2, right - 2, y + buttonHeight - 2, buttonColor);
+			GuiUtil.drawRect(matrixStack.last().pose(), left + 2, y + 2, right - 2, y + buttonHeight - 2, buttonColor);
 
 			final int textColor = i == hoverIndex ? theme.textColorFocus : i == target.getVisiblityIndex() ? theme.textColorActive : theme.textColorInactive;
 			GuiUtil.drawAlignedStringNoShadow(matrixStack, renderContext.fontRenderer(), label, left, y, width, buttonHeight,
@@ -89,7 +87,7 @@ public class VisiblitySelector extends AbstractControl<VisiblitySelector> {
 	}
 
 	@Override
-	public void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

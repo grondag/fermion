@@ -16,26 +16,24 @@
 package grondag.fermion.gui;
 
 import java.util.ArrayList;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import grondag.fermion.gui.control.AbstractControl;
 
 public interface ScreenRenderContext {
-	MinecraftClient minecraft();
+	Minecraft minecraft();
 
 	ItemRenderer renderItem();
 
 	Screen screen();
 
-	TextRenderer fontRenderer();
+	Font fontRenderer();
 
 	/**
 	 * controls that are being hovered over while rendering should call this to
@@ -43,29 +41,29 @@ public interface ScreenRenderContext {
 	 */
 	void setHoverControl(AbstractControl<?> control);
 
-	default void renderTooltip(MatrixStack matrixStack, ItemStack itemStack, int i, int j) {
-		screen().renderTooltip(matrixStack, screen().getTooltipFromItem(itemStack), i, j);
+	default void renderTooltip(PoseStack matrixStack, ItemStack itemStack, int i, int j) {
+		screen().renderComponentTooltip(matrixStack, screen().getTooltipFromItem(itemStack), i, j);
 	}
 
-	default void drawLocalizedToolTip(MatrixStack matrixStack, String lang_key, int mouseX, int mouseY) {
-		screen().renderTooltip(matrixStack, new TranslatableText(lang_key), mouseX, mouseY);
+	default void drawLocalizedToolTip(PoseStack matrixStack, String lang_key, int mouseX, int mouseY) {
+		screen().renderTooltip(matrixStack, new TranslatableComponent(lang_key), mouseX, mouseY);
 	}
 
-	default void drawLocalizedToolTip(MatrixStack matrixStack, int mouseX, int mouseY, String... lang_keys) {
+	default void drawLocalizedToolTip(PoseStack matrixStack, int mouseX, int mouseY, String... lang_keys) {
 		if (lang_keys.length == 0) {
 			return;
 		}
 
-		final ArrayList<Text> list = new ArrayList<>(lang_keys.length);
+		final ArrayList<Component> list = new ArrayList<>(lang_keys.length);
 
 		for (final String key : lang_keys) {
-			list.add(new TranslatableText(key));
+			list.add(new TranslatableComponent(key));
 		}
-		screen().renderTooltip(matrixStack, list, mouseX, mouseY);
+		screen().renderComponentTooltip(matrixStack, list, mouseX, mouseY);
 	}
 
-	default void drawLocalizedToolTipBoolean(MatrixStack matrixStack, boolean bool, String true_key, String false_key, int mouseX, int mouseY) {
-		screen().renderTooltip(matrixStack, new TranslatableText(bool ? true_key : false_key), mouseX, mouseY);
+	default void drawLocalizedToolTipBoolean(PoseStack matrixStack, boolean bool, String true_key, String false_key, int mouseX, int mouseY) {
+		screen().renderTooltip(matrixStack, new TranslatableComponent(bool ? true_key : false_key), mouseX, mouseY);
 	}
 
 	int screenLeft();

@@ -16,16 +16,13 @@
 package grondag.fermion.gui.control;
 
 import it.unimi.dsi.fastutil.ints.IntConsumer;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import com.mojang.blaze3d.vertex.PoseStack;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.HorizontalAlignment;
 import grondag.fermion.gui.Layout;
@@ -39,7 +36,7 @@ public class Slider extends AbstractControl<Slider> {
 	public static final int ITEM_SPACING = 4;
 
 	protected int size;
-	protected Text label;
+	protected Component label;
 
 	/** in range 0-1, how much of pixelWidth to allow for label */
 	protected float labelWidthFactor = 0;
@@ -83,12 +80,12 @@ public class Slider extends AbstractControl<Slider> {
 	 * needed to set height to font height. labelWidth is in range 0-1 and allows
 	 * for alignment of stacked controls.
 	 */
-	public Slider(ScreenRenderContext renderContext, int size, Text label, float labelWidthFactor) {
+	public Slider(ScreenRenderContext renderContext, int size, Component label, float labelWidthFactor) {
 		super(renderContext);
 		this.size = size;
 		this.label = label;
 		this.labelWidthFactor = labelWidthFactor;
-		setHeight(Math.max(TAB_WIDTH, renderContext.fontRenderer().fontHeight + theme.internalMargin));
+		setHeight(Math.max(TAB_WIDTH, renderContext.fontRenderer().lineHeight + theme.internalMargin));
 		setVerticalLayout(Layout.FIXED);
 	}
 
@@ -96,12 +93,12 @@ public class Slider extends AbstractControl<Slider> {
 		this.size = size;
 	}
 
-	protected void drawChoice(MatrixStack matrixStack, MinecraftClient mc, ItemRenderer itemRender, float partialTicks) {
+	protected void drawChoice(PoseStack matrixStack, Minecraft mc, ItemRenderer itemRender, float partialTicks) {
 		// not drawn in base implementation
 	}
 
 	@Override
-	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (size == 0) {
 			return;
 		}
@@ -128,18 +125,18 @@ public class Slider extends AbstractControl<Slider> {
 		final float tabTop = top + (height - TAB_WIDTH) / 2;
 		final float tabBottom = tabTop + TAB_WIDTH;
 		if (tabSize == 0.0) {
-			GuiUtil.drawRect(matrixStack.peek().getModel(), tabStartX, tabTop, tabStartX + scrollWidth, tabBottom, theme.buttonColorInactive);
+			GuiUtil.drawRect(matrixStack.last().pose(), tabStartX, tabTop, tabStartX + scrollWidth, tabBottom, theme.buttonColorInactive);
 
 			// box pixelWidth is same as tab height, so need to have it be half that extra
 			// to the right so that we keep our margins with the arrows
 			final float selectionCenterX = tabStartX + TAB_WIDTH * 0.5f + (scrollWidth - TAB_WIDTH) * selectedTabIndex / (size - 1);
 
-			GuiUtil.drawRect(matrixStack.peek().getModel(), selectionCenterX - TAB_WIDTH * 0.5f, tabTop, selectionCenterX + TAB_WIDTH * 0.5f, tabBottom, theme.buttonColorActive);
+			GuiUtil.drawRect(matrixStack.last().pose(), selectionCenterX - TAB_WIDTH * 0.5f, tabTop, selectionCenterX + TAB_WIDTH * 0.5f, tabBottom, theme.buttonColorActive);
 		} else {
 			final int highlightIndex = currentMouseLocation == MouseLocation.TAB ? currentMouseIndex : -1;
 
 			for (int i = 0; i < size; i++) {
-				GuiUtil.drawRect(matrixStack.peek().getModel(), tabStartX, tabTop, tabStartX + tabSize, tabBottom,
+				GuiUtil.drawRect(matrixStack.last().pose(), tabStartX, tabTop, tabStartX + tabSize, tabBottom,
 						i == highlightIndex ? theme.buttonColorFocus : i == selectedTabIndex ? theme.buttonColorActive : theme.buttonColorInactive);
 				tabStartX += (tabSize + TAB_MARGIN);
 			}
@@ -147,10 +144,10 @@ public class Slider extends AbstractControl<Slider> {
 
 		final float arrowCenterY = tabTop + TAB_WIDTH * 0.5f;
 
-		GuiUtil.drawQuad(matrixStack.peek().getModel(), choiceRight, arrowCenterY, choiceRight + TAB_WIDTH, tabBottom, choiceRight + TAB_WIDTH, tabTop, choiceRight,
+		GuiUtil.drawQuad(matrixStack.last().pose(), choiceRight, arrowCenterY, choiceRight + TAB_WIDTH, tabBottom, choiceRight + TAB_WIDTH, tabTop, choiceRight,
 				arrowCenterY, currentMouseLocation == MouseLocation.LEFT_ARROW ? theme.buttonColorFocus : theme.buttonColorInactive);
 
-		GuiUtil.drawQuad(matrixStack.peek().getModel(), right, arrowCenterY, right - TAB_WIDTH, tabTop, right - TAB_WIDTH, tabBottom, right, arrowCenterY,
+		GuiUtil.drawQuad(matrixStack.last().pose(), right, arrowCenterY, right - TAB_WIDTH, tabTop, right - TAB_WIDTH, tabBottom, right, arrowCenterY,
 				currentMouseLocation == MouseLocation.RIGHT_ARROW ? theme.buttonColorFocus : theme.buttonColorInactive);
 
 	}
@@ -168,7 +165,7 @@ public class Slider extends AbstractControl<Slider> {
 			currentMouseLocation = MouseLocation.RIGHT_ARROW;
 		} else {
 			currentMouseLocation = MouseLocation.TAB;
-			currentMouseIndex = MathHelper.clamp((int) ((mouseX - choiceRight - TAB_WIDTH - ITEM_SPACING / 2) / (scrollWidth) * size), 0,
+			currentMouseIndex = Mth.clamp((int) ((mouseX - choiceRight - TAB_WIDTH - ITEM_SPACING / 2) / (scrollWidth) * size), 0,
 					size - 1);
 		}
 	}
@@ -245,7 +242,7 @@ public class Slider extends AbstractControl<Slider> {
 		}
 
 		final int oldIndex = selectedTabIndex;
-		selectedTabIndex = MathHelper.clamp(selectedTabIndex + mouseIncrementDelta(), 0, size - 1);
+		selectedTabIndex = Mth.clamp(selectedTabIndex + mouseIncrementDelta(), 0, size - 1);
 
 		if(oldIndex != selectedTabIndex) {
 			onChanged.accept(selectedTabIndex);
@@ -257,7 +254,7 @@ public class Slider extends AbstractControl<Slider> {
 	}
 
 	public void setSelectedIndex(int index) {
-		selectedTabIndex = size == 0 ? NO_SELECTION : MathHelper.clamp(index, 0, size - 1);
+		selectedTabIndex = size == 0 ? NO_SELECTION : Mth.clamp(index, 0, size - 1);
 	}
 
 	public int getSelectedIndex() {
@@ -265,7 +262,7 @@ public class Slider extends AbstractControl<Slider> {
 	}
 
 	@Override
-	public void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

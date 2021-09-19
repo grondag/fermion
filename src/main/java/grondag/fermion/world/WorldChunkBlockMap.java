@@ -16,8 +16,8 @@
 
 package grondag.fermion.world;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class WorldChunkBlockMap<T> extends WorldMap<ChunkMap<ChunkBlockMap<T>>> {
 
@@ -27,7 +27,7 @@ public class WorldChunkBlockMap<T> extends WorldMap<ChunkMap<ChunkBlockMap<T>>> 
 	private static final long serialVersionUID = 4048164246377574473L;
 
 	@Override
-	protected ChunkMap<ChunkBlockMap<T>> load(World world) {
+	protected ChunkMap<ChunkBlockMap<T>> load(Level world) {
 		return new ChunkMap<ChunkBlockMap<T>>() {
 
 			@Override

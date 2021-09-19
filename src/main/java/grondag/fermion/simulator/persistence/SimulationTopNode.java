@@ -15,9 +15,9 @@
  ******************************************************************************/
 package grondag.fermion.simulator.persistence;
 
-import net.minecraft.world.PersistentState;
+import net.minecraft.world.level.saveddata.SavedData;
 
-public abstract class SimulationTopNode extends PersistentState implements SimulationNode, DirtKeeper {
+public abstract class SimulationTopNode extends SavedData implements SimulationNode, DirtKeeper {
 	public final String tagName;
 
 	public SimulationTopNode(String tagName) {

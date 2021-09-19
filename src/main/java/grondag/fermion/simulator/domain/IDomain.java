@@ -16,14 +16,12 @@
 package grondag.fermion.simulator.domain;
 
 import java.util.List;
-
+import net.minecraft.world.entity.player.Player;
 import com.google.common.eventbus.EventBus;
 import grondag.fermion.simulator.persistence.DirtListenerProvider;
 import grondag.fermion.simulator.persistence.Numbered;
 import grondag.fermion.simulator.persistence.SimulationNode;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.entity.player.PlayerEntity;
 
 public interface IDomain extends SimulationNode, DirtListenerProvider, Numbered {
 
@@ -32,17 +30,17 @@ public interface IDomain extends SimulationNode, DirtListenerProvider, Numbered 
 	List<DomainUser> getAllUsers();
 
 	@Nullable
-	DomainUser findPlayer(PlayerEntity player);
+	DomainUser findPlayer(Player player);
 
 	@Nullable
 	DomainUser findUser(String userName);
 
-	boolean hasPrivilege(PlayerEntity player, Privilege privilege);
+	boolean hasPrivilege(Player player, Privilege privilege);
 
 	/**
 	 * Will return existing user if already exists.
 	 */
-	DomainUser addPlayer(PlayerEntity player);
+	DomainUser addPlayer(Player player);
 
 	String getName();
 

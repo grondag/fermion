@@ -20,7 +20,6 @@ public class NullDirtListener implements DirtListener {
 	public static final NullDirtListener INSTANCE = new NullDirtListener();
 
 	@Override
-	public void markDirty() {
+	public void setDirty() {
 	}
-
 }

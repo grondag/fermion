@@ -7,9 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
+import net.minecraft.util.Mth;
 import grondag.fermion.sc.unordered.AbstractUnorderedArrayList;
-import net.minecraft.util.math.MathHelper;
 
 
 /**
@@ -54,7 +53,7 @@ public class SimpleConcurrentList<T> implements Iterable<T>
 
 	public SimpleConcurrentList(Class<T> clazz, int initialCapacity)
 	{
-		initialCapacity = MathHelper.smallestEncompassingPowerOfTwo(initialCapacity);
+		initialCapacity = Mth.smallestEncompassingPowerOfTwo(initialCapacity);
 		@SuppressWarnings("unchecked")
 		final T[] a = (T[]) Array.newInstance(clazz, initialCapacity);
 		this.items = a;
@@ -118,7 +117,7 @@ public class SimpleConcurrentList<T> implements Iterable<T>
 			{
 				if(endExclusive > this.items.length)
 				{
-					final int newCapacity = MathHelper.smallestEncompassingPowerOfTwo(endExclusive);
+					final int newCapacity = Mth.smallestEncompassingPowerOfTwo(endExclusive);
 					this.items = Arrays.copyOf(this.items, newCapacity);
 				}
 			}
@@ -135,7 +134,7 @@ public class SimpleConcurrentList<T> implements Iterable<T>
 			{
 				if(endExclusive > this.items.length)
 				{
-					final int newCapacity = MathHelper.smallestEncompassingPowerOfTwo(endExclusive);
+					final int newCapacity = Mth.smallestEncompassingPowerOfTwo(endExclusive);
 					this.items = Arrays.copyOf(this.items, newCapacity);
 				}
 			}

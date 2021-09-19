@@ -17,49 +17,46 @@ package grondag.fermion.modkeys.impl;
 
 import io.netty.buffer.Unpooled;
 import org.lwjgl.glfw.GLFW;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-
+import com.mojang.blaze3d.platform.InputConstants;
 import grondag.fermion.modkeys.ModKeysConfig;
 
 public class ModKeysHandler {
 
-	public static Identifier PACKET_ID = new Identifier("modkeys", "modifiers");
+	public static ResourceLocation PACKET_ID = new ResourceLocation("modkeys", "modifiers");
 
 	@Environment(EnvType.CLIENT)
 	private static byte lastFlags = 0;
 
 	@Environment(EnvType.CLIENT)
-	public static void update(MinecraftClient client) {
-		final long handle = client.getWindow().getHandle();
+	public static void update(Minecraft client) {
+		final long handle = client.getWindow().getWindow();
 
 		byte f = 0;
 
-		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SHIFT) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
+		if (InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)) {
 			f |= ModKeysAccess.SHIFT;
 		}
 
-		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_CONTROL) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_CONTROL)) {
+		if (InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_CONTROL) || InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_CONTROL)) {
 			f |= ModKeysAccess.CONTROL;
 		}
 
-		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_ALT) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_ALT)) {
+		if (InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_ALT) || InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_ALT)) {
 			f |= ModKeysAccess.ALT;
 		}
 
-		if (InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_LEFT_SUPER) || InputUtil.isKeyPressed(handle, GLFW.GLFW_KEY_RIGHT_SUPER)) {
+		if (InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SUPER) || InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_SUPER)) {
 			f |= ModKeysAccess.SUPER;
 		}
 
@@ -78,7 +75,7 @@ public class ModKeysHandler {
 		if (f != lastFlags) {
 			lastFlags = f;
 			@SuppressWarnings("resource")
-			final ClientPlayerEntity player = MinecraftClient.getInstance().player;
+			final LocalPlayer player = Minecraft.getInstance().player;
 			if (player != null) {
 				((ModKeysAccess) player).mk_flags(f);
 			}
@@ -88,14 +85,14 @@ public class ModKeysHandler {
 
 	@Environment(EnvType.CLIENT)
 	private static void sendUpdatePacket(byte flags) {
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			final PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		if (Minecraft.getInstance().getConnection() != null) {
+			final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 			buf.writeByte(flags);
 			ClientPlayNetworking.send(PACKET_ID, buf);
 		}
 	}
 
-	public static void accept(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
+	public static void accept(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
 		if (player != null) {
 			((ModKeysAccess) player).mk_flags(buf.readByte());
 		}

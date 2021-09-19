@@ -17,17 +17,14 @@ package grondag.fermion.orientation.api;
 
 import java.util.Locale;
 import java.util.function.Consumer;
-
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.Rotation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.jetbrains.annotations.ApiStatus.Experimental;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3i;
-
 import grondag.fermion.orientation.impl.CubeCornerHelper;
 
 /**
@@ -35,7 +32,7 @@ import grondag.fermion.orientation.impl.CubeCornerHelper;
  * neighboring blocks diagonally adjacent to those corners.
  */
 @Experimental
-public enum CubeCorner implements StringIdentifiable {
+public enum CubeCorner implements StringRepresentable {
 	UP_NORTH_EAST(Direction.UP, Direction.EAST, Direction.NORTH),
 	UP_NORTH_WEST(Direction.UP, Direction.WEST, Direction.NORTH),
 	UP_SOUTH_EAST(Direction.UP, Direction.EAST, Direction.SOUTH),
@@ -70,9 +67,9 @@ public enum CubeCorner implements StringIdentifiable {
 		superOrdinal = 6 + ordinal() + CubeEdge.values().length;
 		superOrdinalBit = 1 << superOrdinal;
 
-		final Vec3i v1 = face1.getVector();
-		final Vec3i v2 = face2.getVector();
-		final Vec3i v3 = face3.getVector();
+		final Vec3i v1 = face1.getNormal();
+		final Vec3i v2 = face2.getNormal();
+		final Vec3i v3 = face3.getNormal();
 		vector = new Vec3i(v1.getX() + v2.getX() + v3.getX(), v1.getY() + v2.getY() + v3.getY(), v1.getZ() + v2.getZ() + v3.getZ());
 
 	}
@@ -96,11 +93,11 @@ public enum CubeCorner implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return name;
 	}
 
-	public CubeCorner rotate(BlockRotation rotation) {
+	public CubeCorner rotate(Rotation rotation) {
 		final Direction face1 = rotation.rotate(this.face1);
 		final Direction face2 = rotation.rotate(this.face2);
 		final Direction face3 = rotation.rotate(this.face3);

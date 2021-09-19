@@ -1,8 +1,7 @@
 package grondag.fermion.color;
 
-import net.minecraft.client.resource.language.I18n;
-
 import grondag.fermion.color.Color.HCLMode;
+import net.minecraft.client.resources.language.I18n;
 
 /**
  * @deprecated  use ColorUtil
@@ -38,7 +37,7 @@ public class ColorSet
 
 	public String localizedName()
 	{
-		final String format = I18n.translate(chroma == Chroma.PURE_NETURAL ? "color.format.pure_neutral" : "color.format.color");
+		final String format = I18n.get(chroma == Chroma.PURE_NETURAL ? "color.format.pure_neutral" : "color.format.color");
 		return String.format(format, hue.localizedName(), chroma.localizedName(), luminance.localizedName());
 
 	}

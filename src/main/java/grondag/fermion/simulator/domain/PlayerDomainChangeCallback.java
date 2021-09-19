@@ -17,7 +17,7 @@ package grondag.fermion.simulator.domain;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Posted when player active domain changes.
@@ -29,5 +29,5 @@ public interface PlayerDomainChangeCallback {
 		}
 	});
 
-	void onDomainChange(PlayerEntity player, IDomain oldDomain, IDomain newDomain);
+	void onDomainChange(Player player, IDomain oldDomain, IDomain newDomain);
 }

@@ -19,29 +19,27 @@ package grondag.fermion.client.models;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SimpleModels implements ModelVariantProvider {
 	public static ModelVariantProvider MODEL_VARIANT_PROVIER = new SimpleModels();
 
-	private static final HashMap<Identifier, UnbakedModel> models = new HashMap<>();
+	private static final HashMap<ResourceLocation, UnbakedModel> models = new HashMap<>();
 
-	public static void register(Identifier id, UnbakedModel unbakedModel) {
+	public static void register(ResourceLocation id, UnbakedModel unbakedModel) {
 		models.put(id, unbakedModel);
 	}
 
@@ -50,8 +48,8 @@ public class SimpleModels implements ModelVariantProvider {
 	}
 
 	@Override
-	public UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) {
-		return models.get(new Identifier(modelId.getNamespace(), modelId.getPath()));
+	public UnbakedModel loadModelVariant(ModelResourceLocation modelId, ModelProviderContext context) {
+		return models.get(new ResourceLocation(modelId.getNamespace(), modelId.getPath()));
 	}
 
 	/**
@@ -59,9 +57,9 @@ public class SimpleModels implements ModelVariantProvider {
 	 * texture coordinates slightly towards the vertex centroid of the UV
 	 * coordinates.
 	 */
-	public static void contractUVs(int spriteIndex, Sprite sprite, MutableQuadView poly) {
-		final float uPixels = sprite.getWidth() / (sprite.getMaxU() - sprite.getMinU());
-		final float vPixels = sprite.getHeight() / (sprite.getMaxV() - sprite.getMinV());
+	public static void contractUVs(int spriteIndex, TextureAtlasSprite sprite, MutableQuadView poly) {
+		final float uPixels = sprite.getWidth() / (sprite.getU1() - sprite.getU0());
+		final float vPixels = sprite.getHeight() / (sprite.getV1() - sprite.getV0());
 		final float nudge = 4.0f / Math.max(vPixels, uPixels);
 
 		final float u0 = poly.spriteU(0, spriteIndex);
@@ -77,10 +75,10 @@ public class SimpleModels implements ModelVariantProvider {
 		final float uCenter = (u0 + u1 + u2 + u3) * 0.25F;
 		final float vCenter = (v0 + v1 + v2 + v3) * 0.25F;
 
-		poly.sprite(0, spriteIndex, MathHelper.lerp(nudge, u0, uCenter), MathHelper.lerp(nudge, v0, vCenter));
-		poly.sprite(1, spriteIndex, MathHelper.lerp(nudge, u1, uCenter), MathHelper.lerp(nudge, v1, vCenter));
-		poly.sprite(2, spriteIndex, MathHelper.lerp(nudge, u2, uCenter), MathHelper.lerp(nudge, v2, vCenter));
-		poly.sprite(3, spriteIndex, MathHelper.lerp(nudge, u3, uCenter), MathHelper.lerp(nudge, v3, vCenter));
+		poly.sprite(0, spriteIndex, Mth.lerp(nudge, u0, uCenter), Mth.lerp(nudge, v0, vCenter));
+		poly.sprite(1, spriteIndex, Mth.lerp(nudge, u1, uCenter), Mth.lerp(nudge, v1, vCenter));
+		poly.sprite(2, spriteIndex, Mth.lerp(nudge, u2, uCenter), Mth.lerp(nudge, v2, vCenter));
+		poly.sprite(3, spriteIndex, Mth.lerp(nudge, u3, uCenter), Mth.lerp(nudge, v3, vCenter));
 	}
 
 	public static void emitBakedModelToMesh (BlockState blockState, BakedModel model, QuadEmitter qe) {
@@ -96,10 +94,10 @@ public class SimpleModels implements ModelVariantProvider {
 			}
 
 			for (final BakedQuad q : quads) {
-				qe.fromVanilla(q.getVertexData(), 0, false);
+				qe.fromVanilla(q.getVertices(), 0, false);
 				qe.cullFace(cullFace);
-				qe.nominalFace(q.getFace());
-				qe.colorIndex(q.getColorIndex());
+				qe.nominalFace(q.getDirection());
+				qe.colorIndex(q.getTintIndex());
 				qe.emit();
 			}
 		}

@@ -15,22 +15,20 @@
  ******************************************************************************/
 package grondag.fermion.gui.control;
 
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import com.mojang.blaze3d.vertex.PoseStack;
 import grondag.fermion.gui.Layout;
 import grondag.fermion.gui.ScreenRenderContext;
 import grondag.fermion.gui.ScreenTheme;
 
 @Environment(EnvType.CLIENT)
-public abstract class AbstractControl<T extends AbstractControl<T>> extends DrawableHelper implements Element, Drawable, Selectable {
+public abstract class AbstractControl<T extends AbstractControl<T>> extends GuiComponent implements GuiEventListener, Widget, NarratableEntry {
 	public static final int NO_SELECTION = -1;
 
 	protected final ScreenTheme theme = ScreenTheme.current();
@@ -84,7 +82,7 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 	}
 
 	@Override
-	public final void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public final void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		this.refreshContentCoordinatesIfNeeded();
 
 		if (this.isVisible) {
@@ -98,19 +96,19 @@ public abstract class AbstractControl<T extends AbstractControl<T>> extends Draw
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder builder) {
+	public void updateNarration(NarrationElementOutput builder) {
 		// TODO whatever this is
 	}
 
 	@Override
-	public SelectionType getType() {
+	public NarrationPriority narrationPriority() {
 		// TODO: implement
-		return SelectionType.NONE;
+		return NarrationPriority.NONE;
 	}
 
-	public abstract void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks);
+	public abstract void drawToolTip(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks);
 
-	protected abstract void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks);
+	protected abstract void drawContent(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks);
 
 	/** called after any coordinate-related input changes */
 	protected void handleCoordinateUpdate() {

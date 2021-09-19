@@ -16,19 +16,16 @@
 package grondag.fermion.gui.control;
 
 import java.util.Arrays;
-
-import net.minecraft.client.gui.ParentElement;
-import net.minecraft.client.util.math.MatrixStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
+import com.mojang.blaze3d.vertex.PoseStack;
 import grondag.fermion.gui.GuiUtil;
 import grondag.fermion.gui.Layout;
 import grondag.fermion.gui.ScreenRenderContext;
 
 @Environment(EnvType.CLIENT)
-public class Panel extends AbstractParentControl<Panel> implements ParentElement {
+public class Panel extends AbstractParentControl<Panel> implements ContainerEventHandler {
 	/** if false is horizontal */
 	public final boolean isVertical;
 
@@ -59,9 +56,9 @@ public class Panel extends AbstractParentControl<Panel> implements ParentElement
 	}
 
 	@Override
-	protected void drawContent(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	protected void drawContent(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (getBackgroundColor() != 0) {
-			GuiUtil.drawRect(matrixStack.peek().getModel(), left, top, right, bottom, getBackgroundColor());
+			GuiUtil.drawRect(matrixStack.last().pose(), left, top, right, bottom, getBackgroundColor());
 		}
 
 		for (final AbstractControl<?> control : children) {
@@ -244,7 +241,7 @@ public class Panel extends AbstractParentControl<Panel> implements ParentElement
 	}
 
 	@Override
-	public void drawToolTip(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void drawToolTip(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		// TODO Auto-generated method stub
 
 	}

@@ -21,9 +21,9 @@ import java.util.HashMap;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
@@ -42,24 +42,28 @@ class SimpleFluidRenderRegistry implements SimpleSynchronousResourceReloadListen
 		HANDLERS.put(stillFluid, handler);
 	}
 
-	private final Identifier id = new Identifier(Fermion.MOD_ID, "fluid_handler");
-	private final ImmutableList<Identifier> deps = ImmutableList.of(ResourceReloadListenerKeys.MODELS, ResourceReloadListenerKeys.TEXTURES);
+	private final ResourceLocation id = new ResourceLocation(Fermion.MOD_ID, "fluid_handler");
+	private final ImmutableList<ResourceLocation> deps = ImmutableList.of(ResourceReloadListenerKeys.MODELS, ResourceReloadListenerKeys.TEXTURES);
 
 	private SimpleFluidRenderRegistry() {
 	}
 
 	@Override
-	public Identifier getFabricId() {
+	public ResourceLocation getFabricId() {
 		return id;
 	}
 
 	@Override
-	public Collection<Identifier> getFabricDependencies() {
+	public Collection<ResourceLocation> getFabricDependencies() {
 		return deps;
 	}
 
-	@Override
 	public void reload(ResourceManager resourceManager) {
+		HANDLERS.values().forEach(h -> h.reload());
+	}
+
+	@Override
+	public void onResourceManagerReload(ResourceManager resourceManager) {
 		HANDLERS.values().forEach(h -> h.reload());
 	}
 }

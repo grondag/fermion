@@ -25,8 +25,8 @@ public interface DirtListener {
 	 */
 	@Deprecated
 	default void makeDirty() {
-		markDirty();
+		setDirty();
 	}
 
-	void markDirty();
+	void setDirty();
 }

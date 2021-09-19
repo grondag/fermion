@@ -21,19 +21,16 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
-
 import grondag.fermion.position.PackedBlockPos;
 
 /**
@@ -302,12 +299,12 @@ public class Useful {
 	/**
 	 * Returns average world height around the given BlockPos.
 	 */
-	public static int getAvgHeight(World world, BlockPos pos, int radius, int sampleCount) {
+	public static int getAvgHeight(Level world, BlockPos pos, int radius, int sampleCount) {
 		int total = 0;
 		final int range = radius * 2 + 1;
 
 		for (int i = 0; i < sampleCount; i++) {
-			total += world.getTopY(Heightmap.Type.WORLD_SURFACE,
+			total += world.getHeight(Heightmap.Types.WORLD_SURFACE,
 					pos.getX() + ThreadLocalRandom.current().nextInt(range) - radius,
 					pos.getZ() + ThreadLocalRandom.current().nextInt(range) - radius);
 		}
@@ -318,11 +315,11 @@ public class Useful {
 	/**
 	 * Creates stack tag if it doesn't exist
 	 */
-	public static NbtCompound getOrCreateTagCompound(ItemStack stack) {
-		NbtCompound tag = stack.getNbt();
+	public static CompoundTag getOrCreateTagCompound(ItemStack stack) {
+		CompoundTag tag = stack.getTag();
 		if (tag == null) {
-			tag = new NbtCompound();
-			stack.setNbt(tag);
+			tag = new CompoundTag();
+			stack.setTag(tag);
 		}
 		return tag;
 	}
@@ -330,16 +327,16 @@ public class Useful {
 	/**
 	 * Returns volume of given AABB
 	 */
-	public static double volumeAABB(Box box) {
+	public static double volumeAABB(AABB box) {
 		return (box.maxX - box.minX) * (box.maxY - box.minY) * (box.maxZ - box.minZ);
 	}
 
 	/**
 	 * Retuns sum of volume of all AABB in the list.
 	 */
-	public static double volumeAABB(List<Box> list) {
+	public static double volumeAABB(List<AABB> list) {
 		double retVal = 0;
-		for (final Box box : list) {
+		for (final AABB box : list) {
 			retVal += volumeAABB(box);
 		}
 		return retVal;
@@ -348,7 +345,7 @@ public class Useful {
 	/**
 	 * Returns true if the given ray intersects with the given AABB.
 	 */
-	public static boolean doesRayIntersectAABB(Vec3d origin, Vec3d direction, Box box) {
+	public static boolean doesRayIntersectAABB(Vec3 origin, Vec3 direction, AABB box) {
 
 		double tmin = Double.NEGATIVE_INFINITY;
 		double tmax = Double.POSITIVE_INFINITY;
@@ -421,7 +418,7 @@ public class Useful {
 	 * Returns bit mask for a value of given bit length
 	 */
 	public static long longBitMask(int bitLength) {
-		bitLength = MathHelper.clamp(bitLength, 0, Long.SIZE);
+		bitLength = Mth.clamp(bitLength, 0, Long.SIZE);
 
 		// note: can't use mask = (1L << (bitLength+1)) - 1 here due to overflow &
 		// signed values
@@ -460,7 +457,7 @@ public class Useful {
 	 * Returns bit mask for a value of given bit length
 	 */
 	public static int intBitMask(int bitLength) {
-		bitLength = MathHelper.clamp(bitLength, 0, Integer.SIZE);
+		bitLength = Mth.clamp(bitLength, 0, Integer.SIZE);
 
 		// note: can't use mask = (1L << (bitLength+1)) - 1 here due to overflow &
 		// signed values
@@ -485,15 +482,15 @@ public class Useful {
 	/**
 	 * Returns start given default value if ordinal is out of range or not present.
 	 */
-	public static <T extends Enum<?>> T safeEnumFromTag(NbtCompound tag, String tagName, T defaultValue) {
+	public static <T extends Enum<?>> T safeEnumFromTag(CompoundTag tag, String tagName, T defaultValue) {
 		return (tag == null) ? defaultValue : safeEnumFromOrdinal(tag.getInt(tagName), defaultValue);
 	}
 
 	/**
 	 * Writes tag value for later reading by
-	 * {@link #safeEnumFromTag(NbtCompound, String, Enum)}
+	 * {@link #safeEnumFromTag(CompoundTag, String, Enum)}
 	 */
-	public static void saveEnumToTag(NbtCompound tag, String tagName, Enum<?> enumValue) {
+	public static void saveEnumToTag(CompoundTag tag, String tagName, Enum<?> enumValue) {
 		tag.putInt(tagName, enumValue == null ? 0 : enumValue.ordinal());
 	}
 

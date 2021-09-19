@@ -15,16 +15,15 @@
  ******************************************************************************/
 package grondag.fermion.modkeys.api;
 
-import net.minecraft.entity.player.PlayerEntity;
-
 import grondag.fermion.modkeys.impl.ModKeysAccess;
+import net.minecraft.world.entity.player.Player;
 
 public interface ModKeys {
 	/**
 	 * @deprecated Use one of them primary/secondary/tertiary conditions instead, to allow for client-side configuration by player.
 	 */
 	@Deprecated
-	static boolean isShiftPressed(PlayerEntity player) {
+	static boolean isShiftPressed(Player player) {
 		return ModKeysAccess.isShiftPressed(player);
 	}
 
@@ -32,7 +31,7 @@ public interface ModKeys {
 	 * @deprecated Use one of the primary/secondary/tertiary conditions instead, to allow for client-side configuration by player.
 	 */
 	@Deprecated
-	static boolean isControlPressed(PlayerEntity player) {
+	static boolean isControlPressed(Player player) {
 		return ModKeysAccess.isControlPressed(player);
 	}
 
@@ -40,7 +39,7 @@ public interface ModKeys {
 	 * @deprecated Use one of the primary/secondary/tertiary conditions instead, to allow for client-side configuration by player.
 	 */
 	@Deprecated
-	static boolean isAltPressed(PlayerEntity player) {
+	static boolean isAltPressed(Player player) {
 		return ModKeysAccess.isAltPressed(player);
 	}
 
@@ -48,19 +47,19 @@ public interface ModKeys {
 	 * @deprecated Use one of the primary/secondary/tertiary conditions instead, to allow for client-side configuration by player.
 	 */
 	@Deprecated
-	static boolean isSuperPressed(PlayerEntity player) {
+	static boolean isSuperPressed(Player player) {
 		return ModKeysAccess.isSuperPressed(player);
 	}
 
-	static boolean isPrimaryPressed(PlayerEntity player) {
+	static boolean isPrimaryPressed(Player player) {
 		return ModKeysAccess.isPrimaryPressed(player);
 	}
 
-	static boolean isSecondaryPressed(PlayerEntity player) {
+	static boolean isSecondaryPressed(Player player) {
 		return ModKeysAccess.isSecondaryPressed(player);
 	}
 
-	static boolean isTertiaryPressed(PlayerEntity player) {
+	static boolean isTertiaryPressed(Player player) {
 		return ModKeysAccess.isTertiaryPressed(player);
 	}
 }

@@ -19,29 +19,29 @@ package grondag.fermion.registrar;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleType;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -49,16 +49,16 @@ import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 
 public class Registrar extends AbstractRegistrar {
-	public final ItemGroup itemGroup;
+	public final CreativeModeTab itemGroup;
 
 	public Registrar(String modId, String groupItemName) {
 		super(modId);
-		final Identifier itemGroupItemId = new Identifier(modId, groupItemName);
-		itemGroup = FabricItemGroupBuilder.build(new Identifier(modId, "group"), () -> new ItemStack(Registry.ITEM.get(itemGroupItemId)));
+		final ResourceLocation itemGroupItemId = new ResourceLocation(modId, groupItemName);
+		itemGroup = FabricItemGroupBuilder.build(new ResourceLocation(modId, "group"), () -> new ItemStack(Registry.ITEM.get(itemGroupItemId)));
 	}
 
-	public Item.Settings itemSettings() {
-		return new Item.Settings().group(itemGroup);
+	public Item.Properties itemSettings() {
+		return new Item.Properties().tab(itemGroup);
 	}
 
 	public <T extends Item> T item(String name, T item) {
@@ -78,7 +78,7 @@ public class Registrar extends AbstractRegistrar {
 		return b;
 	}
 
-	public <T extends Block> T block(String name, T block, Item.Settings settings) {
+	public <T extends Block> T block(String name, T block, Item.Properties settings) {
 		return block(name, block, new BlockItem(block, settings));
 	}
 
@@ -90,7 +90,7 @@ public class Registrar extends AbstractRegistrar {
 		return block(name, block, itemFactory.apply(block));
 	}
 
-	public <T extends Block> T block(String name, T block, BiFunction<T, Item.Settings, BlockItem> itemFactory) {
+	public <T extends Block> T block(String name, T block, BiFunction<T, Item.Properties, BlockItem> itemFactory) {
 		return block(name, block, itemFactory.apply(block, itemSettings()));
 	}
 
@@ -98,7 +98,7 @@ public class Registrar extends AbstractRegistrar {
 		final T b = Registry.register(Registry.BLOCK, id(name), block);
 		if (item != null) {
 			final BlockItem bi = item(name, item);
-			bi.appendBlocks(BlockItem.BLOCK_ITEMS, bi);
+			bi.registerBlocks(BlockItem.BY_BLOCK, bi);
 		}
 		return b;
 	}
@@ -126,7 +126,7 @@ public class Registrar extends AbstractRegistrar {
 	}
 
 	public SoundEvent sound(String id) {
-		final Identifier idid = id(id);
+		final ResourceLocation idid = id(id);
 		return Registry.register(Registry.SOUND_EVENT, idid, new SoundEvent(idid));
 	}
 
@@ -146,15 +146,15 @@ public class Registrar extends AbstractRegistrar {
 		return TagRegistry.entityType(id(id));
 	}
 
-	public DefaultParticleType particle(String id, boolean alwaysSpawn) {
+	public SimpleParticleType particle(String id, boolean alwaysSpawn) {
 		return Registry.register(Registry.PARTICLE_TYPE, id(id), FabricParticleTypes.simple(alwaysSpawn));
 	}
 
-	public <T extends ParticleEffect> ParticleType<T> particle(String id, boolean alwaysSpawn, ParticleEffect.Factory<T> factory)  {
+	public <T extends ParticleOptions> ParticleType<T> particle(String id, boolean alwaysSpawn, ParticleOptions.Deserializer<T> factory)  {
 		return Registry.register(Registry.PARTICLE_TYPE, id(id), FabricParticleTypes.complex(alwaysSpawn, factory));
 	}
 
-	public StatusEffect statusEffect(String id, StatusEffect effect) {
-		return Registry.register(Registry.STATUS_EFFECT, id(id), effect);
+	public MobEffect statusEffect(String id, MobEffect effect) {
+		return Registry.register(Registry.MOB_EFFECT, id(id), effect);
 	}
 }

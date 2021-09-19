@@ -16,7 +16,7 @@
 
 package grondag.fermion.position;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 /**
  * Iterators for multi-block regions. Mainly used for species detection.

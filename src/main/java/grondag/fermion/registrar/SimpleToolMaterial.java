@@ -17,19 +17,18 @@
 package grondag.fermion.registrar;
 
 import java.util.function.Supplier;
+import net.minecraft.util.LazyLoadedValue;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Lazy;
-
-public class SimpleToolMaterial implements ToolMaterial {
+public class SimpleToolMaterial implements Tier {
 	public final int miningLevel;
 	public final int itemDurability;
 	public final float miningSpeed;
 	public final float attackDamage;
 	public final int enchantability;
-	public final Lazy<Ingredient> repairIngredient;
+	public final LazyLoadedValue<Ingredient> repairIngredient;
 
 	public SimpleToolMaterial(int miningLevel, int itemDurability, float miningSpeed, float attackDamage, int enchantability, Supplier<Ingredient> ingredientSupplier) {
 		this.miningLevel = miningLevel;
@@ -37,31 +36,31 @@ public class SimpleToolMaterial implements ToolMaterial {
 		this.miningSpeed = miningSpeed;
 		this.attackDamage = attackDamage;
 		this.enchantability = enchantability;
-		repairIngredient = new Lazy<>(ingredientSupplier);
+		repairIngredient = new LazyLoadedValue<>(ingredientSupplier);
 	}
 
 	@Override
-	public int getDurability() {
+	public int getUses() {
 		return itemDurability;
 	}
 
 	@Override
-	public float getMiningSpeedMultiplier() {
+	public float getSpeed() {
 		return miningSpeed;
 	}
 
 	@Override
-	public float getAttackDamage() {
+	public float getAttackDamageBonus() {
 		return attackDamage;
 	}
 
 	@Override
-	public int getMiningLevel() {
+	public int getLevel() {
 		return miningLevel;
 	}
 
 	@Override
-	public int getEnchantability() {
+	public int getEnchantmentValue() {
 		return enchantability;
 	}
 
@@ -70,11 +69,11 @@ public class SimpleToolMaterial implements ToolMaterial {
 		return repairIngredient.get();
 	}
 
-	public static ToolMaterial of(int miningLevel, int itemDurability, float miningSpeed, float attackDamage, int enchantability, Supplier<Ingredient> ingredientSupplier) {
+	public static Tier of(int miningLevel, int itemDurability, float miningSpeed, float attackDamage, int enchantability, Supplier<Ingredient> ingredientSupplier) {
 		return new SimpleToolMaterial(miningLevel, itemDurability, miningSpeed, attackDamage, enchantability, ingredientSupplier);
 	}
 
-	public static ToolMaterial of(int miningLevel, int itemDurability, float miningSpeed, float attackDamage, int enchantability, ItemConvertible repairItem) {
-		return new SimpleToolMaterial(miningLevel, itemDurability, miningSpeed, attackDamage, enchantability, () -> Ingredient.ofItems(repairItem.asItem()));
+	public static Tier of(int miningLevel, int itemDurability, float miningSpeed, float attackDamage, int enchantability, ItemLike repairItem) {
+		return new SimpleToolMaterial(miningLevel, itemDurability, miningSpeed, attackDamage, enchantability, () -> Ingredient.of(repairItem.asItem()));
 	}
 }
