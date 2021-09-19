@@ -21,7 +21,7 @@ import grondag.fermion.modkeys.impl.ModKeysAccess;
 import net.minecraft.world.entity.player.Player;
 
 @Mixin(Player.class)
-public class MixinPlayerEntity implements ModKeysAccess {
+public class MixinPlayer implements ModKeysAccess {
 	private byte modifierFlags = 0;
 
 	@Override

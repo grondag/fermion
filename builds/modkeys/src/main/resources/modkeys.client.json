@@ -4,8 +4,8 @@
   "package": "grondag.fermion.modkeys.mixin.client",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "MixinControlsOptionsScreen"
-      ],
+    "MixinControlsScreen"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

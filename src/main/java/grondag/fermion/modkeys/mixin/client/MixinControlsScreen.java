@@ -20,17 +20,18 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import grondag.fermion.modkeys.ModKeysConfigScreen;
+
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.ControlsScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 
-@Mixin(ControlsScreen.class)
-public class MixinControlsOptionsScreen extends Screen {
+import grondag.fermion.modkeys.ModKeysConfigScreen;
 
-	public MixinControlsOptionsScreen(Component title) {
+@Mixin(ControlsScreen.class)
+public class MixinControlsScreen extends Screen {
+	public MixinControlsScreen(Component title) {
 		super(title);
 	}
 
