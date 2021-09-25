@@ -8,9 +8,9 @@ repositories {
     //maven { url "https://maven.jamieswhiteshirt.com/libs-release/"}
     
  	maven {
-    	name = "dblsaiko"
-    	url = "https://maven.dblsaiko.net/"
-    }
+		name = "vram"
+		url = "s3://io-vram-maven/releases"
+	}
     
     maven { url "https://maven.terraformersmc.com/releases/"}
 }
