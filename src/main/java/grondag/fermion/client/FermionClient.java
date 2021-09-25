@@ -17,13 +17,11 @@
 package grondag.fermion.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.render.InvalidateRenderStateCallback;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
 import grondag.fermion.client.models.SimpleModels;
 
@@ -37,8 +35,6 @@ public final class FermionClient implements ClientModInitializer  {
 				client.levelRenderer.blockChanged(client.level, p, Blocks.AIR.defaultBlockState(), Blocks.AIR.defaultBlockState(), 8);
 			};
 		});
-
-		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(SimpleFluidRenderRegistry.LISTENER);
 
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider(r -> SimpleModels.MODEL_VARIANT_PROVIER);
 

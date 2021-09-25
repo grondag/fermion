@@ -17,11 +17,13 @@
 package grondag.fermion.client;
 
 import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.material.Fluid;
-import com.google.common.collect.ImmutableList;
+
 import grondag.fermion.client.models.SimpleModels;
 import grondag.fermion.client.models.SimpleRandomModel;
 import grondag.fermion.client.models.SimpleUnbakedModel;
@@ -31,10 +33,6 @@ public class ClientRegistrar extends AbstractRegistrar {
 
 	public ClientRegistrar(String modId) {
 		super(modId);
-	}
-
-	public void fluidRenderHandler(Fluid stillFluid, Fluid flowingFluid, int color, String stillSprite, String flowingSprite) {
-		SimpleFluidRenderRegistry.register(stillFluid, flowingFluid, color, stillSprite, flowingSprite);
 	}
 
 	public void modelVariant(String id, UnbakedModel unbakedModel) {
