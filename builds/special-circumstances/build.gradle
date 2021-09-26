@@ -123,7 +123,7 @@ publishing {
 	repositories {
 		mavenLocal()
         maven {
-            url = 's3://io-vram-maven/releases'
+            url = 's3://maven-vram-io/releases'
             credentials(AwsCredentials) {
             	if (project.hasProperty('aws_id')){
 					accessKey = project.getProperty('aws_id')

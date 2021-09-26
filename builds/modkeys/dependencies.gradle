@@ -9,7 +9,7 @@ repositories {
     
  	maven {
 		name = "vram"
-		url = "s3://io-vram-maven/releases"
+		url = "http://maven.vram.io"
 	}
     
     maven { url "https://maven.terraformersmc.com/releases/"}
