@@ -5,8 +5,7 @@ repositories {
 
  	maven {
 		name = "vram"
-		url = "http://maven.vram.io"
-		allowInsecureProtocol = true
+		url = "https://maven.vram.io"
 	}
 }
 
