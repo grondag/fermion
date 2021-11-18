@@ -18,6 +18,7 @@ package grondag.fermion.bits;
 
 import java.util.function.IntConsumer;
 
+@Deprecated
 public class BitHelper {
 	public static void forEachBit(long bits, IntConsumer consumer) {
 		if (bits != 0) {

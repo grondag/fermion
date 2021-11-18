@@ -22,6 +22,7 @@ import java.lang.reflect.Array;
  * Used for fast mapping of a enum to boolean values serialized to a numeric
  * primitive.
  */
+@Deprecated
 public class EnumBitSet<T extends Enum<?>> {
 	private final T[] values;
 

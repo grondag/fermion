@@ -31,7 +31,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>
  *
  * Safe for concurrent use.
+ *
+ * @deprecated Use version in special-circumstances.
  */
+@Deprecated
 public class IndexedInterner<T> {
 	private final AtomicInteger nextHandle = new AtomicInteger(1);
 

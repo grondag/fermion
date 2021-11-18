@@ -23,6 +23,7 @@ import java.util.function.ToLongFunction;
 import grondag.fermion.Fermion;
 import grondag.fermion.varia.Useful;
 
+@Deprecated
 public class BitPacker64<T> {
 	protected int totalBitLength;
 	protected long bitMask;

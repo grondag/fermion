@@ -2,9 +2,12 @@ package grondag.fermion.bits;
 
 
 import java.util.Arrays;
+
 import net.minecraft.nbt.CompoundTag;
+
 import grondag.fermion.varia.Useful;
 
+@Deprecated
 public class BitPacker {
 	private int lastIndex = 0;
 
