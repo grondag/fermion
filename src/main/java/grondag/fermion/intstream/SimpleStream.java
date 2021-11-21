@@ -6,10 +6,7 @@ import net.minecraft.util.Mth;
  * Uses large blocks only - may be space-inefficient.
  */
 
-/**
- * @deprecated Use IntStreamProvider
- */
-@Deprecated
+//TODO: replace with IntStreamProvider
 class SimpleStream implements IntStream {
 	int[][] blocks = new int[16][];
 
