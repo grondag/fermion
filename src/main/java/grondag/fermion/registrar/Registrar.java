@@ -25,9 +25,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
@@ -46,7 +44,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 
 public class Registrar extends AbstractRegistrar {
 	public final CreativeModeTab itemGroup;
@@ -128,22 +125,6 @@ public class Registrar extends AbstractRegistrar {
 	public SoundEvent sound(String id) {
 		final ResourceLocation idid = id(id);
 		return Registry.register(Registry.SOUND_EVENT, idid, new SoundEvent(idid));
-	}
-
-	public Tag<Fluid> fluidTag(String id) {
-		return TagRegistry.fluid(id(id));
-	}
-
-	public Tag<Block> blockTag(String id) {
-		return TagRegistry.block(id(id));
-	}
-
-	public Tag<Item> itemTag(String id) {
-		return TagRegistry.item(id(id));
-	}
-
-	public Tag<EntityType<?>> entityTag(String id) {
-		return TagRegistry.entityType(id(id));
 	}
 
 	public SimpleParticleType particle(String id, boolean alwaysSpawn) {

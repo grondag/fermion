@@ -1,6 +1,10 @@
 package grondag.fermion.gui;
 
 import java.util.Optional;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Widget;
@@ -13,8 +17,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+
 import grondag.fermion.gui.control.AbstractControl;
 
 public abstract class AbstractSimpleContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T>  implements ScreenRenderContext
@@ -153,7 +156,7 @@ public abstract class AbstractSimpleContainerScreen<T extends AbstractContainerM
 		return Optional.ofNullable(hoverControl);
 	}
 
-	// like private vanilla method but doesn't test drawHovereffect for the slot
+	// like private vanilla method but doesn't test isActive for the slot
 	public Slot findSlot(double x, double y) {
 		for(int i = 0; i < menu.slots.size(); ++i) {
 			final Slot slot = menu.slots.get(i);

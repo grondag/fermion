@@ -35,7 +35,7 @@ public class AssignedNumbersAuthority implements ReadWriteNBT, DirtNotifier {
 	}
 
 	public NumberedIndex getIndex(String numberType) {
-		return indexes.computeIfAbsent(numberType, nt -> new NumberedIndex(nt, this));
+		return indexes.computeIfAbsent(numberType, (String nt) -> new NumberedIndex(nt, this));
 	}
 
 	/**
